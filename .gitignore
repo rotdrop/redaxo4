@@ -1,0 +1,13 @@
+upload/
+redaxo/include/generated/
+redaxo/include/addons/import_export/backup/
+redaxo/*.sql
+files/*.asc
+files/*.jpeg
+files/*.doc
+files/*.pdf
+files/*.m4a
+files/*.mp3
+files/*.jpg
+files/*.gif
+files/*.png
