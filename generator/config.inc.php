@@ -1,0 +1,48 @@
+<?php
+$grab_parameters = array(
+'xs_inc_skip' => '\\.(pdf|doc|txt|rtf)',
+'xs_exc_skip' => '\\.(mp3|wav|zip|rar|tar|bz2|tgz|gif|jpg|png|class|jar|mpeg|mpg|mp3|wav|wmv|gz|mov)',
+'xs_proto_skip' => '(\\#|mailto:|https:|javascript:|ftp:|news:)',
+'xs_exec_time' => '9000',
+'xs_cache' => '',
+'xs_max_pages' => '0',
+'xs_initurl' => 'http://fritz.claus-justus-heine.info/cafevwww-new/',
+'xs_freq' => 'monthly',
+'xs_lastmod' => '1',
+'xs_lastmodtime' => '2005-06-30 19:35:14',
+'xs_priority' => '0.5',
+'xs_smname' => '/var/www/localhost/htdocs/cafevwww-new/sitemap.xml',
+'xs_smurl' => 'http://fritz.claus-justus-heine.info/cafevwww-new/sitemap.xml',
+'xs_gping' => '1',
+'xs_yping' => '',
+'xs_makehtml' => '0',
+'xs_maketxt' => '0',
+'xs_makeror' => '0',
+'xs_compress' => '0',
+'xs_excl_urls' => 'inc/
+generator/
+addons/
+redaxo/
+cgi-bin/',
+'xs_notconfigured' => '0',
+'xs_login' => 'admin',
+'xs_password' => 'CaFR2009XML',
+'xs_savestate_time' => '180',
+'xs_ipconnection' => '',
+'xs_portconnection' => '',
+'xs_sm_size' => '50000',
+'xs_sm_text_filename' => '',
+'xs_sm_text_url' => '',
+'xs_cleanurls' => '',
+'xs_usecurl' => '0',
+'xs_robotstxt' => '1',
+'xs_chlog' => '1',
+'xs_htmlname' => '/var/www/localhost/htdocs/cafevwww-new/generator/data/sitemap.html',
+'xs_htmlpart' => '1000',
+'xs_max_depth' => '',
+'xs_delay_req' => '',
+'xs_delay_ms' => '',
+'xs_incl_urls' => '',
+'xs_incl_only' => '',
+'xs_ind_attr' => '',);
+?>

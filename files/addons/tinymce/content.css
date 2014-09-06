@@ -1,0 +1,65 @@
+/* TinyMCE specific rules */
+body.mceContentBody {
+	background: #fff;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+}
+.mceContentBody a {
+   color: #009 !important; /* FF requires a important here */
+}
+
+/* Ab hier die eigenen Styles */
+body {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+}
+a {
+    color:#740502;
+    text-decoration:none;
+}
+p, h1, h2, h3, h4, h5, h6 {
+        margin:0 0 1em 280px;
+}
+.marginalie {
+        margin:0 0 0 0;
+        width:250px;
+        float:left;
+}
+.zitat {
+        margin:0 0 0 0;
+        width:250px;
+        float:left;
+        font-style:italic;
+}
+.mailto {
+       text-decoration:underline;
+}
+.zitatSymbolStart {
+	color:#a7aaa0;
+	float:left;
+	font-size:3em;
+	margin:-0.4em 0.05em 0 0;
+}
+.zitatSymbolEnde {
+	position:absolute;
+	color:#a7aaa0;
+	float:none;
+	font-size:3em;
+	margin:0.27em 0.05em 0 0;
+}
+.autor {
+	font-size:0.8em;
+	color:#777971;
+}
+.linie {
+	clear:both;
+	margin:1em 0 0 0;
+	border-top:2px solid #dbddd7;
+}
+.clear {
+	clear:both;
+}
+.ornament {
+	background:url(/inc/img/ornament_line.gif) no-repeat top right;
+	height:32px;
+}
