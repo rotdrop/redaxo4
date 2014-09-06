@@ -22,7 +22,7 @@ if ($REX['MOD_REWRITE'] !== false)
   // --------- configuration
   
   // Modify this line to include the right rewriter
-  require_once $UrlRewriteBasedir.'/classes/class.rewrite_fullnames.inc.php';
+  require_once $UrlRewriteBasedir.'/classes/class.rewrite_camerata.inc.php';
   
   // --------- end of configuration
 
