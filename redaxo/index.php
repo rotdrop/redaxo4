@@ -77,7 +77,13 @@ if ($REX['SETUP']) {
     $I18N = rex_create_lang($REX['LANG']);
 
     // ---- prepare login
-    $REX['LOGIN'] = new rex_backend_login($REX['TABLE_PREFIX'] . 'user');
+    if ($REX['AUTHCLASS']) {
+        include_once $REX['AUTHCLASSINCLUDE'];
+        $reflect = new ReflectionClass($REX['AUTHCLASS']);
+        $REX['LOGIN'] = $reflect->newInstanceArgs(array($REX['TABLE_PREFIX'] . 'user'));
+    } else {
+        $REX['LOGIN'] = new rex_backend_login($REX['TABLE_PREFIX'] . 'user');
+    }
     $rex_user_login = rex_post('rex_user_login', 'string');
     $rex_user_psw = rex_post('rex_user_psw', 'string');
 
