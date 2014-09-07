@@ -6,7 +6,7 @@
  * @version svn:$Id$
  */
 
-// ----- caching start für output filter
+// ----- caching start fÃ¼r output filter
 ob_start();
 ob_implicit_flush(0);
 
@@ -18,7 +18,7 @@ unset($REX);
 
 // Flag ob Inhalte mit Redaxo aufgerufen oder
 // von der Webseite aus
-// Kann wichtig für die Darstellung sein
+// Kann wichtig fÃ¼r die Darstellung sein
 // Sollte immer true bleiben
 
 $REX['REDAXO'] = true;
@@ -70,7 +70,7 @@ if ($REX['SETUP'])
     $REX['LANG'] = 'de_de';
 
   $I18N = rex_create_lang($REX['LANG']);
-  
+
   $REX['PAGES']['setup'] = rex_be_navigation::getSetupPage();
   $REX['PAGE'] = "setup";
 
@@ -105,16 +105,16 @@ if ($REX['SETUP'])
 
     $REX['PAGES']['login'] = rex_be_navigation::getLoginPage();
     $REX['PAGE'] = 'login';
-    
+
     $REX['USER'] = null;
     $REX['LOGIN'] = null;
   }
   else
-  {    
+  {
     // Userspezifische Sprache einstellen, falls gleicher Zeichensatz
     $lang = $REX['LOGIN']->getLanguage();
     $I18N_T = rex_create_lang($lang,'',FALSE);
-    if ($I18N->msg('htmlcharset') == $I18N_T->msg('htmlcharset')) 
+    if ($I18N->msg('htmlcharset') == $I18N_T->msg('htmlcharset'))
       $I18N = rex_create_lang($lang);
 
     $REX['USER'] = $REX['LOGIN']->USER;
@@ -138,7 +138,7 @@ if($REX['USER'])
     $title = OOAddon::getProperty($addonName, 'name', '');
     $href  = OOAddon::getProperty($addonName, 'link',  'index.php?page='. $addonName);
     $perm  = OOAddon::getProperty($addonName, 'perm', '');
-    
+
     $addonPage = null;
     $mainAddonPage = null;
 
@@ -148,7 +148,7 @@ if($REX['USER'])
       {
         $addonPage = new rex_be_page($title, array('page' => $addonName));
         $addonPage->setHref($href);
-      
+
         // wegen REX Version = 4.2 - alter Stil "SUBPAGES"
         if(isset($REX['ADDON'][$addonName]['SUBPAGES']))
         {
@@ -156,15 +156,18 @@ if($REX['USER'])
         }
         // *** ENDE wegen <=4.2
       }
-      
+
       // adds be_page's
       foreach(OOAddon::getProperty($addonName, 'pages', array()) as $s)
       {
         if(is_array($s) && $addonPage)
         {
-         $subPage = new rex_be_page($s[1], array('page' => $addonName, 'subpage' => $s[0]));
-          $subPage->setHref('index.php?page='.$addonName.'&subpage='.$s[0]);
-          $addonPage->addSubPage($subPage);
+          if (!isset($s[2]) || $REX['USER']->hasPerm($s[2]) || $REX['USER']->isAdmin())
+          {
+            $subPage = new rex_be_page($s[1], array('page' => $addonName, 'subpage' => $s[0]));
+            $subPage->setHref('index.php?page='.$addonName.'&subpage='.$s[0]);
+            $addonPage->addSubPage($subPage);
+          }
         }else if(rex_be_main_page::isValid($s))
         {
           $p = $s->getPage();
@@ -175,14 +178,14 @@ if($REX['USER'])
         }
       }
     }
-    
+
     // handle plugins
     foreach(OOPlugin::getAvailablePlugins($addonName) as $pluginName)
     {
       $title = OOPlugin::getProperty($addonName, $pluginName, 'name', '');
       $href  = OOPlugin::getProperty($addonName, $pluginName, 'link',  'index.php?page='. $addonName . '&subpage='. $pluginName);
       $perm  = OOPlugin::getProperty($addonName, $pluginName, 'perm', '');
-      
+
       if($perm == '' || $REX['USER']->hasPerm($perm) || $REX['USER']->isAdmin())
       {
         $pluginPage = null;
@@ -191,15 +194,18 @@ if($REX['USER'])
           $pluginPage = new rex_be_page($title, array('page' => $addonName, 'subpage' => $pluginName));
           $pluginPage->setHref($href);
         }
-        
+
         // add plugin-be_page's to addon
         foreach(OOPlugin::getProperty($addonName, $pluginName, 'pages', array()) as $s)
         {
           if(is_array($s) && $addonPage)
           {
-            $subPage = new rex_be_page($s[1], array('page' => $addonName, 'subpage' => $s[0]));
-            $subPage->setHref('index.php?page='.$addonName.'&subpage='.$s[0]);
-            $addonPage->addSubPage($subPage);
+            if (!isset($s[2]) || $REX['USER']->hasPerm($s[2]) || $REX['USER']->isAdmin())
+            {
+              $subPage = new rex_be_page($s[1], array('page' => $addonName, 'subpage' => $s[0]));
+              $subPage->setHref('index.php?page='.$addonName.'&subpage='.$s[0]);
+              $addonPage->addSubPage($subPage);
+            }
           }
           else if(rex_be_main_page::isValid($s))
           {
@@ -211,7 +217,7 @@ if($REX['USER'])
             $addonPage->addSubPage($s);
           }
         }
-        
+
         if($pluginPage)
         {
           // "navigation" adds attributes to the plugin-root page
@@ -235,10 +241,10 @@ if($REX['USER'])
       }
     }
 
-    if ($addonPage) 
+    if ($addonPage)
     {
       $mainAddonPage = new rex_be_main_page('addons', $addonPage);
-      
+
       // "navigation" adds attributes to the addon-root page
       foreach(OOAddon::getProperty($addonName, 'navigation', array()) as $key => $value)
       {
@@ -256,23 +262,25 @@ if($REX['USER'])
 
   // --- page herausfinden
   $REX['PAGE'] = trim(rex_request('page', 'string'));
-    
+
   // --- page pruefen und benoetigte rechte checken
   if(!isset($REX['PAGES'][$REX['PAGE']]) ||
     (($p=$REX['PAGES'][$REX['PAGE']]->getPage()) && !$p->checkPermission($REX['USER'])))
   {
     // --- neue page bestimmen und diese in neuem request dann verarbeiten
     $REX['PAGE'] = $REX['LOGIN']->getStartpage();
-    if(!isset($REX['PAGES'][$REX['PAGE']]))
+    if(!isset($REX['PAGES'][$REX['PAGE']]) ||
+      (($p=$REX['PAGES'][$REX['PAGE']]->getPage()) && !$p->checkPermission($REX['USER'])))
     {
       $REX['PAGE'] = $REX['START_PAGE'];
-      if(!isset($REX['PAGES'][$REX['PAGE']]))
+      if(!isset($REX['PAGES'][$REX['PAGE']]) ||
+        (($p=$REX['PAGES'][$REX['PAGE']]->getPage()) && !$p->checkPermission($REX['USER'])))
       {
         // --- fallback auf "profile"; diese page hat jeder user
         $REX['PAGE'] = 'profile';
       }
     }
-    
+
     header('Location: index.php?page='. $REX['PAGE']);
     exit();
   }
@@ -303,7 +311,7 @@ if($page->hasPath())
   // Addon Page
   require $REX['INCLUDE_PATH'].'/addons/'. $REX['PAGE'] .'/pages/index.inc.php';
 }
-// ----- caching end für output filter
+// ----- caching end fÃ¼r output filter
 $CONTENT = ob_get_contents();
 ob_end_clean();
 

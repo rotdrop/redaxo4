@@ -2,7 +2,7 @@
 
 /**
  * Sprachobjekt zur Internationalisierung (I18N)
- * 
+ *
  * @package redaxo4
  * @version svn:$Id$
  */
@@ -13,7 +13,7 @@ class i18n
   var $searchpath;
   var $locale;
   var $text;
-	var $text_loaded;
+  var $text_loaded;
 
   /*
    * Constructor
@@ -24,37 +24,40 @@ class i18n
   {
     $this->searchpath = $searchpath;
     $this->text = array ();
-    $this->locale = $locale;
+    $this->locale = substr($locale, -5) == '_utf8' ? substr($locale, 0, -5) : $locale;
     $this->locales = array ();
     $this->text_loaded = FALSE;
   }
 
   /*
-   * Lädt alle Übersetzungen der aktuellen Sprache aus dem Sprachpfad und fügt diese dem Katalog hinzu.
+   * LÃ¤dt alle Ãœbersetzungen der aktuellen Sprache aus dem Sprachpfad und fÃ¼gt diese dem Katalog hinzu.
    */
   function loadTexts()
   {
     if($this->appendFile($this->searchpath))
     {
-  		$this->text_loaded = TRUE;
+      $this->text_loaded = TRUE;
     }
   }
-  
+
   /**
-   * Sucht im angegebenden Ordner nach eine Sprachdatei der aktuellen Sprache und fügt diese dem Sprachkatalog an
-   *  
+   * Sucht im angegebenden Ordner nach eine Sprachdatei der aktuellen Sprache und fÃ¼gt diese dem Sprachkatalog an
+   *
    * @param $searchPath Pfad in dem die Sprachdatei gesucht werden soll
    */
   function appendFile($searchPath)
   {
-    $filename = $searchPath . DIRECTORY_SEPARATOR . $this->locale . ".lang";
+    $filename = $searchPath . DIRECTORY_SEPARATOR . $this->locale . "_utf8.lang";
+    if (!file_exists($filename)) {
+      $filename = $searchPath . DIRECTORY_SEPARATOR . $this->locale . ".lang";
+    }
     return $this->appendFileName($filename);
   }
-  
+
   /**
    * Fuegt die angegebene Datei $filename diese dem Sprachkatalog an
-   *  
-   * @param $filename Datei die hinzugefügt werden soll
+   *
+   * @param $filename Datei die hinzugefÃ¼gt werden soll
    */
   function appendFileName($filename)
   {
@@ -75,34 +78,34 @@ class i18n
         return TRUE;
       }
     }
-    
+
     return FALSE;
   }
 
   /**
-   * Durchsucht den Sprachkatalog nach einem Schlüssel und gibt die dazugehörige Übersetzung zurück
-   * 
-   * @param $key Zu suchender Schlüssel
+   * Durchsucht den Sprachkatalog nach einem SchlÃ¼ssel und gibt die dazugehÃ¶rige Ãœbersetzung zurÃ¼ck
+   *
+   * @param $key Zu suchender SchlÃ¼ssel
    */
   function msg($key)
   {
-  	global $REX;
-  	
-  	/*
-  	// Warum hier umschalten der Sprache!?
-  	if(isset($REX['LOGIN']) && is_object($REX['LOGIN']) && 
-  	   $REX['LOGIN']->getLanguage() != $this->locale)
-  	{
-  		$this->locale = $REX['LOGIN']->getLanguage();
-  		$this->text_loaded = FALSE;
-  	}
-  	*/
-  	
-  	if(!$this->text_loaded)
-  	{
-  	  $this->loadTexts();
-  	}
-  	
+    global $REX;
+
+    /*
+    // Warum hier umschalten der Sprache!?
+    if(isset($REX['LOGIN']) && is_object($REX['LOGIN']) &&
+       $REX['LOGIN']->getLanguage() != $this->locale)
+    {
+      $this->locale = $REX['LOGIN']->getLanguage();
+      $this->text_loaded = FALSE;
+    }
+    */
+
+    if(!$this->text_loaded)
+    {
+      $this->loadTexts();
+    }
+
     if ($this->hasMsg($key))
     {
       $msg = $this->text[$key];
@@ -127,10 +130,10 @@ class i18n
   }
 
   /**
-   * Fügt dem Sprachkatalog unter dem gegebenen Schlüssel eine neue Übersetzung hinzu 
-   *  
-   * @param $key Schlüssel unter dem die Übersetzung abgelegt wird
-   * @param $msg Übersetzter Text
+   * FÃ¼gt dem Sprachkatalog unter dem gegebenen SchlÃ¼ssel eine neue Ãœbersetzung hinzu
+   *
+   * @param $key SchlÃ¼ssel unter dem die Ãœbersetzung abgelegt wird
+   * @param $msg Ãœbersetzter Text
    */
   function addMsg($key, $msg)
   {
@@ -138,19 +141,19 @@ class i18n
   }
 
   /**
-   * Prüft ob der Sprachkatalog zu dem gegebenen Schlüssel eine Übersetzung beinhaltet
-   * 
-   * @param $key Zu suchender Schlüssel
-   * @return boolean TRUE Wenn der Schlüssel gefunden wurde, sonst FALSE
+   * PrÃ¼ft ob der Sprachkatalog zu dem gegebenen SchlÃ¼ssel eine Ãœbersetzung beinhaltet
+   *
+   * @param $key Zu suchender SchlÃ¼ssel
+   * @return boolean TRUE Wenn der SchlÃ¼ssel gefunden wurde, sonst FALSE
    */
   function hasMsg($key)
   {
-  	return isset ($this->text[$key]);
+    return isset ($this->text[$key]);
   }
 
   /**
-   * Durchsucht den Searchpath nach allen verfügbaren Sprachdateien und gibt diese zurück
-   * 
+   * Durchsucht den Searchpath nach allen verfÃ¼gbaren Sprachdateien und gibt diese zurÃ¼ck
+   *
    * @param $searchpath Zu duruchsuchender Ordner
    * @return array Array von gefundenen Sprachen (locales)
    */
@@ -161,7 +164,7 @@ class i18n
       $this->locales = array ();
 
       $handle = opendir($searchpath);
-      while ($file = readdir($handle))
+      while (false !== $file = readdir($handle))
       {
         if ($file != "." && $file != "..")
         {
@@ -182,10 +185,10 @@ class i18n
 
 /**
  * Funktion zum Anlegen eines Sprache-Objekts
- * 
+ *
  * @param $locale Locale der Sprache
  * @param $searchpath Pfad zum Ordner indem die Sprachdatei gesucht werden soll
- * @param $setlocale TRUE, wenn die locale für die Umgebung gesetzt werden soll, sonst FALSE
+ * @param $setlocale TRUE, wenn die locale fÃ¼r die Umgebung gesetzt werden soll, sonst FALSE
  * @return unknown_type
  */
 function rex_create_lang($locale = "de_de", $searchpath = '', $setlocale = TRUE)
@@ -215,10 +218,10 @@ function rex_create_lang($locale = "de_de", $searchpath = '', $setlocale = TRUE)
       $locales[]= $locale .'.'. strtolower(str_replace('iso-', 'iso', $lang_object->msg('htmlcharset')));
       $locales[]= $locale .'.'. strtolower(str_replace('iso-', 'iso', str_replace("-","",$lang_object->msg('htmlcharset'))));
     }
-    
+
     foreach(explode(',', trim($lang_object->msg('setlocale'))) as $locale)
       $locales[]= $locale;
-    
+
     setlocale(LC_ALL, $locales);
   }
 

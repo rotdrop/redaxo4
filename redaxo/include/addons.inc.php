@@ -50,6 +50,9 @@ $REX['ADDON']['status']['url_rewrite'] = '1';
 
 $REX['ADDON']['install']['version'] = '0';
 $REX['ADDON']['status']['version'] = '0';
+
+$REX['ADDON']['install']['xform'] = '0';
+$REX['ADDON']['status']['xform'] = '0';
 // --- /DYN
 // ----------------- /DONT EDIT BELOW THIS
 
@@ -62,7 +65,7 @@ foreach(OOAddon::getAvailableAddons() as $addonName)
   {
     require $addonConfig;
   }
-  
+
   foreach(OOPlugin::getAvailablePlugins($addonName) as $pluginName)
   {
     $pluginConfig = rex_plugins_folder($addonName, $pluginName). 'config.inc.php';

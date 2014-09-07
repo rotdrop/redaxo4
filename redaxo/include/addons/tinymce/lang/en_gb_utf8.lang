@@ -1,85 +1,75 @@
-title = TinyMCE - JavaScript WYSIWYG Editor
+# Addon: TinyMCE
+#---------------
 
-menu_module = Example Modules
-menu_settings = Configuration
-menu_css = Edit CSS
-menu_tipps = Tips and Tricks
-menu_information = Links/Changelog
+# Addon-Eintrag und Addon-Titel
+tinymce_menu_link = TinyMCE Editor
+tinymce_title = TinyMCE WYSIWYG Editor <span style="font-size:10px;">(Version 2.5)</span>
 
-title_simple_sample = Simple Input/Output Module
-txt_simple_sample = A textarea can be converted into a WYSIWYG Editor by giving it the HTML-Attribute <strong>class="tinyMCEEditor"</strong><br />It is possible to use several editors at once. The size of the WYSIWYG-Editor is defined by the size of the textarea. The appearance of the buttons can be set from the <a href="index.php?page=tinymce&amp;subpage=settings">Addon-Configuration</a> page.
-title_extended_sample = Advanced Input Module
-txt_extended_sample = It is also possible to generate a WYSIWYG Editor using the <strong>rexTinyMCEEditor</strong> PHP Class. <br />Using the class it is possible to set your own configuration for TinyMCE. The class generates the Init-Javascript with standard settings that can be changed using the passed parameters. <br /><br /><a href="index.php?tinymceinit=true" onclick="window.open(this.href); return false;">Show the standard configuration.</a><br /><br /><a href="http://wiki.moxiecode.com/index.php/TinyMCE:Configuration" onclick="window.open(this.href); return false;">TinyMCE-Configuration Documentation</a><br /><br />As an example, here are <strong>all</strong> possible parameters for the Input-Module.<br />The <strong>content</strong> The correct REDAXO-Variable must be assigned to the <strong>content</strong> variable. (<strong>$tiny->content = $wysiwigvalue;</strong>)<br />The variable <strong>id</strong> has to be set to the REDAXO-Variable Number (e.g. REX_VALUE[2]: <strong>$tiny->id = 2;</strong>)<br /><br />More info here: <a href="index.php?page=tinymce&amp;subpage=tipps">Tips und Tricks &raquo;</a>
-title_input = <strong>Module INPUT</strong><br />
-title_output = <strong>Module OUTPUT (for all modules)</strong><br />
+# Versionen
+tinymce_version = 2.5
+tinymce_tiny_versinfo = TinyMCE jQuery package 3.5.10, <a href="http://www.tinymce.com/" onclick="window.open(this.href); return false;">http://www.tinymce.com/</a>
 
-title_config = TinyMCE Configuration
+# Menüeinträge
+tinymce_menu_info = Explanation
+tinymce_menu_settings = Settings
+tinymce_menu_profiles = Editor-Profiles
+tinymce_menu_css = CSS for TinyMCE
 
-title_active = Activate/Deactivate TinyMCE
-tinymce_active = TinyMCE activated
+# Konfiguration
+tinymce_config_title = TinyMCE-Configuration
+tinymce_active_be = Backend active
+tinymce_active_fe = Frontend active
+tinymce_config_excludecats = Don't execute on these pages (Backend) or categories (Frontend)
+tinymce_config_excludeids = Don't execute on these subpages (Backend) or pages (Frontend
+tinymce_config_csv = <em>(comma-separated list)</em>
+tinymce_config_imageparams = image parameters img-src
+tinymce_config_img = <strong>Description image parameters</strong><br /><br /><em>empty / not specified</em><br />Images will be inserted like this: &lt;img src="<strong>../files/</strong><em>image name</em>"&gt;<br /><br /><em>%FRONTEND_FILE%?tinymceimg=</em><br />Images will be inserted like this: &lt;img src="<strong>index.php?tinymceimg=</strong><em>image name</em>"&gt;<br /><br /><em>%FRONTEND_FILE%?rex_img_type=ImgTypeName&amp;rex_img_file=</em><br />Images will be inserted like this: &lt;img src="<strong>index.php?rex_img_type=ImgTypeName&amp;rex_img_file=</strong><em>bildname</em>"&gt;<br /><br /><em>%FRONTEND_FILE%?rex_resize=200a__</em><br />Images will be inserted like this &lt;img src="<strong>index.php?rex_resize=200a__</strong><em>bildname</em>"&gt;<br /><br />
 
-title_language = Choose standard language:
-tinymce_langs = Available languages: {0}
 
-title_pages = Choose pages where TinyMCE should be available
-tinymce_pages = Comma-separated list<br />Example: use <em>tinymce</em> when the Backend-URL is e.g. index.php?page=<em>tinymce</em>.
-title_foreground = Choose foreground colours
-tinymce_foreground = Comma-separated list<br />Hex-Values for the colours without # : e.g.: CC0000,009900,000099<br />The first colour is the standard colour.
+# Profil-Verwaltung
+tinymce_listtitle = Editor-Profile
+tinymce_listsummary = This table lists all defined editor profiles
+tinymce_addentry = create editor profile
+tinymce_name = Name
+tinymce_description = Description
+tinymce_configuration = TinyMCE Configuration
+tinymce_func = Funktions
+tinymce_delentry = delete
+tinymce_back = back to overview
+tinymce_fieldset = edit editor profile
 
-title_background = Choose background colours
-tinymce_background = Comma-separated list<br />Hex-Values for the colours without # : e.g.: CC0000,009900,000099<br />The first colour is the standard colour.
+# CSS-Verwaltung
+tinymce_css_title = CSS for TinyMCE
+tinymce_css_text = CSS for Editor and Preview
+tinymce_css_infotitle = Info
+tinymce_css_info = The CSS instructions given here may be included in the configuration using the following parameters:<br /><strong>content_css : 'index.php?tinymcecss=true'</strong><br /><br />That way the presentation of the TinyMCE editors and the TinyMCE preview can be influenced. More information can be found in the TinyMCE documentation.<br /><br /><strong>For styling the frontend page the corresponding CSS entries have to be included in your own CSS file styling your page!</strong>
 
-title_validxhtml = Generate valid XHTML
-tinymce_validxhtml = (might cause problems slowdowns.)
+# Fehler und Info-Meldungen
+tinymce_error_notwriteable = Config file "{0}" is not writable!
+tinymce_config_saved = Configuration has been updated!
+tinymce_config_not_saved = Configuration could not be saved!
+tinymce_profile_deleted = Editor profile has been deleted!
+tinymce_profile_notdeleted = Editor profile with ID=2 (default) may not be deleted!
+tinymce_profiles_nodata = No editor profiles available!
+tinymce_profiles_noname = No name given!
+tinymce_profiles_nameinvalid = Name contains invalid characters (a-z and 0-9 only)!
+tinymce_profiles_nodesc = No description given!
+tinymce_profiles_noconfig = No TinyMCE configuration specified!
+tinymce_css_saved = CSS has been updated!
+tinymce_css_not_saved = CSS could not be saved!
 
-title_inlinepopups = Use inline-popups
-tinymce_inlinepopups = (Lightbox-Style)
+# Erklärung / Hilfe / Module
+tinymce_shorthelp = The AddOn includes the WYSIWYG editor TinyMCE into the backend and if necessary also in the frontend.
+tinymce_longhelp = <br />Depending on the <a href="index.php?page=tinymce&amp;subpage=settings">configuration</a> of the TinyMCE addons the TinyMCE WYSIWYG editor for text areas is automatically included in the backend and frontend.<br /><br />Textareas bearing the class <em>tinyMCEEditor</em> are automatically converted from a normal text area to a WYSIWYG editor.<br />e.g.: &lt;textarea <strong>class="tinyMCEEditor"</strong>&gt;&lt;/textarea&gt;<br /><br />In the backend various <a href="index.php?page=tinymce&amp;subpage=profiles">editor profiles</a> with different configuration settings can be created. These editor profiles can be used by appending the profile name to the class.<br />e.g.: &lt;textarea <strong>class="tinyMCEEditor-simple"</strong>&gt;&lt;/textarea&gt;
+tinymce_nodel_notice = <strong>NOTE:</strong><br />The entry with <strong>ID=2</strong> and name <strong>default</strong> may not be deleted!
 
-title_theme = Choose theme
-theme_simple = Simple
-theme_default = Standard
-theme_advanced = Advanced
+tinymce_title_module = Example module
+tinymce_title_module_input = Code example for module input
+tinymce_help_module_input = To convert a text area to a WYSIWYG editor with TinyMCE it's sufficient to assign the class <strong>tinyMCEEditor</strong> to the text area.<br />By appending an existing <a href="index.php?page=tinymce&amp;subpage=profiles">editor profile name</a> to the class TinyMCE can be customized separately for each text area.<br />e.g.: &lt;textarea <strong>class="tinyMCEEditor-simple"</strong>&gt;&lt;/textarea&gt;
+tinymce_title_module_output = Code example for module output
+tinymce_help_module_output = In the module output it's enough to output the variable <strong>REX_HTML_VALUE[1]</strong>.<br />To avoid an empty output there's an if-statement in the example.
 
-title_skin = Choose skin
-skin_standard = Standard
-skin_o2k7 = o2k7
-skin_o2k7_silver = o2k7 Silver
-skin_o2k7_black = o2k7 Black
-
-title_ext_config = Additional TinyMCE Configuration
-ext_config = Configuration (JavaScript)
-
-button_save_settings = Save configuration
-msg_settings_saved = Configuration saved
-msg_settings_error = Could not save the Configuration!
-
-title_css_wysiwyg = CSS for WYSIWYG-Editor and Preview
-tynymce_css_wysiwyg = ...
-button_save_css = Save CSS
-msg_css_saved = CSS-File saved. You might need to clear your cache.
-msg_css_error = Could not save the CSS file.
-
-title_tipps_class = Class rexTinyMCEEditor usage:
-tipps_class_01 = Using the PHP Class rexTinyMCEEditor, you can configure TinyMCE to your own preference.<br />Have a look here: <a href="index.php?page=tinymce&amp;subpage=settings">Addon-Configuration</a> (Use the <strong>Advanced Input-Module</strong> from the <a href="index.php?page=tinymce">Example Modules</a> page.<br /><br />
-tipps_class_02 = The class always generates a standard-configuration with the settings from the Addon-Configuration page. These can be changed using the <strong>configuration</strong> variable. Note: If you use plugins, you may have to change/extend this variable.
-tipps_class_03 = <br /><br /><strong>Example:</strong>
-tipps_class_04 = <br /><strong><a href="index.php?tinymceinit=true" onclick="window.open(this.href); return false;">Show standard configuration</a></strong><br />
-tipps_class_05 = <br /><strong><a href="./include/addons/tinymce/examples/minimal-input.txt" onclick="window.open(this.href); return false;">Input Module</a></strong> (minimal Configuration, standard settings)<br />
-tipps_class_06 = <br /><strong><a href="./include/addons/tinymce/examples/extended-input.txt" onclick="window.open(this.href); return false;">Advanced Input Module</a></strong> (to be used as a basis for your own configurations)<br />
-tipps_class_07 = <br />More information can be found on the <a href="http://tinymce.moxiecode.com/" onclick="window.open(this.href); return false;">TinyMCE Website</a> or in the  <a href="http://wiki.moxiecode.com/index.php/TinyMCE:Index" onclick="window.open(this.href); return false;">TinyMCE Documentation</a>.
-
-title_tipps_media = Usage of the media plugin.
-tipps_media_01 = <br />Using the <strong>media</strong> plugin, you can insert media, e.g. Flash Animations into the WYSIWYG Editor
-tipps_media_02 = <br />The backend is automatically configured for using the Media Plugin.
-tipps_media_03 = <br /><br />In the frontend of the website, you need to add the following code to your HEAD.
-tipps_media_04 = For REDAXO <4.2
-
-title_tipps_syntax = Usage of the syntaxhighlighter plugin
-tipps_syntax_01 = coming soon ...
-tipps_syntax_02 =
-tipps_syntax_03 =
-
-title_tinymcelinks = TinyMCE Links
-title_changelog = Changelog
-
-info_htaccess = Attentin! We can't access the Addon subdirectories!<br /><br />Please check permissions on the following directories: <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{0}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{1}<br /><br />Both these directories need a .htaccess File. Your server is either not configured to use .htaccess files to protect directories or your permissions aren't set correctly. <br /><br />In REDAXO 3.2.x please change the following lines in the redaxo/include/.htaccess file:  AuthName "Zugriff auf IncludeDateien" (the quotes!)
+tinymce_modul_install = <a href="index.php?page=tinymce&amp;subpage=&amp;install=1">Install module "{0}"</a>
+tinymce_modul_added = Module "{0}" has been created!
+tinymce_modul_update = <a href="index.php?page=tinymce&amp;subpage=&amp;install=1&amp;modul_id={1}">Update existing module "{0}"</a>
+tinymce_modul_updated = Module "{0}" has been updated!

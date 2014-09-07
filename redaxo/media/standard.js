@@ -1,8 +1,8 @@
-/* 
+/*
  REDAXO JavaScript library
- @package redaxo4 
+ @package redaxo4
  @version svn:$Id$
- */ 
+ */
 
 // -------------------------------------------------------------------------------------------------------------------
 
@@ -62,11 +62,11 @@ function makeWinObj(name,url,posx,posy,width,height,extra)
 
         this.name=name;
         this.url=url;
-        this.obj=window.open(url,name,'width='+width+',height='+height+', ' + extra);
+        this.obj=window.open(url,name,'left='+posx+',top='+posy+',width='+width+',height='+height+', ' + extra);
 
         // alert("x: "+posx+" | posy: "+posy);
 
-        this.obj.moveTo(posx,posy);
+        // this.obj.moveTo(posx,posy);
         this.obj.focus();
 
         return this;
@@ -134,12 +134,12 @@ if (opener != null)
 
 // -------------------------------------------------------------------------------------------------------------------
 
-function newPoolWindow(link) 
+function newPoolWindow(link)
 {
     newWindow( 'rexmediapopup'+(winObjCounter+1), link, 800,600,',status=yes,resizable=yes');
 }
 
-function newLinkMapWindow(link) 
+function newLinkMapWindow(link)
 {
     newWindow( 'linkmappopup', link, 800,600,',status=yes,resizable=yes');
 }
@@ -148,7 +148,7 @@ function openMediaDetails(id, file_id, file_category_id)
 {
   if (typeof(id) == 'undefined')
   {
-    id = '';  
+    id = '';
   }
   newPoolWindow('index.php?page=mediapool&subpage=detail&opener_input_field='+ id + '&file_id=' + file_id + '&file_category_id=' + file_category_id);
 }
@@ -157,7 +157,7 @@ function openMediaPool(id)
 {
   if (typeof(id) == 'undefined')
   {
-    id = '';  
+    id = '';
   }
   newPoolWindow('index.php?page=mediapool&opener_input_field='+ id);
 }
@@ -165,9 +165,9 @@ function openMediaPool(id)
 function openREXMedia(id,param)
 {
   var mediaid = 'REX_MEDIA_'+id;
-  if (typeof(param) == 'undefined')
+  if ( typeof(param) == 'undefined')
   {
-    param = '';  
+    param = '';
   }
   newPoolWindow('index.php?page=mediapool' + param + '&opener_input_field=' + mediaid);
 }
@@ -178,7 +178,7 @@ function viewREXMedia(id,param)
   var value = document.getElementById(mediaid).value;
   if ( typeof(param) == 'undefined')
   {
-    param = '';  
+    param = '';
   }
   if (value != '') {
     param = param + '&subpage=detail&file_name='+ value;
@@ -196,7 +196,7 @@ function addREXMedia(id,params)
 {
   if (typeof(params) == 'undefined')
   {
-    params = '';  
+    params = '';
   }
   newPoolWindow('index.php?page=mediapool&action=media_upload&subpage=add_file&opener_input_field=REX_MEDIA_'+id+params);
 }
@@ -205,11 +205,11 @@ function openLinkMap(id, param)
 {
   if (typeof(id) == 'undefined')
   {
-    id = '';  
+    id = '';
   }
   if (typeof(param) == 'undefined')
   {
-    param = '';  
+    param = '';
   }
   newLinkMapWindow('index.php?page=linkmap&opener_input_field=' + id + param);
 }
@@ -250,19 +250,9 @@ function deleteREXLink(id)
 function openREXMedialist(id,param)
 {
   var medialist = 'REX_MEDIALIST_' + id;
-  var mediaselect = 'REX_MEDIALIST_SELECT_' + id;
-  var needle = new getObj(mediaselect);
-  var source = needle.obj;
-  var sourcelength = source.options.length;
   if ( typeof(param) == 'undefined')
   {
     param = '';
-  }
-  for (ii = 0; ii < sourcelength; ii++) {
-    if (source.options[ii].selected) {
-      param += '&subpage=detail&file_name='+ source.options[ii].value;
-      break;
-    }
   }
   newPoolWindow('index.php?page=mediapool'+ param +'&opener_input_field='+ medialist);
 }
@@ -292,7 +282,7 @@ function addREXMedialist(id,params)
 {
   if (typeof(params) == 'undefined')
   {
-    params = '';  
+    params = '';
   }
   newPoolWindow('index.php?page=mediapool&action=media_upload&subpage=add_file&opener_input_field=REX_MEDIALIST_'+id+params);
 }
@@ -316,10 +306,10 @@ function openREXLinklist(id, param)
   var needle = new getObj(linkselect);
   var source = needle.obj;
   var sourcelength = source.options.length;
-  
+
   if ( typeof(param) == 'undefined')
   {
-    param = '';  
+    param = '';
   }
 
   for (ii = 0; ii < sourcelength; ii++) {
@@ -328,7 +318,7 @@ function openREXLinklist(id, param)
       break;
     }
   }
-  
+
   newLinkMapWindow('index.php?page=linkmap&opener_input_field='+linklist+param);
 }
 
@@ -364,7 +354,7 @@ function deleteREX(id, i_list, i_select)
     source.options[position] = null;
     sourcelength--;
 
-    // Wenn das erste gelöscht wurde
+    // Wenn das erste gelÃ¶scht wurde
     if(position == 0)
     {
       // Und es gibt noch weitere,
@@ -396,8 +386,8 @@ function moveREX(id, i_list, i_select, direction)
   for (ii = 0; ii < sourcelength; ii++) {
 
     elements[ii] = new Array();
-    elements[ii]['value'] = source.options[ii].value; 
-    elements[ii]['title'] = source.options[ii].text; 
+    elements[ii]['value'] = source.options[ii].value;
+    elements[ii]['title'] = source.options[ii].text;
     was_selected[ii] = false;
 
   }
@@ -416,7 +406,7 @@ function moveREX(id, i_list, i_select, direction)
       }
     }
   }
-  
+
   if (direction == 'up') {
     for (ii = 0; ii < sourcelength; ii++) {
       was_moved[ii] = false;
@@ -446,7 +436,7 @@ function moveREX(id, i_list, i_select, direction)
       }
     }
   }
-  
+
   if (direction == 'bottom') {
     inserted = 0;
     for (ii = sourcelength-1; ii >= 0; ii--) {
@@ -455,7 +445,7 @@ function moveREX(id, i_list, i_select, direction)
         if (to > sourcelength) {
           to = sourcelength;
         }
-    
+
         elements = moveItem(elements, ii, to);
         was_selected[to] = true;
         inserted++;
@@ -493,7 +483,7 @@ function moveItem(arr, from, to)
   {
     return arr;
   }
-  
+
   tmp = arr[from];
   if (from > to)
   {
@@ -518,7 +508,7 @@ function checkInput(id)
     var input = result.obj;
     if(input != null)
     {
-      input.checked = 'checked'; 
+      input.checked = 'checked';
     }
   }
 }
@@ -532,7 +522,7 @@ function uncheckInput(id)
     var input = result.obj;
     if(input != null)
     {
-      input.checked = ''; 
+      input.checked = '';
     }
   }
 }
@@ -542,7 +532,7 @@ function uncheckInput(id)
 function toggleElement(id,display)
 {
    var needle;
-   
+
    if(typeof(id) != 'object')
    {
      needle = new getObj(id);
@@ -551,12 +541,12 @@ function toggleElement(id,display)
    {
      needle = id;
    }
-   
+
    if (typeof(display) == 'undefined')
    {
      display = needle.style.display == '' ? 'none' : '';
    }
-   
+
    needle.style.display = display;
    return display;
 }
@@ -564,7 +554,7 @@ function toggleElement(id,display)
 
 jQuery(function($){
 
-  
+
   // ------------------ Preview fuer REX_MEDIA_BUTTONS, REX_MEDIALIST_BUTTONS
   function rexShowMediaPreview() {
     var value, img_type;
@@ -579,29 +569,24 @@ jQuery(function($){
     }
 
     var div = $(".rex-media-preview", this);
-    
+
     var url;
     var width = 0;
     if($(this).hasClass("rex-widget-preview-image-manager"))
-    	url = '../index.php?rex_img_type='+ img_type +'&rex_img_file='+ value;
+      url = './index.php?rex_img_type='+ img_type +'&rex_img_file='+ value;
     else if($(this).hasClass("rex-widget-preview-image-resize"))
-    	url = '../index.php?rex_resize=246a__'+ value;
+      url = './index.php?rex_resize=246a__'+ value;
     else
     {
       url = '../files/'+ value;
       width = 246;
     }
-    
-    if(value && value.length != 0 && 
-      (
-        value.substr(-3) == "png" ||
-        value.substr(-3) == "gif" ||
-        value.substr(-3) == "bmp" ||
-        value.substr(-3) == "jpg" ||
-        value.substr(-4) == "jpeg")
-      )
+
+    ext = value.split('.').pop();
+
+    if(value && value.length != 0 && $.inArray(ext, rex_imageExtensions))
     {
-      // img tag nur einmalig einfügen, ggf erzeugen wenn nicht vorhanden
+      // img tag nur einmalig einfÃ¼gen, ggf erzeugen wenn nicht vorhanden
       var img = $('img', div);
       if(img.length == 0)
       {
@@ -611,7 +596,7 @@ jQuery(function($){
       img.attr('src', url);
       if (width != 0)
         img.attr('width', width);
-      
+
       div.slideDown("fast");
     }
     else
@@ -620,10 +605,10 @@ jQuery(function($){
     }
   };
 
-  // Medialist preview neu anzeigen, beim wechsel der auswahl  
+  // Medialist preview neu anzeigen, beim wechsel der auswahl
   $(".rex-widget-medialist.rex-widget-preview")
     .click(rexShowMediaPreview);
-    
+
   $(".rex-widget-media.rex-widget-preview, .rex-widget-medialist.rex-widget-preview")
     .bind("mousemove", rexShowMediaPreview)
     .bind("mouseleave", function() {
@@ -635,45 +620,46 @@ jQuery(function($){
   });
 
   // ------------------ Accesskey Navigation
-  var ENABLE_KEY_NAV = true;
-	
   $(document).keypress(function(event) {
-    if(!ENABLE_KEY_NAV) 
+    // return true if !rex_accesskeysEnabled or key is not 0-9 or a-z
+    // keycodes: 48 => '0', 57 => '9', 97 => 'a', 122 => 'z'
+    if (!rex_accesskeysEnabled || event.which < 48 || (event.which > 57 && event.which < 97) || event.which > 122){
       return true;
-    
-     var key = String.fromCharCode(event.which);
-     var haystack = $("input[accesskey="+ key +"]");
-     
-     if(haystack.size() > 0)
-     {
-       $(haystack.get(0)).click();
-       return false;
-     }
-     else
-     {
-       haystack = $("a[accesskey="+ key +"]");
-       
-       if(haystack.size() > 0)
-       {
-         var hit = $(haystack.get(0));
-         if(hit.attr("onclick") != undefined)
-           hit.click();
-         else if(hit.attr("href") != undefined && hit.attr("href") != "#")
-           document.location = hit.attr("href");
-           
-         return false;
-       }
-     }
+    }
+
+    var key = String.fromCharCode(event.which);
+    var haystack = $("input[accesskey="+ key +"]");
+
+    if(haystack.size() > 0)
+    {
+      $(haystack.get(0)).click();
+      return false;
+    }
+    else
+    {
+      haystack = $("a[accesskey="+ key +"]");
+
+      if(haystack.size() > 0)
+      {
+        var hit = $(haystack.get(0));
+        if(hit.attr("onclick") !== undefined)
+          hit.click();
+        else if(hit.attr("href") !== undefined && hit.attr("href") != "#")
+          document.location = hit.attr("href");
+
+        return false;
+      }
+    }
   });
-  
-  $(function() {
-    $("input,button,textarea,select,option")
-      .focus(function(event) {
-        ENABLE_KEY_NAV = false;
-      })
-      .blur(function(event) {
-        ENABLE_KEY_NAV = true;
-      });    
-  });
+
+  var last_state;
+  $(document)
+    .on("focus", "input,button,textarea,select,option", function(event) {
+      last_state = rex_accesskeysEnabled;
+      rex_accesskeysEnabled = false;
+    })
+    .on("blur", "input,button,textarea,select,option", function(event) {
+      rex_accesskeysEnabled = last_state;
+    });
 
 });

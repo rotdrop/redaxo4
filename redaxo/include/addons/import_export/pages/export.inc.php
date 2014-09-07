@@ -6,8 +6,11 @@
  * @version svn:$Id$
  */
 
-// Für größere Exports den Speicher für PHP erhöhen.
-@ini_set('memory_limit', '64M');
+// FÃ¼r grÃ¶ÃŸere Exports den Speicher fÃ¼r PHP erhÃ¶hen.
+if(rex_ini_get('memory_limit') < 67108864)
+{
+  @ini_set('memory_limit', '64M');
+}
 
 // ------- Addon Includes
 include_once $REX['INCLUDE_PATH'].'/addons/import_export/classes/class.tar.inc.php';
@@ -38,8 +41,11 @@ if ($impname != '')
     $impname = "";
 }
 
-if ($exportfilename == '')
-  $exportfilename = 'rex_'.$REX['VERSION'].'_'.date("Ymd");
+if ($exportfilename == '') {
+  $server = preg_replace('@^https?://|/.*|[^\w.-]@', '', $REX['SERVER']);
+  $exportfilename = strtolower($server).'_rex'.$REX['VERSION'].$REX['SUBVERSION'].$REX['MINORVERSION'].'_'.date("Ymd_Hi");
+}
+
 
 if ($function == 'export')
 {
@@ -48,6 +54,11 @@ if ($function == 'export')
   $exportfilename = strtolower($exportfilename);
   $exportfilename = stripslashes($exportfilename);
   $filename       = preg_replace('@[^\.a-z0-9_\-]@', '', $exportfilename);
+
+  // ---- multiple extension check
+  foreach($REX['MEDIAPOOL']['BLOCKED_EXTENSIONS'] as $ext){
+    $filename = str_replace($ext,'',$filename);
+  }
 
   if ($filename != $exportfilename)
   {
@@ -68,7 +79,7 @@ if ($function == 'export')
       while (file_exists($export_path.$filename.'_'.$i.$ext)) $i++;
       $filename = $filename.'_'.$i;
     }
-    
+
     if ($exporttype == 'sql')
     {
       // ------------------------------ FUNC EXPORT SQL
@@ -98,7 +109,7 @@ if ($function == 'export')
     {
       if ($exportdl)
       {
-      	while (ob_get_level()) ob_end_clean();
+        while (ob_get_level()) ob_end_clean();
         $filename = $filename.$ext;
         header("Content-type: $header");
         header("Content-Disposition: attachment; filename=$filename");
@@ -130,17 +141,17 @@ if ($warning != '')
 ?>
 
 <div class="rex-area">
-  
+
     <h3 class="rex-hl2"><?php echo $I18N->msg('im_export_export'); ?></h3>
-  
+
     <div class="rex-area-content">
       <p class="rex-tx1"><?php echo $I18N->msg('im_export_intro_export') ?></p>
-      
+
       <div class="rex-form" id="rex-form-export">
       <form action="index.php" enctype="multipart/form-data" method="post" >
         <fieldset class="rex-form-col-1">
           <legend><?php echo $I18N->msg('im_export_export'); ?></legend>
-          
+
           <div class="rex-form-wrapper">
             <input type="hidden" name="page" value="import_export" />
             <input type="hidden" name="function" value="export" />
@@ -168,7 +179,7 @@ else
                 <input class="rex-form-radio" type="radio" id="exporttype_files" name="exporttype" value="files"<?php echo $checkedfiles ?> />
                 <label for="exporttype_files"><?php echo $I18N->msg('im_export_file_export'); ?></label>
               </p>
-              
+
               <div class="rex-form-checkboxes">
                 <div class="rex-form-checkboxes-wrapper">
 <?php

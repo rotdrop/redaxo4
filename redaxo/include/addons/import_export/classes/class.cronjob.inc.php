@@ -1,15 +1,16 @@
 <?php
 
 class rex_cronjob_export extends rex_cronjob
-{ 
+{
   /*public*/ function execute()
   {
     global $REX;
-    
+
     include_once $REX['INCLUDE_PATH'] .'/addons/import_export/functions/function_import_export.inc.php';
     include_once $REX['INCLUDE_PATH'] .'/addons/import_export/functions/function_import_folder.inc.php';
-    
-    $file = 'rex_'. $REX['VERSION'] .'_'. date("Ymd");
+
+    $server = preg_replace('@^https?://|/.*|[^\w.-]@', '', $REX['SERVER']);
+    $file = strtolower($server).'_rex'.$REX['VERSION'].$REX['SUBVERSION'].$REX['MINORVERSION'].'_'.date("Ymd_Hi");
     $dir = getImportDir() .'/';
     $ext = '.sql';
     if (file_exists($dir . $file . $ext))
@@ -26,7 +27,7 @@ class rex_cronjob_export extends rex_cronjob
     }
     return false;
   }
-  
+
   /*public*/ function getTypeName()
   {
     global $I18N;

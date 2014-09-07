@@ -14,7 +14,7 @@ class rex_login_sql extends rex_sql
   {
     parent::rex_sql($DBID);
   }
-  
+
   /*protected*/ function isValueOf($feld, $prop)
   {
     if ($prop == '')
@@ -48,7 +48,7 @@ class rex_login_sql extends rex_sql
       $callable = array($this, $perm);
       if(is_callable($callable))
       {
-        return call_user_func($callable); 
+        return call_user_func($callable);
       }
     }
     return $this->isValueOf('rights', $perm);
@@ -56,53 +56,53 @@ class rex_login_sql extends rex_sql
 
   /*public*/ function hasCategoryPerm($category_id, $depricatedSecondParam = null)
   {
-  	
-  	// 1. Volle Rechte auf direkte Kategorie, csw
-  	// 2. Leserechte, bei Kategorien "zwischen" main und eigener navi, aber nicht sichtbar, csr
-  	// 3. Volle Rechte, wenn Kategorie unterhalb eine vollen Rechte Kat
-  	
-  	if(	$this->isAdmin() || 
-  			$this->hasPerm('csw[0]') || 
-  			$this->hasPerm('csw[' . $category_id . ']')
-  		)
-  		return TRUE;
-  	
+
+    // 1. Volle Rechte auf direkte Kategorie, csw
+    // 2. Leserechte, bei Kategorien "zwischen" main und eigener navi, aber nicht sichtbar, csr
+    // 3. Volle Rechte, wenn Kategorie unterhalb eine vollen Rechte Kat
+
+    if(	$this->isAdmin() ||
+        $this->hasPerm('csw[0]') ||
+        $this->hasPerm('csw[' . $category_id . ']')
+      )
+      return TRUE;
+
     if($c = OOCategory::getCategoryById($category_id))
     {
       foreach($c->getPathAsArray() as $k)
       {
         if($this->hasPerm('csw[' . $k . ']'))
-          return TRUE;	
-	    }
+          return TRUE;
+      }
     }
 
     /*if(!$rw)
-  	{
-   		 if( $this->hasPerm('csr[' . $category_id . ']') )
-   		 	return TRUE;
-  	} */   
-    
+    {
+       if( $this->hasPerm('csr[' . $category_id . ']') )
+        return TRUE;
+    } */
+
     return FALSE;
   }
-  
-	/*public*/ function hasMediaCategoryPerm($category_id)
+
+  /*public*/ function hasMediaCategoryPerm($category_id)
   {
     return $this->isValueOf('rights', 'admin[]') ||
            $this->isValueOf('rights', 'media[0]') ||
            $this->isValueOf('rights', 'media[' . $category_id . ']');
   }
-  
-	/*public*/ function hasMediaPerm()
+
+  /*public*/ function hasMediaPerm()
   {
     return $this->isValueOf('rights', 'admin[]') ||
            $this->isValueOf('rights', 'media[0]') ||
-           strpos($this->getValue('rights'), '#media[') !== false || 
+           strpos($this->getValue('rights'), '#media[') !== false ||
            $this->isValueOf('rights', 'mediapool[]');
   }
-  
+
   /*public*/ function hasStructurePerm()
   {
-    return $this->isValueOf('rights', 'admin[]') || 
+    return $this->isValueOf('rights', 'admin[]') ||
            strpos($this->getValue("rights"), "#csw[") !== false /*||
            strpos($this->getValue("rights"), "#csr[") !== false*/;
   }
@@ -110,19 +110,19 @@ class rex_login_sql extends rex_sql
   /*public*/ function getMountpoints()
   {
     // csw[0] = alle kategorien, daher kein mountpoint
-		preg_match_all('|\#csw\[([1-9]+[0-9]*)\]+|U', $this->getValue("rights"), $return, PREG_PATTERN_ORDER);
-		return $return[1];
+    preg_match_all('|\#csw\[([1-9]+[0-9]*)\]+|U', $this->getValue("rights"), $return, PREG_PATTERN_ORDER);
+    return $return[1];
   }
-  
+
   /*public*/ function hasMountpoints()
   {
-  	if($this->isValueOf('rights', 'csw[0]') || $this->isValueOf('rights', 'admin[]'))
-  		return false;
-  	if(count($this->getMountpoints())>0)
-  		return true;
+    if($this->isValueOf('rights', 'csw[0]') || $this->isValueOf('rights', 'admin[]'))
+      return false;
+    if(count($this->getMountpoints())>0)
+      return true;
     return false;
   }
-  
+
   /*public*/ function getClangPerm()
   {
     global $REX;
@@ -143,18 +143,18 @@ class rex_login_sql extends rex_sql
     preg_match_all('|#'. preg_quote($perm, '|') .'\[([^\]]*)\]+|', $this->getValue("rights"), $return, PREG_PATTERN_ORDER);
     return $return[1];
   }
-  
+
   /**
-   * Gibt eine SQL Where Bedingung zurück, die eine Abfrage auf die rex_article Tabelle so
-   * begrenzt, sodas nur Datensätze zurückgegeben werden auf die der User rechte hat.
+   * Gibt eine SQL Where Bedingung zurÃ¼ck, die eine Abfrage auf die rex_article Tabelle so
+   * begrenzt, sodas nur DatensÃ¤tze zurÃ¼ckgegeben werden auf die der User rechte hat.
    */
   /*public*/ function getCategoryPermAsSql()
   {
     global $REX;
-    
+
     $whereCond = '';
-    
-    if( $this->isAdmin() || 
+
+    if( $this->isAdmin() ||
         $this->hasPerm('csw[0]'))
     {
       // vollzugriff ueberall
@@ -172,7 +172,7 @@ class rex_login_sql extends rex_sql
 
     return '('. $whereCond .')';
   }
-  
+
   /*public*/ function removePerm($perm)
   {
     $rights = preg_replace('|#'. preg_quote($perm, '|') .'\[([^\]]*)\]+|' , '', $this->getValue("rights"));
@@ -205,8 +205,26 @@ class rex_login
     $this->system_id = "default";
     $this->cache = false;
     $this->login_status = 0; // 0 = noch checken, 1 = ok, -1 = not ok
-    if (session_id() == "") 
-    	session_start();
+
+    self::startSession();
+  }
+
+  /**
+   * starts a http-session if not already started
+   */
+  public static function startSession()
+  {
+    if (session_id() == '') {
+      if (!@session_start()) {
+        $error = error_get_last();
+        if ($error) {
+          $message = $error['message'] .' in '. $error['file'] .' on line '. $error['line'];
+        } else {
+          $message = 'Unable to start session!';
+        }
+        trigger_error($message, E_USER_ERROR);
+      }
+    }
   }
 
   /**
@@ -228,7 +246,7 @@ class rex_login
 
   /**
    * Setzt eine eindeutige System Id, damit mehrere
-   * Sessions auf der gleichen Domain unterschieden werden können
+   * Sessions auf der gleichen Domain unterschieden werden kÃ¶nnen
    */
   /*public*/ function setSysID($system_id)
   {
@@ -261,7 +279,7 @@ class rex_login
   }
 
   /**
-   * Prüft, ob die aktuelle Session ausgeloggt ist
+   * PrÃ¼ft, ob die aktuelle Session ausgeloggt ist
    */
   /*public*/ function isLoggedOut()
   {
@@ -282,7 +300,7 @@ class rex_login
   /**
    * Setzt den LoginQuery
    *
-   * Dieser wird benutzt, um den eigentlichne Loginvorgang durchzuführen.
+   * Dieser wird benutzt, um den eigentlichne Loginvorgang durchzufÃ¼hren.
    * Hier wird das eingegebene Password und der Login eingesetzt.
    */
   /*public*/ function setLoginquery($login_query)
@@ -291,7 +309,7 @@ class rex_login
   }
 
   /**
-   * Setzt den Namen der Spalte, der die User-Id enthält
+   * Setzt den Namen der Spalte, der die User-Id enthÃ¤lt
    */
   /*public*/ function setUserID($uid)
   {
@@ -307,10 +325,10 @@ class rex_login
   }
 
   /**
-   * Prüft die mit setLogin() und setPassword() gesetzten Werte
-   * anhand des LoginQueries/UserQueries und gibt den Status zurück
+   * PrÃ¼ft die mit setLogin() und setPassword() gesetzten Werte
+   * anhand des LoginQueries/UserQueries und gibt den Status zurÃ¼ck
    *
-   * Gibt true zurück bei erfolg, sonst false
+   * Gibt true zurÃ¼ck bei erfolg, sonst false
    */
   /*public*/ function checkLogin()
   {
@@ -327,7 +345,7 @@ class rex_login
     {
       // LoginStatus: 0 = noch checken, 1 = ok, -1 = not ok
 
-      // checkLogin schonmal ausgeführt ? gecachte ausgabe erlaubt ?
+      // checkLogin schonmal ausgefÃ¼hrt ? gecachte ausgabe erlaubt ?
       if ($this->cache)
       {
         if($this->login_status > 0)
@@ -335,7 +353,7 @@ class rex_login
         elseif ($this->login_status < 0)
           return false;
       }
-		
+
 
       if ($this->usr_login != '')
       {
@@ -381,7 +399,7 @@ class rex_login
           }
           else
           {
-	          $this->message = $I18N->msg('login_session_expired');
+            $this->message = $I18N->msg('login_session_expired');
           }
         }
         else
@@ -391,7 +409,7 @@ class rex_login
       }
       else
       {
-        $this->message = $I18N->msg('login_welcome');
+        //$this->message = $I18N->msg('login_welcome');
         $ok = false;
       }
     }
@@ -422,14 +440,14 @@ class rex_login
   }
 
   /**
-   * Gibt einen Benutzer-Spezifischen Wert zurück
+   * Gibt einen Benutzer-Spezifischen Wert zurÃ¼ck
    */
   /*public*/ function getValue($value, $default = NULL)
   {
-  	if($this->USER)
-    	return $this->USER->getValue($value);
-    	
-  	return $default;
+    if($this->USER)
+      return $this->USER->getValue($value);
+
+    return $default;
   }
 
   /**
@@ -441,7 +459,7 @@ class rex_login
   }
 
   /**
-   * Verschlüsselt den übergebnen String, falls eine Password-Funktion gesetzt ist.
+   * VerschlÃ¼sselt den Ã¼bergebnen String, falls eine Password-Funktion gesetzt ist.
    */
   /*protected*/ function encryptPassword($psw)
   {
@@ -460,7 +478,7 @@ class rex_login
   }
 
   /**
-   * Gibt den Wert einer Session-Variable zurück
+   * Gibt den Wert einer Session-Variable zurÃ¼ck
    */
   /*public*/ function getSessionVar($varname, $default = '')
   {
@@ -475,7 +493,7 @@ class rex_login
    */
   /*public*/ function sessionFixation()
   {
-    // 1. parameter ist erst seit php5.1 verfügbar
+    // 1. parameter ist erst seit php5.1 verfÃ¼gbar
     if (version_compare(phpversion(), '5.1.0', '>=') == 1)
     {
       session_regenerate_id(true);
@@ -522,7 +540,7 @@ class rex_backend_login extends rex_login
       {
         $this->sessionFixation();
         $fvs->setQuery('UPDATE '.$this->tableName.' SET login_tries=0, lasttrydate='.time().', session_id="'. session_id() .'" WHERE login="'. $this->usr_login .'" LIMIT 1');
-        
+
         if($fvs->hasError())
           return $fvs->getError();
       }
@@ -533,7 +551,7 @@ class rex_backend_login extends rex_login
       if($this->usr_login != '')
       {
         $fvs->setQuery('UPDATE '.$this->tableName.' SET login_tries=login_tries+1,session_id="",lasttrydate='.time().' WHERE login="'. $this->usr_login .'" LIMIT 1');
-        
+
         if($fvs->hasError())
           return $fvs->getError();
       }
@@ -549,12 +567,12 @@ class rex_backend_login extends rex_login
 
     return $check;
   }
-  
+
   /*public*/ function getLanguage()
-	{
-	  global $REX;
-	  
-		if (preg_match_all('@#be_lang\[([^\]]*)\]#@' , $this->getValue("rights"), $matches))
+  {
+    global $REX;
+
+    if (preg_match_all('@#be_lang\[([^\]]*)\]#@' , $this->getValue("rights"), $matches))
     {
       foreach ($matches[1] as $match)
       {
@@ -562,43 +580,43 @@ class rex_backend_login extends rex_login
       }
     }
     return $REX['LANG'];
-	}
+  }
 
-	/*public*/ function getStartpage()
-	{
-	  global $REX;
-	  
-  	if (preg_match_all('@#startpage\[([^\]]*)\]#@' , $this->getValue("rights"), $matches))
-  	{
-    	foreach ($matches[1] as $match)
-    	{
-      	return $match;
-    	}
-  	}
-  	return $REX['START_PAGE'];
-	}
+  /*public*/ function getStartpage()
+  {
+    global $REX;
+
+    if (preg_match_all('@#startpage\[([^\]]*)\]#@' , $this->getValue("rights"), $matches))
+    {
+      foreach ($matches[1] as $match)
+      {
+        return $match;
+      }
+    }
+    return $REX['START_PAGE'];
+  }
 }
 
 /**
- * Prüft, ob der aktuelle Benutzer im Backend eingeloggt ist.
- * 
+ * PrÃ¼ft, ob der aktuelle Benutzer im Backend eingeloggt ist.
+ *
  * Diese Funktion kann auch aus dem Frontend heraus verwendet werden.
  */
 function rex_hasBackendSession()
 {
   global $REX;
-  
+
   if(!isset($_SESSION))
     return false;
-    
+
   if(!isset($REX))
     return false;
-    
+
   if(!isset($REX['INSTNAME']))
     return false;
-    
+
   if(!isset($_SESSION[$REX['INSTNAME']]))
     return false;
-    
+
   return $_SESSION[$REX['INSTNAME']]['UID'] > 0;
 }

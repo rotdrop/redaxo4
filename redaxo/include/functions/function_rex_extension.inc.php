@@ -6,12 +6,16 @@
  * @version svn:$Id$
  */
 
+define('REX_EXTENSION_EARLY', -1);
+define('REX_EXTENSION_NORMAL', 0);
+define('REX_EXTENSION_LATE', 1);
+
 /**
  * Definiert einen Extension Point
  *
  * @param $extensionPoint Name des ExtensionPoints
  * @param $subject Objekt/Variable die beeinflusst werden soll
- * @param $params Parameter für die Callback-Funktion
+ * @param $params Parameter fÃ¼r die Callback-Funktion
  */
 function rex_register_extension_point($extensionPoint, $subject = '', $params = array (), $read_only = false)
 {
@@ -23,35 +27,41 @@ function rex_register_extension_point($extensionPoint, $subject = '', $params = 
     $params = array ();
   }
 
-  // Name des EP als Parameter mit übergeben
+  // Name des EP als Parameter mit Ã¼bergeben
   $params['extension_point'] = $extensionPoint;
 
   if (isset ($REX['EXTENSIONS'][$extensionPoint]) && is_array($REX['EXTENSIONS'][$extensionPoint]))
   {
     $params['subject'] = $subject;
-    if ($read_only)
+    foreach (array(REX_EXTENSION_EARLY, REX_EXTENSION_NORMAL, REX_EXTENSION_LATE) as $level)
     {
-      foreach ($REX['EXTENSIONS'][$extensionPoint] as $ext)
+      if (isset($REX['EXTENSIONS'][$extensionPoint][$level]) && is_array($REX['EXTENSIONS'][$extensionPoint][$level]))
       {
-        $func = $ext[0];
-        $local_params = array_merge($params, $ext[1]);
-        rex_call_func($func, $local_params);
-      }
-    }
-    else
-    {
-      foreach ($REX['EXTENSIONS'][$extensionPoint] as $ext)
-      {
-        $func = $ext[0];
-        $local_params = array_merge($params, $ext[1]);
-        $temp = rex_call_func($func, $local_params);
-        // Rückgabewert nur auswerten wenn auch einer vorhanden ist
-        // damit $params['subject'] nicht verfälscht wird
-        // null ist default Rückgabewert, falls kein RETURN in einer Funktion ist
-        if($temp !== null)
+        if ($read_only)
         {
-          $result = $temp;
-          $params['subject'] = $result;
+          foreach ($REX['EXTENSIONS'][$extensionPoint][$level] as $ext)
+          {
+            $func = $ext[0];
+            $local_params = array_merge($params, $ext[1]);
+            rex_call_func($func, $local_params);
+          }
+        }
+        else
+        {
+          foreach ($REX['EXTENSIONS'][$extensionPoint][$level] as $ext)
+          {
+            $func = $ext[0];
+            $local_params = array_merge($params, $ext[1]);
+            $temp = rex_call_func($func, $local_params);
+            // RÃ¼ckgabewert nur auswerten wenn auch einer vorhanden ist
+            // damit $params['subject'] nicht verfÃ¤lscht wird
+            // null ist default RÃ¼ckgabewert, falls kein RETURN in einer Funktion ist
+            if($temp !== null)
+            {
+              $result = $temp;
+              $params['subject'] = $result;
+            }
+          }
         }
       }
     }
@@ -64,18 +74,19 @@ function rex_register_extension_point($extensionPoint, $subject = '', $params = 
  *
  * @param $extension Name des ExtensionPoints
  * @param $function Name der Callback-Funktion
- * @param [$params] Array von zusätzlichen Parametern
+ * @param $params Array von zusÃ¤tzlichen Parametern
+ * @param $level AusfÃ¼hrungslevel (REX_EXTENSION_EARLY, REX_EXTENSION_NORMAL oder REX_EXTENSION_LATE)
  */
-function rex_register_extension($extensionPoint, $callable, $params = array())
+function rex_register_extension($extensionPoint, $callable, $params = array(), $level = REX_EXTENSION_NORMAL)
 {
   global $REX;
 
   if(!is_array($params)) $params = array();
-  $REX['EXTENSIONS'][$extensionPoint][] = array($callable, $params);
+  $REX['EXTENSIONS'][$extensionPoint][(int) $level][] = array($callable, $params);
 }
 
 /**
- * Prüft ob eine extension für den angegebenen Extension Point definiert ist
+ * PrÃ¼ft ob eine extension fÃ¼r den angegebenen Extension Point definiert ist
  *
  * @param $extensionPoint Name des ExtensionPoints
  */
@@ -87,7 +98,7 @@ function rex_extension_is_registered($extensionPoint)
 }
 
 /**
- * Gibt ein Array mit Namen von Extensions zurück, die am angegebenen Extension Point definiert wurden
+ * Gibt ein Array mit Namen von Extensions zurÃ¼ck, die am angegebenen Extension Point definiert wurden
  *
  * @param $extensionPoint Name des ExtensionPoints
  */
@@ -105,7 +116,7 @@ function rex_get_registered_extensions($extensionPoint)
  * Aufruf einer Funtion (Class-Member oder statische Funktion)
  *
  * @param $function Name der Callback-Funktion
- * @param $params Parameter für die Funktion
+ * @param $params Parameter fÃ¼r die Funktion
  *
  * @example
  *   rex_call_func( 'myFunction', array( 'Param1' => 'ab', 'Param2' => 12))
@@ -121,7 +132,11 @@ function rex_call_func($function, $params, $parseParamsAsArray = true)
 {
   $func = '';
 
-  if (is_string($function) && strlen($function) > 0)
+  if (is_callable($function))
+  {
+    $func = $function;
+  }
+  elseif (is_string($function) && strlen($function) > 0)
   {
     // static class method
     if (strpos($function, '::') !== false)
@@ -155,14 +170,14 @@ function rex_call_func($function, $params, $parseParamsAsArray = true)
     trigger_error('rexCallFunc: Using of an unexpected function var "'.$function.'"!');
   }
 
-	if($parseParamsAsArray === true)
-	{
-		// Alle Parameter als ein Array übergeben
-		// funktion($params);
-	  return call_user_func($func, $params);
-	}
-	// Jeder index im Array ist ein Parameter
-	// funktion($params[0], $params[1], $params[2],...);
+  if($parseParamsAsArray === true)
+  {
+    // Alle Parameter als ein Array Ã¼bergeben
+    // funktion($params);
+    return call_user_func($func, $params);
+  }
+  // Jeder index im Array ist ein Parameter
+  // funktion($params[0], $params[1], $params[2],...);
   return call_user_func_array($func, $params);
 }
 

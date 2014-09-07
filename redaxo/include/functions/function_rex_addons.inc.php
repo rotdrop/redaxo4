@@ -10,10 +10,10 @@
 function rex_addons_folder($addon = null)
 {
   global $REX;
-  
+
   if(!is_null($addon))
     return $REX['INCLUDE_PATH'] .DIRECTORY_SEPARATOR. 'addons' .DIRECTORY_SEPARATOR. $addon .DIRECTORY_SEPARATOR;
-  
+
   return $REX['INCLUDE_PATH']. DIRECTORY_SEPARATOR. 'addons' .DIRECTORY_SEPARATOR;
 }
 
@@ -78,6 +78,13 @@ function rex_install_prepare_query($qry)
   $qry = str_replace('%TIME%', time(), $qry);
   $qry = str_replace('%TABLE_PREFIX%', $REX['TABLE_PREFIX'], $qry);
   $qry = str_replace('%TEMP_PREFIX%', $REX['TEMP_PREFIX'], $qry);
+
+  $qry = trim($qry);
+
+  if(strpos($qry, 'CREATE TABLE') === 0 AND !strpos($qry, 'DEFAULT CHARSET'))
+  {
+    $qry .= ' DEFAULT CHARSET=utf8';
+  }
 
   return $qry;
 }
@@ -262,7 +269,7 @@ function rex_read_sql_dump($file)
  * Sucht innerhalb des $REX['ADDON']['page'] Array rekursiv nach der page
  * $needle
  *
- * Gibt bei erfolgreicher Suche den Namen des Addons zurück, indem die page
+ * Gibt bei erfolgreicher Suche den Namen des Addons zurÃ¼ck, indem die page
  * gefuden wurde, sonst false
  */
 function rex_search_addon_page($needle, $haystack = null)

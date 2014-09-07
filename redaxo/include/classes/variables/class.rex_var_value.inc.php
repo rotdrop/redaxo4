@@ -22,7 +22,17 @@ class rex_var_value extends rex_var
     $values = rex_request('VALUE', 'array');
     for ($i = 1; $i < 21; $i++)
     {
-      $value = isset($values[$i]) ? stripslashes($values[$i]) : '';
+      $value = '';
+      if(isset($values[$i])){
+        if(is_array($values[$i])) {
+          foreach($values[$i] as $k => $v){
+            $values[$i][$k] = stripslashes($values[$i][$k]);
+          }
+          $value = serialize($values[$i]);
+        } else {
+          $value = stripslashes($values[$i]);
+        }
+      }
 
       $REX_ACTION['VALUE'][$i] = $value;
     }
@@ -96,7 +106,7 @@ class rex_var_value extends rex_var
   }
 
   /**
-   * Wert für die Ausgabe
+   * Wert fÃ¼r die Ausgabe
    */
   /*private*/ function _matchValue(& $sql, $content, $var, $escape = false, $nl2br = false, $stripPHP = false, $booleanize = false)
   {
@@ -106,7 +116,7 @@ class rex_var_value extends rex_var
     {
       list ($param_str, $args) = $match;
       list ($id, $args) = $this->extractArg('id', $args, 0);
-      
+
       if ($id > 0 && $id < 21)
       {
         $replace = $this->getValue($sql, 'value' . $id);

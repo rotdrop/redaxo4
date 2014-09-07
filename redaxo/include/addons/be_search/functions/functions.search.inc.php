@@ -2,7 +2,7 @@
 
 /**
  * Hebt einen Suchtreffer $neelde im Suchergebnis $string hervor
- * 
+ *
  * @param $params
  */
 function rex_a256_highlight_hit($string, $needle)
@@ -16,17 +16,17 @@ function rex_a256_highlight_hit($string, $needle)
 
 /**
  * Bindet ggf extensions ein
- * 
+ *
  * @param $params Extension-Point Parameter
  */
 function rex_a256_extensions_handler($params)
 {
   global $REX;
-  
+
   $page = $params['subject'];
-  
+
   rex_register_extension('PAGE_HEADER', 'rex_be_search_css_add');
-  
+
   // Include Extensions
   if($page == 'structure')
   {
@@ -47,18 +47,19 @@ function rex_a256_extensions_handler($params)
 }
 
 /**
- * Fügt die benötigen Stylesheets ein
- * 
+ * FÃ¼gt die benÃ¶tigen Stylesheets ein
+ *
  * @param $params Extension-Point Parameter
  */
 function rex_be_search_css_add($params)
 {
+  global $REX;
   $addon = 'be_search';
-  
+
   $params['subject'] .= "\n  ".
-    '<link rel="stylesheet" type="text/css" href="../files/addons/'.$addon.'/be_search.css" />';
+    '<link rel="stylesheet" type="text/css" href="../'.$REX['MEDIA_ADDON_DIR'].'/'.$addon.'/be_search.css" />';
   $params['subject'] .= "\n  ".
-    '<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="../files/addons/'.$addon.'/be_search_ie_lte_7.css" /><![endif]-->';
-  
+    '<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="../'.$REX['MEDIA_ADDON_DIR'].'/'.$addon.'/be_search_ie_lte_7.css" /><![endif]-->';
+
   return $params['subject'];
 }

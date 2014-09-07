@@ -38,7 +38,7 @@ function rex_absPath($rel_path, $rel_to_current = false)
 }
 
 /**
- * Prüfen ob ein/e Datei/Ordner beschreibbar ist
+ * PrÃ¼fen ob ein/e Datei/Ordner beschreibbar ist
  *
  * @access public
  * @param string $item Datei oder Verzeichnis
@@ -88,7 +88,7 @@ function _rex_is_writable_info($is_writable, $item = '')
 
 function _rex_is_writable($item)
 {
-  // Fehler unterdrücken, falls keine Berechtigung
+  // Fehler unterdrÃ¼cken, falls keine Berechtigung
   if (@ is_dir($item))
   {
     if (!@ is_writable($item . '/.'))
@@ -96,7 +96,7 @@ function _rex_is_writable($item)
       return 1;
     }
   }
-  // Fehler unterdrücken, falls keine Berechtigung
+  // Fehler unterdrÃ¼cken, falls keine Berechtigung
   elseif (@ is_file($item))
   {
     if (!@ is_writable($item))
@@ -127,11 +127,11 @@ function rex_setAttributes($name,$value,$content)
 }
 
 /**
- * Gibt den nächsten freien Tabindex zurück.
+ * Gibt den nÃ¤chsten freien Tabindex zurÃ¼ck.
  * Der Tabindex ist eine stetig fortlaufende Zahl,
- * welche die Priorität der Tabulatorsprünge des Browsers regelt.
+ * welche die PrioritÃ¤t der TabulatorsprÃ¼nge des Browsers regelt.
  *
- * @return integer nächster freier Tabindex
+ * @return integer nÃ¤chster freier Tabindex
  */
 function rex_tabindex($html = true)
 {
@@ -159,19 +159,19 @@ function array_insert($array, $index, $value)
 function rex_message($message, $cssClass, $sorround_tag)
 {
   $return = '';
-  
+
   $return = '<div class="rex-message"><'. $sorround_tag .' class="'. $cssClass .'">';
-  
+
   if ($sorround_tag != 'p')
     $return .= '<p>';
-    
+
   $return .= '<span>'. $message .'</span>';
-  
+
   if ($sorround_tag != 'p')
     $return .= '</p>';
-    
+
   $return .= '</'. $sorround_tag .'></div>';
-  
+
   return $return;
 }
 
@@ -223,7 +223,7 @@ function rex_accesskey($title, $key)
 {
   global $REX;
 
-  if($REX['USER']->hasPerm('accesskeys[]'))
+  if($key && $REX['USER']->hasPerm('accesskeys[]'))
     return ' accesskey="'. $key .'" title="'. $title .' ['. $key .']"';
 
   return ' title="'. $title .'"';
@@ -251,7 +251,7 @@ function rex_ini_get($val)
 }
 
 /**
- * Übersetzt den text $text, falls dieser mit dem prefix "translate:" beginnt.
+ * Ãœbersetzt den text $text, falls dieser mit dem prefix "translate:" beginnt.
  */
 function rex_translate($text, $I18N_Catalogue = null, $use_htmlspecialchars = true)
 {
@@ -261,7 +261,7 @@ function rex_translate($text, $I18N_Catalogue = null, $use_htmlspecialchars = tr
 
     if(!$I18N)
       $I18N = rex_create_lang($REX['LANG']);
-      
+
     if(!$I18N)
       trigger_error('Unable to create language "'. $REX['LANG'] .'"', E_USER_ERROR);
 
@@ -288,7 +288,7 @@ function rex_redirect($article_id, $clang = '', $params = array())
 {
   global $REX;
 
-  // Alle OBs schließen
+  // Alle OBs schlieÃŸen
   while(@ob_end_clean());
 
   $divider = '&';
@@ -299,7 +299,7 @@ function rex_redirect($article_id, $clang = '', $params = array())
 
 /**
  * Trennt einen String an Leerzeichen auf.
- * Dabei wird beachtet, dass Strings in " zusammengehören
+ * Dabei wird beachtet, dass Strings in " zusammengehÃ¶ren
  */
 function rex_split_string($string)
 {
@@ -352,7 +352,7 @@ function rex_split_string($string)
 
       $var_name = $variable[0];
       $var_value = $variable[1];
-      
+
       if ($var_value == $spacer)
       {
         $var_value = array_shift($quoted);
@@ -381,23 +381,23 @@ function rex_get_file_contents($path)
 
 function rex_replace_dynamic_contents($path, $content)
 {
-  if($fcontent = rex_get_file_contents($path))
+  if(file_exists($path) && $fcontent = rex_get_file_contents($path))
   {
     $content = "// --- DYN\n". trim($content) ."\n// --- /DYN";
-    $fcontent = preg_replace("@(\/\/.---.DYN.*\/\/.---.\/DYN)@s", $content, $fcontent);
-    return rex_put_file_contents($path, $fcontent);
+    $fcontent = preg_replace("@(\/\/.---.DYN.*\/\/.---.\/DYN)@s", $content, $fcontent, -1, $count);
+    return $count && rex_put_file_contents($path, $fcontent);
   }
   return false;
 }
 
 /**
  * Allgemeine funktion die eine Datenbankspalte fortlaufend durchnummeriert.
- * Dies ist z.B. nützlich beim Umgang mit einer Prioritäts-Spalte
- * 
+ * Dies ist z.B. nÃ¼tzlich beim Umgang mit einer PrioritÃ¤ts-Spalte
+ *
  * @param $tableName String Name der Datenbanktabelle
- * @param $priorColumnName Name der Spalte in der Tabelle, in der die Priorität (Integer) gespeichert wird
- * @param $whereCondition Where-Bedingung zur Einschränkung des ResultSets 
- * @param $orderBy Sortierung des ResultSets 
+ * @param $priorColumnName Name der Spalte in der Tabelle, in der die PrioritÃ¤t (Integer) gespeichert wird
+ * @param $whereCondition Where-Bedingung zur EinschrÃ¤nkung des ResultSets
+ * @param $orderBy Sortierung des ResultSets
  * @param $id_field Name des Primaerschluessels der Tabelle
  */
 function rex_organize_priorities($tableName, $priorColumnName, $whereCondition = '', $orderBy = '', $id_field='id')
@@ -418,13 +418,13 @@ function rex_organize_priorities($tableName, $priorColumnName, $whereCondition =
 //
 //  $sql = rex_sql::getInstance();
 //  $sql->setQuery($qry);
-  
+
   $qry = 'select * from '.$tableName;
   if($whereCondition != '')
     $qry .= ' WHERE '. $whereCondition;
   if($orderBy != '')
     $qry .= ' ORDER BY '. $orderBy;
-    
+
   $gu = rex_sql::factory();
   $gr = rex_sql::factory();
   $gr->setQuery($qry);
@@ -437,8 +437,7 @@ function rex_organize_priorities($tableName, $priorColumnName, $whereCondition =
 
 function rex_lang_is_utf8()
 {
-  global $REX;
-  return strpos($REX['LANG'], 'utf8') !== false;
+  return true;
 }
 
 // ------------------------------------- Allgemeine PHP Functions
@@ -475,7 +474,7 @@ function rex_highlight_string($string, $return = false)
   {
     return $s;
   }
-  echo $s;  
+  echo $s;
 }
 
 function rex_highlight_file($filename, $return = false)
@@ -485,7 +484,7 @@ function rex_highlight_file($filename, $return = false)
   {
     return $s;
   }
-  echo $s;  
+  echo $s;
 }
 
 // make objectcloning work for php4

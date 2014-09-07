@@ -13,6 +13,7 @@ if($PERMALL)
     while(($file = readdir($handle)) !== false)
     {
       if(!is_file($REX['MEDIAFOLDER'] .'/'. $file)) continue;
+      if(substr($file,0,1)=='.') continue; // ignore any system file matching ".*"
 
       // Tempfiles nicht synchronisieren
       if(substr($file, 0, strlen($REX['TEMP_PREFIX'])) != $REX['TEMP_PREFIX'])
@@ -41,18 +42,23 @@ if($PERMALL)
   {
     $sync_files = rex_post('sync_files', 'array');
     $ftitle     = rex_post('ftitle', 'string');
-    
+
     if($diff_count > 0)
     {
+      $info = array();
       foreach($sync_files as $file)
       {
-        // hier mit is_int, wg kompatibilität zu PHP < 4.2.0
+        // hier mit is_int, wg kompatibilitÃ¤t zu PHP < 4.2.0
         if(!is_int($key = array_search($file, $diff_files))) continue;
 
-        if(rex_mediapool_syncFile($file,$rex_file_category,$ftitle,'',''))
+        $sync_result = rex_mediapool_syncFile($file,$rex_file_category,$ftitle,'','',false,false);
+        if($sync_result['ok'] == 1)
         {
           unset($diff_files[$key]);
-          $info = $I18N->msg('pool_sync_files_synced');
+          $info[0] = '<b>' . $I18N->msg('pool_sync_files_synced') . '</b>';
+          if($sync_result['filename'] != $sync_result['old_filename']){
+            $info[] = $I18N->msg("pool_file_renamed",$sync_result['old_filename'],$sync_result['filename']);
+          }
         }else
         {
 
@@ -62,11 +68,11 @@ if($PERMALL)
       $diff_count = count($diff_files);
     }else
     {
- 
+
     }
   }elseif(rex_post('save', 'boolean'))
   {
-  	$warning = $I18N->msg('pool_file_not_found');
+    $warning = $I18N->msg('pool_file_not_found');
   }
 
   echo rex_mediapool_Syncform($rex_file_category);
@@ -82,6 +88,7 @@ if($PERMALL)
 
   if($diff_count > 0)
   {
+    natcasesort($diff_files);
     foreach($diff_files as $file)
     {
       echo '<div class="rex-form-row">

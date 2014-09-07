@@ -21,19 +21,27 @@ $EXPDIR         = rex_post('EXPDIR', 'array');
 
 if ($impname != '')
 {
-  $impname = str_replace("/", "", $impname);
+  $impname = basename($impname);
 
-  if ($function == "dbimport" && substr($impname, -4, 4) != ".sql")
+  if ($function == "dbimport" && substr($impname, -4, 4) == ".sql") {
+
+  } else if ($function == "fileimport" && substr($impname, -7, 7) == ".tar.gz") {
+
+  } else if ($function == "delete" && (substr($impname, -4, 4) == ".sql" || substr($impname, -7, 7) == ".tar.gz") ) {
+
+  } else {
     $impname = "";
-  elseif ($function == "fileimport" && substr($impname, -7, 7) != ".tar.gz")
-    $impname = "";
+
+  }
+
 }
 
 if ($exportfilename == '')
   $exportfilename = 'rex_'.$REX['VERSION'].'_'.date("Ymd");
 
-if ($function == "delete")
+if ($function == "delete" && $impname != '')
 {
+
   // ------------------------------ FUNC DELETE
   if (unlink(getImportDir().'/'.$impname));
   $info = $I18N->msg("im_export_file_deleted");
@@ -64,7 +72,7 @@ elseif ($function == "dbimport")
       $state = rex_a1_import_db($file_temp);
       $info = $state['message'];
 
-      // temp datei löschen
+      // temp datei lÃ¶schen
       if ($impname == "")
       {
         @ unlink($file_temp);
@@ -72,7 +80,7 @@ elseif ($function == "dbimport")
     }
     else
     {
-      $warning = $I18N->msg("im_export_file_could_not_be_uploaded")." ".$I18N->msg("im_export_you_have_no_write_permission_in", "addons/import_export/files/")." <br>";
+      $warning = $I18N->msg("im_export_file_could_not_be_uploaded")." ".$I18N->msg("im_export_you_have_no_write_permission_in", "addons/import_export/backup/")." <br>";
     }
   }
 
@@ -95,20 +103,20 @@ elseif ($function == "fileimport")
     {
       $file_temp = getImportDir().'/'.$impname;
     }
-    
+
     if ($impname != "" || @move_uploaded_file($_FILES['FORM']['tmp_name']['importfile'], $file_temp))
     {
       $return = rex_a1_import_files($file_temp);
-			if($return['state'])
-			{
-      	$info = $return['message'];
-			}
-			else
-			{
-				$warning = $return['message'];
-			}
+      if($return['state'])
+      {
+        $info = $return['message'];
+      }
+      else
+      {
+        $warning = $return['message'];
+      }
 
-      // temp datei löschen
+      // temp datei lÃ¶schen
       if ($impname == "")
       {
         @ unlink($file_temp);
@@ -116,7 +124,7 @@ elseif ($function == "fileimport")
     }
     else
     {
-      $warning = $I18N->msg("im_export_file_could_not_be_uploaded")." ".$I18N->msg("im_export_you_have_no_write_permission_in", "addons/import_export/files/")." <br>";
+      $warning = $I18N->msg("im_export_file_could_not_be_uploaded")." ".$I18N->msg("im_export_you_have_no_write_permission_in", "addons/import_export/backup/")." <br>";
     }
   }
 
@@ -134,22 +142,22 @@ if ($warning != '')
 
 <div class="rex-area">
     <h3 class="rex-hl2"><?php echo $I18N->msg('im_export_import'); ?></h3>
-    
+
     <div class="rex-area-content">
       <p class="rex-tx1"><?php echo $I18N->msg('im_export_intro_import') ?></p>
-      
+
       <div class="rex-form" id="rex-form-import-data">
         <form action="index.php" enctype="multipart/form-data" method="post" onsubmit="return confirm('<?php echo $I18N->msg('im_export_proceed_db_import') ?>')">
 
           <fieldset class="rex-form-col-1">
-          
+
             <legend><?php echo $I18N->msg('im_export_database'); ?></legend>
-						           
+
             <div class="rex-form-wrapper">
               <input type="hidden" name="page" value="import_export" />
-  						<input type="hidden" name="subpage" value="import" /> 
+              <input type="hidden" name="subpage" value="import" />
               <input type="hidden" name="function" value="dbimport" />
-              
+
               <div class="rex-form-row">
                 <p class="rex-form-file">
                   <label for="importdbfile"><?php echo $I18N->msg('im_export_database'); ?></label>
@@ -165,7 +173,7 @@ if ($warning != '')
           </fieldset>
         </form>
       </div>
-      
+
       <table class="rex-table" summary="<?php echo $I18N->msg('im_export_export_db_summary'); ?>">
         <caption><?php echo $I18N->msg('im_export_export_db_caption'); ?></caption>
         <colgroup>
@@ -183,9 +191,10 @@ if ($warning != '')
         <tbody>
 <?php
   $dir = getImportDir();
-  $folder = readImportFolder('.sql');
+  $files = readImportFolder('.sql');
+  sort($files);
 
-  foreach ($folder as $file)
+  foreach ($files as $file)
   {
     $filepath = $dir.'/'.$file;
     $filec = date('d.m.Y H:i', filemtime($filepath));
@@ -209,12 +218,12 @@ if ($warning != '')
         <form action="index.php" enctype="multipart/form-data" method="post" onsubmit="return confirm('<?php echo $I18N->msg('im_export_proceed_file_import') ?>')" >
           <fieldset class="rex-form-col-1">
             <legend><?php echo $I18N->msg('im_export_files'); ?></legend>
-            
+
             <div class="rex-form-wrapper">
               <input type="hidden" name="page" value="import_export" />
               <input type="hidden" name="subpage" value="import" />
               <input type="hidden" name="function" value="fileimport" />
-              
+
               <div class="rex-form-row">
                 <p class="rex-form-file">
                   <label for="importtarfile"><?php echo $I18N->msg('im_export_files'); ?></label>
@@ -248,9 +257,10 @@ if ($warning != '')
         <tbody>
 <?php
   $dir = getImportDir();
-  $folder = readImportFolder('.tar.gz');
+  $files = readImportFolder('.tar.gz');
+  sort($files);
 
-  foreach ($folder as $file)
+  foreach ($files as $file)
   {
     $filepath = $dir.'/'.$file;
     $filec = date('d.m.Y H:i', filemtime($filepath));
@@ -268,7 +278,7 @@ if ($warning != '')
         </tbody>
       </table>
     </div>
-  
- 
+
+
   <div class="rex-clearer"></div>
 </div><!-- END rex-area -->

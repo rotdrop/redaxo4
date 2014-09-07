@@ -277,7 +277,11 @@ div#rex-output div#rex-navi-page ul li a.rex-active,
 div.rex-title-row ul li a.rex-active,
 div.rex-content-header ul li a.rex-active,
 div.rex-content-header ul li span, 
-div.rex-navi-paginate ul li.rex-navi-paginate-page a.rex-active {
+div.rex-navi-paginate ul li.rex-navi-paginate-page a.rex-active,
+div.rex-info code,
+div.rex-info-block code,
+div.rex-warning code,
+div.rex-warning-block code {
 	color: #32353A;
 }
 
@@ -439,9 +443,13 @@ div#rex-linkmap div.rex-area-col-b ul li a {
 	background-position: 0px 50%;
 }
 
-.rex-info {
+.rex-info,
+.rex-info-block {
 	background-image: url(../media/excla_mark_green.gif);
 	background-position: 0% 50%;
+}
+.rex-info-block {
+    background-position: 0% -8px;
 }
 
 /*	File */
@@ -486,9 +494,13 @@ div#rex-title {
 	background-image: url(../media/logo.jpg);
 	background-position: 100% 50%;
 }
-.rex-warning {
-	background-image: url(../media/warning.gif);
-	background-position: 0% 50%;
+.rex-warning,
+.rex-warning-block {
+    background-image: url(../media/warning.gif);
+    background-position: 0% 50%;
+}
+.rex-warning-block {
+    background-position: 0% -8px;
 }
 
 
@@ -507,8 +519,8 @@ div#rex-navi-main ul li {
 	background-image: url(../media/pipe_c1.gif);
 	background-position: 0px 2px;
 }
-div#rex-navi-logout ul li.rex-navi-first, 
-div#rex-navi-main ul li.rex-navi-first {
+div#rex-navi-logout ul li:first-child, 
+div#rex-navi-main ul li:first-child {
 	background: none;
 }
 
@@ -883,8 +895,23 @@ body#rex-page-linkmap div#rex-redaxo-link,
 body#rex-page-mediapool div#rex-redaxo-link {
 	display: none;
 }
+div.rex-info code,
+div.rex-info-block code,
+div.rex-warning code,
+div.rex-warning-block code {
+	font-size: 1.3em;
+}
 
-
+.rex-message-content var {
+    font-style: normal;
+    font-weight: bold;
+}
+.rex-message-content var:before {
+    content: '"';
+}
+.rex-message-content var:after {
+    content: '"';
+}
 
 
 

@@ -19,7 +19,7 @@ function rex_send_file($file, $contentType, $environment = 'backend')
 {
   global $REX;
 
-  // Cachen für Dateien aktivieren
+  // Cachen fÃ¼r Dateien aktivieren
   $temp = $REX['USE_LAST_MODIFIED'];
   $REX['USE_LAST_MODIFIED'] = true;
 
@@ -35,21 +35,21 @@ function rex_send_file($file, $contentType, $environment = 'backend')
     $cacheKey,
     $environment);
 
-  // Setting zurücksetzen
+  // Setting zurÃ¼cksetzen
   $REX['USE_LAST_MODIFIED'] = $temp;
 }
 
 /**
  * Sendet eine ressource zum Client,
- * fügt ggf. HTTP1.1 cache headers hinzu
- * 
+ * fÃ¼gt ggf. HTTP1.1 cache headers hinzu
+ *
  * @param $content string Inhalt der Ressource
  * @param $sendcharset boolean TRUE, wenn der Charset mitgeschickt werden soll, sonst FALSE
  */
 function rex_send_resource($content, $sendcharset = TRUE, $lastModified = null, $etag = null)
 {
   global $REX;
-  
+
   if(!$etag)
   {
     $etag = md5($content);
@@ -58,16 +58,16 @@ function rex_send_resource($content, $sendcharset = TRUE, $lastModified = null, 
   {
     $lastModified = time();
   }
-  
+
   rex_send_content($content, $lastModified, $etag, $REX['REDAXO'] ? 'backend' : 'frontend', $sendcharset);
-  
+
 //  rex_send_content($content, $lastModified, $etag, $environment, $sendcharset = FALSE)
-  
+
 }
 
 /**
  * Sendet einen rex_article zum Client,
- * fügt ggf. HTTP1.1 cache headers hinzu
+ * fÃ¼gt ggf. HTTP1.1 cache headers hinzu
  *
  * @param $REX_ARTICLE rex_article Den zu sendenen Artikel
  * @param $content string Inhalt des Artikels
@@ -78,7 +78,12 @@ function rex_send_resource($content, $sendcharset = TRUE, $lastModified = null, 
 function rex_send_article($REX_ARTICLE, $content, $environment, $sendcharset = FALSE)
 {
   global $REX;
-  
+
+  // Cachen erlauben, nach revalidierung
+  // see http://xhtmlforum.de/35221-php-session-etag-header.html#post257967
+  session_cache_limiter('none');
+  header('Cache-Control: must-revalidate, proxy-revalidate, private');
+
   // ----- EXTENSION POINT
   $content = rex_register_extension_point( 'OUTPUT_FILTER', $content, array('environment' => $environment,'sendcharset' => $sendcharset));
 
@@ -92,7 +97,7 @@ function rex_send_article($REX_ARTICLE, $content, $environment, $sendcharset = F
   {
     $lastModified = $REX_ARTICLE->getValue('updatedate');
     $etag .= $REX_ARTICLE->getValue('pid');
-    
+
     $art_id = $REX_ARTICLE->getArticleId();
     if($art_id == $REX['NOTFOUND_ARTICLE_ID'] &&
        $art_id != $REX['START_ARTICLE_ID'])
@@ -115,7 +120,7 @@ function rex_send_article($REX_ARTICLE, $content, $environment, $sendcharset = F
 
 /**
  * Sendet den Content zum Client,
- * fügt ggf. HTTP1.1 cache headers hinzu
+ * fÃ¼gt ggf. HTTP1.1 cache headers hinzu
  *
  * @param $content string Inhalt des Artikels
  * @param $lastModified integer Last-Modified Timestamp
@@ -128,22 +133,17 @@ function rex_send_content($content, $lastModified, $etag, $environment, $sendcha
 {
   global $REX;
 
-  // Cachen erlauben, nach revalidierung
-  // see http://xhtmlforum.de/35221-php-session-etag-header.html#post257967
-  session_cache_limiter('none');
-  header('Cache-Control: must-revalidate, proxy-revalidate, private');
-    
   if($sendcharset)
   {
     global $I18N;
-    
+
     // Im Frontend gibts kein I18N
     if(!is_object($I18N))
       $I18N = rex_create_lang($REX['LANG']);
-    
+
     header('Content-Type: text/html; charset='.$I18N->msg('htmlcharset'));
   }
-  
+
   // ----- Last-Modified
   if($REX['USE_LAST_MODIFIED'] === 'true' || $REX['USE_LAST_MODIFIED'] == $environment)
     rex_send_last_modified($lastModified);
@@ -161,17 +161,17 @@ function rex_send_content($content, $lastModified, $etag, $environment, $sendcha
   if($REX['USE_MD5'] === 'true' || $REX['USE_MD5'] == $environment)
     rex_send_checksum(md5(preg_replace('@<!--DYN-->.*<!--/DYN-->@','', $content)));
 
-  // Evtl offene Db Verbindungen schließen
+  // Evtl offene Db Verbindungen schlieÃŸen
   rex_sql::disconnect(null);
 
   // content length schicken, damit der browser einen ladebalken anzeigen kann
   header('Content-Length: '. strlen($content));
-  
+
   echo $content;
 }
 
 /**
- * Prüft, ob sich dateien geändert haben
+ * PrÃ¼ft, ob sich dateien geÃ¤ndert haben
  *
  * XHTML 1.1: HTTP_IF_MODIFIED_SINCE feature
  *
@@ -199,7 +199,7 @@ function rex_send_last_modified($lastModified = null)
 }
 
 /**
- * Prüft ob sich der Inhalt einer Seite im Cache des Browsers befindet und
+ * PrÃ¼ft ob sich der Inhalt einer Seite im Cache des Browsers befindet und
  * verweisst ggf. auf den Cache
  *
  * XHTML 1.1: HTTP_IF_NONE_MATCH feature
@@ -227,7 +227,7 @@ function rex_send_etag($cacheKey)
 
 /**
  * Kodiert den Inhalt des Artikels in GZIP/X-GZIP, wenn der Browser eines der
- * Formate unterstützt
+ * Formate unterstÃ¼tzt
  *
  * XHTML 1.1: HTTP_ACCEPT_ENCODING feature
  *
@@ -247,7 +247,7 @@ function rex_send_gzip($content)
   {
     $encodings = array();
   }
-    
+
   if ((in_array('gzip', $encodings) || in_array('x-gzip', $encodings) || isset($_SERVER['---------------'])) && function_exists('ob_gzhandler') && !ini_get('zlib.output_compression'))
   {
     $enc = in_array('x-gzip', $encodings) ? 'x-gzip' : 'gzip';
@@ -265,7 +265,7 @@ function rex_send_gzip($content)
 
 /**
  * Sendet eine MD5 Checksumme als HTTP Header, damit der Browser validieren
- * kann, ob Übertragungsfehler aufgetreten sind
+ * kann, ob Ãœbertragungsfehler aufgetreten sind
  *
  * XHTML 1.1: HTTP_CONTENT_MD5 feature
  *

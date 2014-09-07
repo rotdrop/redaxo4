@@ -1,18 +1,18 @@
 <?php
 
 /**
- * Klassen zum erhalten der Rückwärtskompatibilität zu älteren REDAXO Versionen,
- * NICHT für ältere PHP Versionen!
+ * Klassen zum erhalten der RÃ¼ckwÃ¤rtskompatibilitÃ¤t zu Ã¤lteren REDAXO Versionen,
+ * NICHT fÃ¼r Ã¤ltere PHP Versionen!
  *
- * Dieser werden beim nächsten Versionssprung entfallen
+ * Dieser werden beim nÃ¤chsten Versionssprung entfallen
  * @version svn:$Id$
  */
 
 // rex_sql -> sql alias
-// Für < R3.3
+// FÃ¼r < R3.3
 class sql extends rex_sql
 {
-	var $select;
+  var $select;
 
   function sql($DBID = 1)
   {
@@ -32,16 +32,16 @@ class sql extends rex_sql
   }
 
   /**
-   * Setzt den Cursor des Resultsets auf die nächst höhere Stelle
+   * Setzt den Cursor des Resultsets auf die nÃ¤chst hÃ¶here Stelle
    * @see #next();
    */
   function nextValue()
   {
-  	$this->next();
+    $this->next();
   }
 
   /**
-   * Setzt den Cursor des Resultsets zurück zum Anfang
+   * Setzt den Cursor des Resultsets zurÃ¼ck zum Anfang
    */
   function resetCounter()
   {
@@ -66,7 +66,7 @@ class sql extends rex_sql
 }
 
 // rex_select -> select alias
-// Für < R3.3
+// FÃ¼r < R3.3
 class select extends rex_select
 {
 
@@ -78,61 +78,61 @@ class select extends rex_select
   ################ set multiple
   function multiple($mul)
   {
-  	$this->setMultiple($mul);
+    $this->setMultiple($mul);
   }
 
   ################ select extra
   function set_selectextra($extra)
   {
-  	foreach(rex_var::splitString($extra) as $name => $value)
-  	{
-  		$this->setAttribute($name, $value);
-  	}
+    foreach(rex_var::splitString($extra) as $name => $value)
+    {
+      $this->setAttribute($name, $value);
+    }
   }
 
   function out()
   {
-  	return $this->get();
+    return $this->get();
   }
 
   function set_name($name)
   {
-  	$this->setName($name);
+    $this->setName($name);
   }
 
   function set_id($id)
   {
-  	$this->setId($id);
+    $this->setId($id);
   }
 
   function set_size($size)
   {
-  	$this->setSize($size);
+    $this->setSize($size);
   }
 
   function set_selected($selected)
   {
-  	$this->setSelected($selected);
+    $this->setSelected($selected);
   }
 
   function reset_selected()
   {
-  	$this->resetSelected();
+    $this->resetSelected();
   }
 
   function set_style($style)
   {
-  	$this->setStyle($style);
+    $this->setStyle($style);
   }
 
   function add_option($name, $value, $id = 0, $re_id = 0)
   {
-  	$this->addOption($name, $value, $id, $re_id);
+    $this->addOption($name, $value, $id, $re_id);
   }
 }
 
 // rex_article -> article alias
-// Für < R3.3
+// FÃ¼r < R3.3
 class article extends rex_article{
 
   function article($article_id = null, $clang = null)
@@ -147,7 +147,7 @@ class article extends rex_article{
 // rex_showScripttime  -> showScripttime alias
 // rex_getCurrentTime  -> getCurrentTime alias
 // rex_startScripttime -> startScripttime alias
-// Für < R4.2
+// FÃ¼r < R4.2
 function showScripttime()
 {
   rex_showScriptTime();
@@ -164,31 +164,31 @@ function startScripttime()
 }
 
 // rex_getUrl -> getUrlById alias
-// Für < R3.1
+// FÃ¼r < R3.1
 function getUrlByid($id, $clang = "", $params = "")
 {
   return rex_getUrl($id, $clang, $params);
 }
 
 // rex_title -> title alias
-// Für < R3.2
+// FÃ¼r < R3.2
 function title($head, $subtitle = '', $styleclass = "grey", $width = '770px')
 {
   return rex_title($head, $subtitle, $styleclass, $width);
 }
 
 // rex_parseArticleName -> rex_parse_article_name
-// Für < R3.2
+// FÃ¼r < R3.2
 function rex_parseArticleName($name)
 {
   return rex_parse_article_name($name);
 }
 
 // rex_medien* -> rex_media*
-// Für < R4.2
+// FÃ¼r < R4.2
 function rex_medienpool_filename($FILENAME, $doSubindexing = true)
 {
-  return rex_mediapool_filename($FILENAME, $doSubindexing);  
+  return rex_mediapool_filename($FILENAME, $doSubindexing);
 }
 
 function rex_medienpool_saveMedia($FILE, $rex_file_category, $FILEINFOS, $userlogin = null, $doSubindexing = TRUE)
@@ -198,7 +198,7 @@ function rex_medienpool_saveMedia($FILE, $rex_file_category, $FILEINFOS, $userlo
 
 function rex_medienpool_updateMedia($FILE, &$FILEINFOS, $userlogin = null)
 {
-  return rex_mediapool_updateMedia($FILE, $FILEINFOS, $userlogin);  
+  return rex_mediapool_updateMedia($FILE, $FILEINFOS, $userlogin);
 }
 
 function rex_medienpool_syncFile($physical_filename,$category_id,$title,$filesize = null, $filetype = null, $doSubindexing = FALSE)
@@ -232,14 +232,14 @@ function rex_medienpool_Syncform($rex_file_category)
 }
 
 /**
- * Fügt einen rex_select Objekt die hierarchische Medienkategorien struktur
+ * FÃ¼gt einen rex_select Objekt die hierarchische Medienkategorien struktur
  * hinzu
  *
  * @param $select
  * @param $mediacat
  * @param $mediacat_ids
  * @param $groupName
- * 
+ *
  * @deprecated since REDAXO 4.3
  * @see rex_mediacategory_select
  */
@@ -265,14 +265,14 @@ function rex_mediapool_addMediacatOptions( &$select, &$mediacat, &$mediacat_ids,
 }
 
 /**
- * Fügt einen rex_select Objekt die hierarchische Medienkategorien struktur
- * hinzu unter berücksichtigung der Medienkategorierechte
+ * FÃ¼gt einen rex_select Objekt die hierarchische Medienkategorien struktur
+ * hinzu unter berÃ¼cksichtigung der Medienkategorierechte
  *
  * @param $select
  * @param $mediacat
  * @param $mediacat_ids
  * @param $groupName
- * 
+ *
  * @deprecated since REDAXO 4.3
  * @see rex_mediacategory_select
  */

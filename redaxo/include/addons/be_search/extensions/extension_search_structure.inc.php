@@ -133,7 +133,7 @@ function rex_a256_search_structure($params)
 
             $treeLabel = htmlspecialchars($treeLabel);
             $treeLabel = rex_a256_highlight_hit($treeLabel, $needle);
-          
+
             $s .= '<li>'. $prefix .'<a href="'. sprintf($structureUrl, $treeItem->getId(), $a256_clang, urlencode($a256_article_name)) .'">'. $treeLabel .' </a></li>';
           }
 
@@ -146,7 +146,7 @@ function rex_a256_search_structure($params)
 
           $label = htmlspecialchars($label);
           $label = rex_a256_highlight_hit($label, $needle);
-          
+
           $s .= '<li>'. $prefix .'<a href="'. sprintf($editUrl, $search->getValue('id'), $a256_clang, urlencode($a256_article_name)) .'">'. $label .' </a></li>';
 
           $search_result .= '<li><ul class="a256-search-hit">'. $s .'</ul></li>';
@@ -163,10 +163,13 @@ function rex_a256_search_structure($params)
 
   $select_name = 'category_id';
   $add_homepage = true;
-  if($mode == 'edit' || $mode == 'meta')
+  $article_id_input = '';
+  if($mode)
   {
     $select_name = 'article_id';
     $add_homepage = false;
+    $article_id_input = '
+        <input type="hidden" name="article_id" value="'. $article_id .'" />';
   }
 
   $category_select = new rex_category_select(false, false, true, $add_homepage);
@@ -181,31 +184,30 @@ function rex_a256_search_structure($params)
       <form action="index.php" method="post">
       <fieldset>
         <input type="hidden" name="page" value="'. $page .'" />
-        <input type="hidden" name="mode" value="'. $mode .'" />
-        <input type="hidden" name="category_id" value="'. $category_id .'" />
-        <input type="hidden" name="article_id" value="'. $article_id .'" />
+        <input type="hidden" name="mode" value="'. htmlspecialchars(stripslashes($mode)) .'" />
+        <input type="hidden" name="category_id" value="'. $category_id .'" />'. $article_id_input .'
         <input type="hidden" name="clang" value="'. $clang .'" />
         <input type="hidden" name="ctype" value="'. $ctype .'" />
         <input type="hidden" name="a256_clang" value="'. $clang .'" />
 
-		    <div class="rex-fl-lft">
-	        <label for="rex-a256-article-name">'. $I18N->msg('be_search_article_name') .'</label>
-    	    <input class="rex-form-text" type="text" name="a256_article_name" id="rex-a256-article-name" value="'. htmlspecialchars(stripslashes($a256_article_name)) .'"'. rex_tabindex() .' />
+        <div class="rex-fl-lft">
+          <label for="rex-a256-article-name">'. $I18N->msg('be_search_article_name') .'</label>
+          <input class="rex-form-text" type="text" name="a256_article_name" id="rex-a256-article-name" value="'. htmlspecialchars(stripslashes($a256_article_name)) .'"'. rex_tabindex() .' />
 
-        	<label for="rex-a256-article-id">'. $I18N->msg('be_search_article_id') .'</label>
-	        <input class="rex-form-text" type="text" name="a256_article_id" id="rex-a256-article-id"'. rex_tabindex() .' />
-    	    <input class="rex-form-submit" type="submit" name="a256_start_search" value="'. $I18N->msg('be_search_start') .'"'. rex_tabindex() .' />
-		    </div>
+          <label for="rex-a256-article-id">'. $I18N->msg('be_search_article_id') .'</label>
+          <input class="rex-form-text" type="text" name="a256_article_id" id="rex-a256-article-id"'. rex_tabindex() .' />
+          <input class="rex-form-submit" type="submit" name="a256_start_search" value="'. $I18N->msg('be_search_start') .'"'. rex_tabindex() .' />
+        </div>
 
-    		<div class="rex-fl-rght">
-    			<label for="rex-a256-category-id">'. $I18N->msg('be_search_quick_navi') .'</label>';
+        <div class="rex-fl-rght">
+          <label for="rex-a256-category-id">'. $I18N->msg('be_search_quick_navi') .'</label>';
 
-    			$category_select->setAttribute('tabindex', rex_tabindex(false));
+          $category_select->setAttribute('tabindex', rex_tabindex(false));
 
   $form .= $category_select->get() .'
-    			<noscript>
-    			  <input type="submit" name="a256_start_jump" value="'. $I18N->msg('be_search_jump_to_category') .'" />
-    			</noscript>
+          <noscript>
+            <input type="submit" name="a256_start_jump" value="'. $I18N->msg('be_search_jump_to_category') .'" />
+          </noscript>
         </div>
         </fieldset>
       </form>
@@ -216,7 +218,7 @@ function rex_a256_search_structure($params)
    <div class="rex-toolbar-content">
      '. $form .'
      '. $search_result .'
-	 <div class="rex-clearer"></div>
+   <div class="rex-clearer"></div>
    </div>
    </div>';
 

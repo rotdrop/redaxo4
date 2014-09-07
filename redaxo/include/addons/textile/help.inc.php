@@ -4,14 +4,14 @@
  * Textile Addon
  *
  * @author markus[dot]staab[at]redaxo[dot]de Markus Staab
- * 
+ *
  * @package redaxo4
  * @version svn:$Id$
  */
 
 ?>
 <p>
-Bringt die Möglichkeit in Modulen Textile Markup zu verwenden
+Bringt die MÃ¶glichkeit in Modulen Textile Markup zu verwenden
 
 <br /><br />
 

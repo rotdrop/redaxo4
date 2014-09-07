@@ -16,12 +16,13 @@ $func         = rex_request('func', 'string');
 $media_method = rex_request('media_method', 'string');
 $info         = rex_request('info', 'string');
 $warning      = rex_request('warning', 'string');
+$args         = rex_request('args', 'array');
 
 
 // -------------- Additional Args
 $arg_url = '';
 $arg_fields = '';
-foreach(rex_request('args', 'array') as $arg_name => $arg_value)
+foreach($args as $arg_name => $arg_value)
 {
   $arg_url .= '&amp;args['. urlencode($arg_name) .']='. urlencode($arg_value);
   $arg_fields .= '<input type="hidden" name="args['. $arg_name .']" value="'. htmlspecialchars($arg_value) .'" />'. "\n";
@@ -108,12 +109,12 @@ rex_title($title, $subline);
 // -------------- Messages
 if ($info != '')
 {
-  echo rex_info($info);
+  echo rex_info_block($info);
   $info = '';
 }
 if ($warning != '')
 {
-  echo rex_warning($warning);
+  echo rex_warning_block($warning);
   $warning = '';
 }
 
@@ -167,7 +168,7 @@ function selectMediaListArray(files)
             var sourcelength = source.options.length;
 
             var files = getObjArray(files);
-            
+
             for(var i = 0; i < files.length; i++)
             {
               if (files[i].checked)
@@ -189,13 +190,13 @@ function selectMediaListArray(files)
 
 function insertImage(src,alt)
 {
-  window.opener.insertImage('files/' + src, alt);
+  window.opener.insertImage('<?php echo $REX['MEDIA_DIR']; ?>/' + src, alt);
   self.close();
 }
 
 function insertLink(src)
 {
-  window.opener.insertFileLink('files/' + src);
+  window.opener.insertFileLink('<?php echo $REX['MEDIA_DIR']; ?>/' + src);
   self.close();
 }
 
@@ -209,13 +210,24 @@ function openPage(src)
 </script>
 <?php
 
-// -------------- Include Page
-switch($subpage)
-{
-  case 'add_file'  : $file = 'mediapool.upload.inc.php'; break;
-  case 'categories': $file = 'mediapool.structure.inc.php'; break;
-  case 'sync'      : $file = 'mediapool.sync.inc.php'; break;
-  default          : $file = 'mediapool.media.inc.php'; break;
-}
+$content = rex_register_extension_point('PAGE_MEDIAPOOL_OUTPUT', "",
+  array(
+    'subpage' => $subpage,
+  )
+);
 
-require $REX['INCLUDE_PATH'].'/pages/'.$file;
+if($content != "") {
+  echo $content;
+
+} else {
+  switch($subpage)
+  {
+    case 'add_file'  : $file = 'mediapool.upload.inc.php'; break;
+    case 'categories': $file = 'mediapool.structure.inc.php'; break;
+    case 'sync'      : $file = 'mediapool.sync.inc.php'; break;
+    default          : $file = 'mediapool.media.inc.php'; break;
+  }
+
+  require $REX['INCLUDE_PATH'].'/pages/'.$file;
+
+}

@@ -17,7 +17,7 @@ class rex_formatter
    * @param $format_type Formatierungstype
    * @param $format Format
    *
-   * Unterstützte Formatierugen:
+   * UnterstÃ¼tzte Formatierugen:
    *
    * - <Formatierungstype>
    *    + <Format>
@@ -46,7 +46,7 @@ class rex_formatter
    * - custom
    *    + formatiert den Wert anhand einer Benutzer definierten Callback Funktion
    */
-  function format($value, $format_type, $format)
+  static function format($value, $format_type, $format)
   {
     // Stringformatierung mit sprintf()
     if ($format_type == 'sprintf')
@@ -78,7 +78,7 @@ class rex_formatter
     {
       $value = rex_formatter::_formatUrl($value, $format);
     }
-    // String auf eine eine Länge abschneiden
+    // String auf eine eine LÃ¤nge abschneiden
     elseif ($format_type == 'truncate')
     {
       $value = rex_formatter::_formatTruncate($value, $format);
@@ -107,7 +107,7 @@ class rex_formatter
     return $value;
   }
 
-  function _formatSprintf($value, $format)
+  static function _formatSprintf($value, $format)
   {
     if ($format == '')
     {
@@ -116,7 +116,7 @@ class rex_formatter
     return sprintf($format, $value);
   }
 
-  function _formatDate($value, $format)
+  static function _formatDate($value, $format)
   {
     if ($format == '')
     {
@@ -126,7 +126,7 @@ class rex_formatter
     return date($format, $value);
   }
 
-  function _formatStrftime($value, $format)
+  static function _formatStrftime($value, $format)
   {
     global $I18N;
 
@@ -150,7 +150,7 @@ class rex_formatter
     return strftime($format, $value);
   }
 
-  function _formatNumber($value, $format)
+  static function _formatNumber($value, $format)
   {
     if (!is_array($format))
     {
@@ -158,24 +158,24 @@ class rex_formatter
     }
 
     // Kommastellen
-    if (empty ($format[0]))
+    if (!isset($format[0]))
     {
       $format[0] = 2;
     }
     // Dezimal Trennzeichen
-    if (empty ($format[1]))
+    if (!isset($format[1]))
     {
       $format[1] = ',';
     }
     // Tausender Trennzeichen
-    if (empty ($format[2]))
+    if (!isset($format[2]))
     {
       $format[2] = ' ';
     }
     return number_format($value, $format[0], $format[1], $format[2]);
   }
 
-  function _formatEmail($value, $format)
+  static function _formatEmail($value, $format)
   {
     if (!is_array($format))
     {
@@ -200,10 +200,10 @@ class rex_formatter
       }
     }
     // Url formatierung
-    return '<a href="mailto:'.$value.$format['params'].'"'.$format['attr'].'>'.$value.'</a>';
+    return '<a href="mailto:'.htmlspecialchars($value.$format['params']).'"'.$format['attr'].'>'.htmlspecialchars($value).'</a>';
   }
 
-  function _formatUrl($value, $format)
+  static function _formatUrl($value, $format)
   {
     if(empty($value))
       return '';
@@ -234,10 +234,10 @@ class rex_formatter
       $value = 'http://'.$value;
     }
 
-    return '<a href="'.$value.$format['params'].'"'.$format['attr'].'>'.$value.'</a>';
+    return '<a href="'.htmlspecialchars($value.$format['params']).'"'.$format['attr'].'>'.htmlspecialchars($value).'</a>';
   }
 
-  function _formatTruncate($value, $format)
+  static function _formatTruncate($value, $format)
   {
     if (!is_array($format))
       $format = array ();
@@ -257,12 +257,12 @@ class rex_formatter
     return truncate($value, $format['length'], $format['etc'], $format['break_words']);
   }
 
-  function _formatNl2br($value, $format)
+  static function _formatNl2br($value, $format)
   {
     return nl2br($value);
   }
 
-  function _formatCustom($value, $format)
+  static function _formatCustom($value, $format)
   {
     if(!is_callable($format))
     {
@@ -289,7 +289,7 @@ class rex_formatter
     return rex_call_func($format, $value);
   }
 
-  function _formatRexMedia($value, $format)
+  static function _formatRexMedia($value, $format)
   {
     if (!is_array($format))
     {
@@ -298,7 +298,7 @@ class rex_formatter
 
     $params = $format['params'];
 
-    // Resize aktivieren, falls nicht anders übergeben
+    // Resize aktivieren, falls nicht anders Ã¼bergeben
     if (empty ($params['resize']))
     {
       $params['resize'] = true;
@@ -319,7 +319,7 @@ class rex_formatter
     return $value;
   }
 
-  function _formatRexUrl($value, $format)
+  static function _formatRexUrl($value, $format)
   {
     if(empty($value))
       return '';

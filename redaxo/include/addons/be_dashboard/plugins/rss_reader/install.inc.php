@@ -2,7 +2,7 @@
 
 /**
  * RSS Reader Addon
- * 
+ *
  * @author markus[dot]staab[at]redaxo[dot]de Markus Staab
  * @author <a href="http://www.redaxo.de">www.redaxo.de</a>
  *
@@ -11,14 +11,6 @@
  */
 
 $error = '';
-
-if($error == '')
-{
-  if (version_compare(PHP_VERSION, '4.3.0', '<'))
-  {
-    $error = 'This plugin requires at least PHP Version 4.3.0';
-  }
-}
 
 if($error == '')
 {

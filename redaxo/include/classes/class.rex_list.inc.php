@@ -1,7 +1,8 @@
 <?php
 
-// Nötige Konstanten
+// NÃ¶tige Konstanten
 define('REX_LIST_OPT_SORT', 0);
+define('REX_LIST_OPT_SORT_DIRECTION', 1);
 
 /**
  * Klasse zum erstellen von Listen
@@ -23,22 +24,17 @@ $list->setCaption('thomas macht das css');
 $list->show();
 
 
-Beispiel für Custom Callbacks mit Parametern:
+Beispiel fÃ¼r Custom Callbacks mit Parametern:
 
-function abc($params)
+function my_callback($params)
 {
   // $params['subject']  ist das SQL Objekt der aktuellen Zeile
   // $params['params']   sind die Parameter die du selbst angibst
 
-  return $xyz; // Rückgabewert = Wert der in der liste erscheint - kein htmlspechialchars!
+  return $xyz; // RÃ¼ckgabewert = Wert der in der liste erscheint - kein htmlspechialchars!
 }
 
-$list->setColumnFormat('id', 'custom',
-  array(
-    'abc',
-    array('xy' => 'abc', '123' => '45')
-  )
-);
+$list->setColumnFormat('id', 'custom', 'my_callback', array('foo' => 'bar', '123' => '456'));
 
 */
 
@@ -150,7 +146,7 @@ class rex_list
     $this->init();
   }
 
-  function factory($query, $rowsPerPage = 30, $listName = null, $debug = false, $class = null)
+  static function factory($query, $rowsPerPage = 30, $listName = null, $debug = false, $class = null)
   {
     // keine spezielle klasse angegeben -> default klasse verwenden?
     if(!$class)
@@ -177,7 +173,7 @@ class rex_list
   // ---------------------- setters/getters
 
   /**
-   * Gibt den Namen es Formulars zurück
+   * Gibt den Namen es Formulars zurÃ¼ck
    *
    * @return string
    */
@@ -187,28 +183,28 @@ class rex_list
   }
 
   /**
-   * Gibt eine Status Nachricht zurück
+   * Gibt eine Status Nachricht zurÃ¼ck
    *
    * @return string
    */
   function getMessage()
   {
-    return stripslashes(rex_request($this->getName().'_msg', 'string'));
+    return htmlspecialchars(stripslashes(rex_request($this->getName().'_msg', 'string')));
   }
 
   /**
-   * Gibt eine Warnung zurück
+   * Gibt eine Warnung zurÃ¼ck
    *
    * @return string
    */
   function getWarning()
   {
-    return stripslashes(rex_request($this->getName().'_warning', 'string'));
+    return htmlspecialchars(stripslashes(rex_request($this->getName().'_warning', 'string')));
   }
 
   /**
    * Setzt die Caption/den Titel der Tabelle
-   * Gibt den Namen es Formulars zurück
+   * Gibt den Namen es Formulars zurÃ¼ck
    *
    * @param $caption Caption/Titel der Tabelle
    */
@@ -218,7 +214,7 @@ class rex_list
   }
 
   /**
-   * Gibt die Caption/den Titel der Tabelle zurück
+   * Gibt die Caption/den Titel der Tabelle zurÃ¼ck
    *
    * @return string
    */
@@ -286,7 +282,7 @@ class rex_list
   // ---------------------- Column setters/getters/etc
 
   /**
-   * Methode, um eine Spalte einzufügen
+   * Methode, um eine Spalte einzufÃ¼gen
    *
    * @param $columnHead string Titel der Spalte
    * @param $columnBody string Text/Format der Spalte
@@ -295,7 +291,7 @@ class rex_list
    */
   function addColumn($columnHead, $columnBody, $columnIndex = -1, $columnLayout = null)
   {
-    // Bei negativem columnIndex, das Element am Ende anfügen
+    // Bei negativem columnIndex, das Element am Ende anfÃ¼gen
     if($columnIndex < 0)
       $columnIndex = count($this->columnNames);
 
@@ -324,9 +320,9 @@ class rex_list
   {
     $this->columnLayout[$columnHead] = $columnLayout;
   }
-  
+
   /**
-   * Gibt das Layout einer Spalte zurück
+   * Gibt das Layout einer Spalte zurÃ¼ck
    *
    * @param $columnName Name der Spalte
    */
@@ -339,7 +335,7 @@ class rex_list
   }
 
   /**
-   * Gibt die Layouts aller Spalten zurück
+   * Gibt die Layouts aller Spalten zurÃ¼ck
    */
   function getColumnLayouts()
   {
@@ -347,10 +343,10 @@ class rex_list
   }
 
   /**
-   * Gibt den Namen einer Spalte zurück
+   * Gibt den Namen einer Spalte zurÃ¼ck
    *
    * @param $columnIndex Nummer der Spalte
-   * @param $default Defaultrückgabewert, falls keine Spalte mit der angegebenen Nummer vorhanden ist
+   * @param $default DefaultrÃ¼ckgabewert, falls keine Spalte mit der angegebenen Nummer vorhanden ist
    *
    * @return string|null
    */
@@ -363,7 +359,7 @@ class rex_list
   }
 
   /**
-   * Gibt alle Namen der Spalten als Array zurück
+   * Gibt alle Namen der Spalten als Array zurÃ¼ck
    *
    * @return array
    */
@@ -373,10 +369,10 @@ class rex_list
   }
 
   /**
-   * Setzt ein Label für eine Spalte
+   * Setzt ein Label fÃ¼r eine Spalte
    *
    * @param $columnName Name der Spalte
-   * @param $label Label für die Spalte
+   * @param $label Label fÃ¼r die Spalte
    */
   function setColumnLabel($columnName, $label)
   {
@@ -384,13 +380,13 @@ class rex_list
   }
 
   /**
-   * Gibt das Label der Spalte zurück, falls gesetzt.
+   * Gibt das Label der Spalte zurÃ¼ck, falls gesetzt.
    *
    * Falls nicht vorhanden und der Parameter $default auf null steht,
-   * wird der Spaltenname zurückgegeben
+   * wird der Spaltenname zurÃ¼ckgegeben
    *
    * @param $columnName Name der Spalte
-   * @param $default Defaultrückgabewert, falls kein Label gesetzt ist
+   * @param $default DefaultrÃ¼ckgabewert, falls kein Label gesetzt ist
    *
    * @return string|null
    */
@@ -403,22 +399,23 @@ class rex_list
   }
 
   /**
-   * Setzt ein Format für die Spalte
+   * Setzt ein Format fÃ¼r die Spalte
    *
    * @param $columnName Name der Spalte
    * @param $format_type Formatierungstyp
    * @param $format Zu verwendentes Format
+   * @param $params Custom params fÃ¼r callback func bei format_type 'custom'
    */
-  function setColumnFormat($columnName, $format_type, $format = '')
+  function setColumnFormat($columnName, $format_type, $format = '', $params=array())
   {
-    $this->columnFormates[$columnName] = array($format_type, $format);
+    $this->columnFormates[$columnName] = array($format_type, $format, $params);
   }
 
   /**
-   * Gibt das Format für eine Spalte zurück
+   * Gibt das Format fÃ¼r eine Spalte zurÃ¼ck
    *
    * @param $columnName Name der Spalte
-   * @param $default Defaultrückgabewert, falls keine Formatierung gesetzt ist
+   * @param $default DefaultrÃ¼ckgabewert, falls keine Formatierung gesetzt ist
    *
    * @return string|null
    */
@@ -434,14 +431,16 @@ class rex_list
    * Markiert eine Spalte als sortierbar
    *
    * @param $columnName Name der Spalte
+   * @param $direction Startsortierrichtung der Spalte [ASC|DESC]
    */
-  function setColumnSortable($columnName)
+  function setColumnSortable($columnName, $direction = 'asc')
   {
     $this->setColumnOption($columnName, REX_LIST_OPT_SORT, true);
+    $this->setColumnOption($columnName, REX_LIST_OPT_SORT_DIRECTION, strtolower($direction));
   }
 
   /**
-   * Setzt eine Option für eine Spalte
+   * Setzt eine Option fÃ¼r eine Spalte
    * (z.b. Sortable,..)
    *
    * @param $columnName Name der Spalte
@@ -454,11 +453,11 @@ class rex_list
   }
 
   /**
-   * Gibt den Wert einer Option für eine Spalte zurück
+   * Gibt den Wert einer Option fÃ¼r eine Spalte zurÃ¼ck
    *
    * @param $columnName Name der Spalte
    * @param $option Name/Id der Option
-   * @param $default Defaultrückgabewert, falls die Option nicht gesetzt ist
+   * @param $default DefaultrÃ¼ckgabewert, falls die Option nicht gesetzt ist
    *
    * @return mixed|null
    */
@@ -472,11 +471,10 @@ class rex_list
   }
 
   /**
-   * Gibt zurück, ob für eine Spalte eine Option gesetzt wurde
+   * Gibt zurÃ¼ck, ob fÃ¼r eine Spalte eine Option gesetzt wurde
    *
    * @param $columnName Name der Spalte
    * @param $option Name/Id der Option
-   * @param $default Defaultrückgabewert, falls die Option nicht gesetzt ist
    *
    * @return boolean
    */
@@ -486,7 +484,7 @@ class rex_list
   }
 
   /**
-   * Verlinkt eine Spalte mit den übergebenen Parametern
+   * Verlinkt eine Spalte mit den Ã¼bergebenen Parametern
    *
    * @param $columnName Name der Spalte
    * @param $params Array von Parametern
@@ -500,7 +498,7 @@ class rex_list
   }
 
   /**
-   * Gibt die Parameter für eine Spalte zurück
+   * Gibt die Parameter fÃ¼r eine Spalte zurÃ¼ck
    *
    * @param $columnName Name der Spalte
    *
@@ -508,11 +506,14 @@ class rex_list
    */
   function getColumnParams($columnName)
   {
-    return $this->columnParams[$columnName];
+    if (isset($this->columnParams[$columnName]) && is_array($this->columnParams[$columnName])) {
+      return $this->columnParams[$columnName];
+    }
+    return array();
   }
 
   /**
-   * Gibt zurück, ob Parameter für eine Spalte existieren
+   * Gibt zurÃ¼ck, ob Parameter fÃ¼r eine Spalte existieren
    *
    * @param $columnName Name der Spalte
    *
@@ -526,7 +527,7 @@ class rex_list
   // ---------------------- TableColumnGroup setters/getters/etc
 
   /**
-   * Methode um eine Colgroup einzufügen
+   * Methode um eine Colgroup einzufÃ¼gen
    *
    * Beispiel 1:
    *
@@ -582,7 +583,7 @@ class rex_list
   }
 
   /**
-   * Fügt der zuletzte eingefügten TableColumnGroup eine weitere Spalte hinzu
+   * FÃ¼gt der zuletzte eingefÃ¼gten TableColumnGroup eine weitere Spalte hinzu
    *
    * @param $width int Breite der Spalte
    * @param $span int Span der Spalte
@@ -620,8 +621,8 @@ class rex_list
   // ---------------------- Url generation
 
   /**
-   * Gibt eine Url zurück, die die Parameter $params enthält
-   * Dieser Url werden die Standard rexList Variablen zugefügt
+   * Gibt eine Url zurÃ¼ck, die die Parameter $params enthÃ¤lt
+   * Dieser Url werden die Standard rexList Variablen zugefÃ¼gt
    *
    * @return string
    */
@@ -645,25 +646,21 @@ class rex_list
     }
 
     $paramString = '';
-    foreach($params as $name => $value)
-    {
-      if(is_array($value))
-      {
-      	foreach($value as $v)
-      	{
-          $paramString .= '&'. $name .'='. $v;
-      	}
-      }else
-      {
-        $paramString .= '&'. $name .'='. $value;
+    foreach ($params as $name => $value) {
+      if (is_array($value)) {
+        foreach ($value as $v) {
+          $paramString .= '&' . $name . '=' . urlencode($v);
+        }
+      } else {
+        $paramString .= '&' . $name . '=' . urlencode($value);
       }
     }
     return str_replace('&', '&amp;', 'index.php?list='. $this->getName() . $paramString);
   }
 
   /**
-   * Gibt eine Url zurück, die die Parameter $params enthält
-   * Dieser Url werden die Standard rexList Variablen zugefügt
+   * Gibt eine Url zurÃ¼ck, die die Parameter $params enthÃ¤lt
+   * Dieser Url werden die Standard rexList Variablen zugefÃ¼gt
    *
    * Innerhalb dieser Url werden variablen ersetzt
    *
@@ -672,7 +669,27 @@ class rex_list
    */
   function getParsedUrl($params = array())
   {
-    return $this->replaceVariables($this->getUrl($params));
+    $params = array_merge($this->getParams(), $params);
+
+    if (!isset($params['sort'])) {
+      $sortColumn = $this->getSortColumn();
+      if ($sortColumn != null) {
+        $params['sort'] = $sortColumn;
+        $params['sorttype'] = $this->getSortType();
+      }
+    }
+
+    $paramString = '';
+    foreach ($params as $name => $value) {
+      if (is_array($value)) {
+        foreach ($value as $v) {
+          $paramString .= '&' . $name . '=' . urlencode($this->replaceVariables($v));
+        }
+      } else {
+        $paramString .= '&' . $name . '=' . urlencode($this->replaceVariables($value));
+      }
+    }
+    return str_replace('&', '&amp;', 'index.php?list=' . $this->getName() . $paramString);
   }
 
   // ---------------------- Pagination
@@ -707,7 +724,7 @@ class rex_list
   }
 
   /**
-   * Gibt die Anzahl der Zeilen zurück, welche vom ursprüngliche SQL Statement betroffen werden
+   * Gibt die Anzahl der Zeilen zurÃ¼ck, welche vom ursprÃ¼ngliche SQL Statement betroffen werden
    *
    * @return int
    */
@@ -725,7 +742,7 @@ class rex_list
   }
 
   /**
-   * Gibt die Anzahl der Zeilen pro Seite zurück
+   * Gibt die Anzahl der Zeilen pro Seite zurÃ¼ck
    *
    * @return int
    */
@@ -746,7 +763,7 @@ class rex_list
   }
 
   /**
-   * Gibt die Nummer der Zeile zurück, von der die Liste beginnen soll
+   * Gibt die Nummer der Zeile zurÃ¼ck, von der die Liste beginnen soll
    *
    * @return int
    */
@@ -759,7 +776,7 @@ class rex_list
       $start = rex_request('start', 'int', 0);
       $rows = $this->getRows();
 
-      // $start innerhalb des zulässigen Zahlenbereichs?
+      // $start innerhalb des zulÃ¤ssigen Zahlenbereichs?
       if($start < 0)
         $start = 0;
 
@@ -771,7 +788,7 @@ class rex_list
   }
 
   /**
-   * Gibt zurück, nach welcher Spalte sortiert werden soll
+   * Gibt zurÃ¼ck, nach welcher Spalte sortiert werden soll
    *
    * @return string
    */
@@ -785,7 +802,7 @@ class rex_list
   }
 
   /**
-   * Gibt zurück, in welcher Art und Weise sortiert werden soll (ASC/DESC)
+   * Gibt zurÃ¼ck, in welcher Art und Weise sortiert werden soll (ASC/DESC)
    *
    * @return string
    */
@@ -793,7 +810,7 @@ class rex_list
   {
     if(rex_request('list', 'string') == $this->getName())
     {
-      $sortType = rex_request('sorttype','string');
+      $sortType = strtolower(rex_request('sorttype','string'));
 
       if(in_array($sortType, array('asc', 'desc')))
         return $sortType;
@@ -802,7 +819,7 @@ class rex_list
   }
 
   /**
-   * Gibt die Navigation der Liste zurück
+   * Gibt die Navigation der Liste zurÃ¼ck
    *
    * @return string
    */
@@ -845,7 +862,7 @@ class rex_list
   }
 
   /**
-   * Gibt den Footer der Liste zurück
+   * Gibt den Footer der Liste zurÃ¼ck
    *
    * @return string
    */
@@ -861,7 +878,7 @@ class rex_list
   }
 
   /**
-   * Gibt den Header der Liste zurück
+   * Gibt den Header der Liste zurÃ¼ck
    *
    * @return string
    */
@@ -901,7 +918,7 @@ class rex_list
     {
       foreach($columnNames as $columnName)
       {
-        // Spalten, die mit addColumn eingefügt wurden
+        // Spalten, die mit addColumn eingefÃ¼gt wurden
         if(is_array($columnName))
           continue;
 
@@ -917,7 +934,7 @@ class rex_list
   }
 
   /**
-   * Formatiert einen übergebenen String anhand der rexFormatter Klasse
+   * Formatiert einen Ã¼bergebenen String anhand der rexFormatter Klasse
    *
    * @param $value Zu formatierender String
    * @param $format Array mit den Formatierungsinformationen
@@ -925,22 +942,29 @@ class rex_list
    *
    * @return string
    */
-  function formatValue($value, $format, $escape)
+  function formatValue($value, $format, $escape, $field=null)
   {
     if(is_array($format))
     {
       // Callbackfunktion -> Parameterliste aufbauen
       if($this->isCustomFormat($format))
       {
-        $format[1] = array($format[1], array('list' => $this, 'value' => $value, 'format' => $format[0], 'escape' => $escape));
+        $format[2] = isset($format[2]) ? $format[2] : array();
+        $format[1] = array($format[1], array('list' => $this, 'field' => $field, 'value' => $value, 'format' => $format[0], 'escape' => $escape, 'params'=>$format[2]));
       }
 
       $value = rex_formatter::format($value, $format[0], $format[1]);
     }
 
-    // Nur escapen, wenn formatter aufgerufen wird, der kein html zurückgeben können soll
-    if($escape && !$this->isCustomFormat($format) && $format[0] != 'rexmedia' && $format[0] != 'rexurl')
+    // Nur escapen, wenn formatter aufgerufen wird, der kein html zurÃ¼ckgeben kÃ¶nnen soll
+    if($escape &&
+       !$this->isCustomFormat($format) &&
+       $format[0] != 'rexmedia' &&
+       $format[0] != 'rexurl' &&
+       $format[0] != 'email' &&
+       $format[0] != 'url') {
       $value = htmlspecialchars($value);
+    }
 
     return $value;
   }
@@ -983,11 +1007,20 @@ class rex_list
     // Table vars
     $caption = $this->getCaption();
     $tableColumnGroups = $this->getTableColumnGroups();
-    $this->addTableAttribute('class', 'rex-table');
+    // Check if class attribute exists
+    if(empty($this->tableAttributes['class']))
+	{
+        $this->addTableAttribute('class', 'rex-table');
+    }
 
     // Columns vars
     $columnFormates = array();
-    $columnNames = array_diff($this->getColumnNames(), $this->columnDisabled);
+    $columnNames = array();
+    foreach ($this->getColumnNames() as $columnName) {
+      if (is_array($columnName) || !in_array($columnName, $this->columnDisabled)) {
+        $columnNames[] = $columnName;
+      }
+    }
 
     // List vars
     $sortColumn = $this->getSortColumn();
@@ -1043,21 +1076,26 @@ class rex_list
     $s .= '      <tr>'. "\n";
     foreach($columnNames as $columnName)
     {
-      // Spalten, die mit addColumn eingefügt wurden
+      // Spalten, die mit addColumn eingefÃ¼gt wurden
       if(is_array($columnName))
         $columnName = $columnName[0];
 
       $columnHead = $this->getColumnLabel($columnName);
       if($this->hasColumnOption($columnName, REX_LIST_OPT_SORT))
       {
-        $columnSortType = $columnName == $sortColumn && $sortType == 'desc' ? 'asc' : 'desc';
+        if ($columnName == $sortColumn) {
+          $columnSortType = $sortType == 'desc' ? 'asc' : 'desc';
+        } else {
+          $columnSortType = $this->getColumnOption($columnName, REX_LIST_OPT_SORT_DIRECTION, 'asc');
+        }
+
         $columnHead = '<a href="'. $this->getUrl(array('start' => $this->getStartRow(),'sort' => $columnName, 'sorttype' => $columnSortType)) .'">'. $columnHead .'</a>';
       }
 
       $layout = $this->getColumnLayout($columnName);
       $s .= '        '. str_replace('###VALUE###', $columnHead, $layout[0])."\n";
 
-      // Formatierungen hier holen, da diese Schleife jede Spalte nur einmal durchläuft
+      // Formatierungen hier holen, da diese Schleife jede Spalte nur einmal durchlÃ¤uft
       $columnFormates[$columnName] = $this->getColumnFormat($columnName);
     }
     $s .= '      </tr>'. "\n";
@@ -1080,17 +1118,17 @@ class rex_list
         $s .= '      <tr>'. "\n";
         foreach($columnNames as $columnName)
         {
-          // Spalten, die mit addColumn eingefügt wurden
+          // Spalten, die mit addColumn eingefÃ¼gt wurden
           if(is_array($columnName))
           {
             // Nur hier sind Variablen erlaubt
             $columnName = $columnName[0];
-            $columnValue = $this->formatValue($columnFormates[$columnName][0], $columnFormates[$columnName], false);
+            $columnValue = $this->formatValue($columnFormates[$columnName][0], $columnFormates[$columnName], false, $columnName);
           }
           // Spalten aus dem ResultSet
           else
           {
-            $columnValue = $this->formatValue($this->getValue($columnName), $columnFormates[$columnName], true);
+            $columnValue = $this->formatValue($this->getValue($columnName), $columnFormates[$columnName], true, $columnName);
           }
 
           if(!$this->isCustomFormat($columnFormates[$columnName]) && $this->hasColumnParams($columnName))

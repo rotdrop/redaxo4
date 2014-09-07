@@ -292,7 +292,7 @@ div.rex-form-login div.rex-form-row p input.rex-form-submit {
 /*	Struktur : Tabellen ********************************************************
 *******************************************************************************/
 div#rex-form-structure-article #rex-form-template {
-	width: 185px;
+	width: 125px;
 }
 
 
@@ -597,3 +597,26 @@ body#rex-page-image-resize div.rex-form div.rex-form-element-v2 p textarea {
 body#rex-page-image-resize div.rex-form div.rex-form-element-v2 p input.rex-form-submit {
 	margin-left: 556px;
 }
+
+
+
+#rex-addon-editmode.rex-form div.rex-form-row p.rex-form-checkbox span, 
+#rex-addon-editmode.rex-form div.rex-form-row p.rex-form-radio span {
+  clear: both;
+  display: block;
+  float: left;
+  width: 145px;
+  padding: 5px;
+  margin-bottom: -1.6em;
+}
+#rex-addon-editmode.rex-form div.rex-form-row p.rex-form-checkbox input.rex-form-checkbox, 
+#rex-addon-editmode.rex-form div.rex-form-row p.rex-form-radio input.rex-form-radio {
+  margin-bottom: 5px;
+}
+
+/*	Setup Schritt 2 *********************************************************/
+
+div#rex-form-setup-step-2 div.rex-form-row label {
+	width: 160px;
+}
+

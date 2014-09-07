@@ -6,7 +6,7 @@
  * @author <a href="http://www.vscope.at">www.vscope.at</a>
  *
  * @author markus[dot]staab[at]redaxo[dot]de Markus Staab
- * 
+ *
  *
  * @package redaxo4
  * @version svn:$Id$
@@ -29,7 +29,7 @@ if($error == '')
 
 if($error == '')
 {
-  $file = $REX['INCLUDE_PATH'] .'/generated/files';
+  $file = $REX['GENERATED_PATH'] .'/files';
 
   if(($state = rex_is_writable($file)) !== true)
     $error = $state;

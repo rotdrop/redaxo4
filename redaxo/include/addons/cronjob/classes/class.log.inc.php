@@ -11,31 +11,31 @@
 
 class rex_cronjob_log
 {
-  /*public static*/ function getYears()
+  static /*public*/ function getYears()
   {
     $folder = REX_CRONJOB_LOG_FOLDER;
     $years = array ();
-  
+
     $hdl = opendir($folder);
     if($hdl)
     {
       while (($file = readdir($hdl)) !== false)
       {
-        if (substr($file, 0, 1) != '.' && is_dir($folder . $file .'/.'))
+        if (substr($file, 0, 1) != '.' && is_dir($folder . $file))
         {
           $years[] = $file;
         }
       }
       closedir($hdl);
-      
+
       // Sortiere Array
       sort($years);
     }
-  
-    return $years;  
+
+    return $years;
   }
-  
-  /*public static*/ function getMonths($year)
+
+  static /*public*/ function getMonths($year)
   {
     $folder = REX_CRONJOB_LOG_FOLDER;
     $months = array();
@@ -46,8 +46,8 @@ class rex_cronjob_log
     }
     return $months;
   }
-  
-  /*public static*/ function getYearMonthArray()
+
+  static /*public*/ function getYearMonthArray()
   {
     $array = array();
     foreach(rex_cronjob_log::getYears() as $year)
@@ -58,14 +58,14 @@ class rex_cronjob_log
     }
     return $array;
   }
-  
-  /*public static*/ function getLogOfMonth($month, $year)
+
+  static /*public*/ function getLogOfMonth($month, $year)
   {
     $file = REX_CRONJOB_LOG_FOLDER . $year .'/'. $year .'-'. $month .'.log';
     return rex_get_file_contents($file);
   }
-  
-  /*public static*/ function getListOfMonth($month, $year)
+
+  static /*public*/ function getListOfMonth($month, $year)
   {
     global $I18N;
     $lines = explode("\n", trim(rex_cronjob_log::getLogOfMonth($month, $year)));
@@ -74,8 +74,8 @@ class rex_cronjob_log
     $summary = $I18N->msg('cronjob_log_summary_1', $monthName, $year);
     return rex_cronjob_log::_getList($lines, $caption, $summary);
   }
-  
-  /*public static*/ function getListOfNewestMessages($limit = 10)
+
+  static /*public*/ function getListOfNewestMessages($limit = 10)
   {
     global $I18N;
     $array = array_reverse(rex_cronjob_log::getYearMonthArray(),true);
@@ -86,11 +86,11 @@ class rex_cronjob_log
       foreach($months as $month)
       {
         $lines = explode("\n", trim(rex_cronjob_log::getLogOfMonth($month, $year)));
-        
+
         $end = min($limit - count($messages), count($lines));
         for($i = 0; $i < $end; $i++)
           $messages[] = $lines[$i];
-        
+
         if (count($messages) >= $limit)
           break 2;
       }
@@ -99,52 +99,52 @@ class rex_cronjob_log
     $summary = $I18N->msg('cronjob_log_summary_2');
     return rex_cronjob_log::_getList($messages, $caption, $summary);
   }
-  
-  /*public static*/ function save($name, $success, $message = '', $id = null)
+
+  static /*public*/ function save($name, $success, $message = '', $id = null)
   {
     global $REX;
-    
+
     $year = date('Y');
     $month = date('m');
-    
+
     // in den Log-Dateien festes Datumsformat verwenden
     // wird bei der Ausgabe entsprechend der lokalen Einstellungen umgewandelt
     // rex_formatter nicht verwenden, da im Frontend nicht verfuegbar
     $newline = date('Y-m-d H:i');
-    
+
     if ($success)
       $newline .= ' | SUCCESS | ';
     else
       $newline .= ' |  ERROR  | ';
-    
+
     if (!$id)
       $id = '--';
     else
       $id = str_pad($id, 2, ' ', STR_PAD_LEFT);
-      
+
     $newline .= $id .' | '. $name;
-    
+
     if ($message)
       $newline .= ' | '. str_replace(array("\r\n", "\n"), ' | ', trim(strip_tags($message)));
-    
+
     $dir = REX_CRONJOB_LOG_FOLDER . $year;
     if (!is_dir($dir))
     {
       mkdir($dir);
       chmod($dir, $REX['DIRPERM']);
     }
-    
+
     $content = '';
     $file = $dir .'/'. $year .'-'. $month .'.log';
     if (file_exists($file))
       $content = rex_get_file_contents($file);
-    
+
     $content = $newline ."\n". $content;
-    
+
     return rex_put_file_contents($file, $content);
   }
-  
-  /*private static*/ function _getList($lines, $caption = '', $summary = '')
+
+  static /*private*/ function _getList($lines, $caption = '', $summary = '')
   {
     global $REX, $I18N;
     $table_attr = '';

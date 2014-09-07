@@ -31,32 +31,6 @@ class rex_sql
     $this->debugsql = false;
     $this->selectDB($DBID);
 
-    if($REX['MYSQL_VERSION'] == '')
-    {
-      // ggf. Strict Mode abschalten
-      $this->setQuery('SET SQL_MODE=""');
-
-      // MySQL Version bestimmen
-      $res = $this->getArray('SELECT VERSION() as VERSION');
-      if(preg_match('/([0-9]+\.([0-9\.])+)/', $res[0]['VERSION'], $matches))
-      {
-        $REX['MYSQL_VERSION'] = $matches[1];
-      }
-      else
-      {
-        exit('Could not identifiy MySQL Version!');
-      }
-
-      // connection auf UTF8 trimmen
-      if (rex_lang_is_utf8())
-      {
-        if(function_exists('mysql_set_charset') AND version_compare($REX['MYSQL_VERSION'], '5.0.7', '>='))
-          mysql_set_charset('utf8', $this->identifier);
-        else
-          $this->setQuery('SET NAMES utf8');
-      }
-    }
-
     $this->flush();
   }
 
@@ -79,25 +53,45 @@ class rex_sql
       echo "<font style='color:red; font-family:verdana,arial; font-size:11px;'>Class SQL 1.1 | Database down. | Please contact <a href=mailto:" . $REX['ERROR_EMAIL'] . ">" . $REX['ERROR_EMAIL'] . "</a>\n | Thank you!\n</font>";
       exit;
     }
-    $REX['DB'][$DBID]['IDENTIFIER'] = $this->identifier;
+
+    if (!isset($REX['DB'][$DBID]['IDENTIFIER']) || $REX['DB'][$DBID]['IDENTIFIER'] != $this->identifier)
+    {
+      $REX['DB'][$DBID]['IDENTIFIER'] = $this->identifier;
+
+      // ggf. Strict Mode abschalten
+      $this->setQuery('SET SQL_MODE=""');
+
+      // MySQL Version bestimmen
+      $res = $this->getArray('SELECT VERSION() as VERSION');
+      if(preg_match('/([0-9]+\.([0-9\.])+)/', $res[0]['VERSION'], $matches))
+      {
+        $version = $matches[1];
+        if ($DBID == 1)
+        {
+          $REX['MYSQL_VERSION'] = $version;
+        }
+      }
+      else
+      {
+        exit('Could not identifiy MySQL Version!');
+      }
+
+      // connection auf UTF8 trimmen
+      if(function_exists('mysql_set_charset') AND version_compare($version, '5.0.7', '>='))
+        mysql_set_charset('utf8', $this->identifier);
+      else
+        $this->setQuery('SET NAMES utf8');
+    }
   }
 
   /**
-   * Gibt die DatenbankId der Abfrage (SQL) zurück,
-   * oder false wenn die Abfrage keine DBID enthält
+   * Gibt die DatenbankId der Abfrage (SQL) zurÃ¼ck,
+   * oder false wenn die Abfrage keine DBID enthÃ¤lt
    *
    * @param $query Abfrage
    */
-  /*protected static*/ function getQueryDBID($qry = null)
+  static /*protected*/ function getQueryDBID($qry)
   {
-    if(!$qry)
-    {
-      if(isset($this)) // Nur bei angelegtem Object
-        $qry = $this->query;
-      else
-        return null;
-    }
-
     $qry = trim($qry);
 
     if(preg_match('/\(DB([1-9]){1}\)/i', $qry, $matches))
@@ -107,12 +101,12 @@ class rex_sql
   }
 
   /**
-   * Entfernt die DBID aus einer Abfrage (SQL) und gibt die DBID zurück falls
+   * Entfernt die DBID aus einer Abfrage (SQL) und gibt die DBID zurÃ¼ck falls
    * vorhanden, sonst false
    *
    * @param $query Abfrage
    */
-  /*protected static*/ function stripQueryDBID(&$qry)
+  static /*protected*/ function stripQueryDBID(&$qry)
   {
     $qry = trim($qry);
 
@@ -123,10 +117,10 @@ class rex_sql
   }
 
   /**
-   * Gibt den Typ der Abfrage (SQL) zurück,
-   * oder false wenn die Abfrage keinen Typ enthält
+   * Gibt den Typ der Abfrage (SQL) zurÃ¼ck,
+   * oder false wenn die Abfrage keinen Typ enthÃ¤lt
    *
-   * Mögliche Typen:
+   * MÃ¶gliche Typen:
    * - SELECT
    * - SHOW
    * - UPDATE
@@ -136,16 +130,8 @@ class rex_sql
    *
    * @param $query Abfrage
    */
-  /*protected*/ function getQueryType($qry = null)
+  static /*protected*/ function getQueryType($qry)
   {
-    if(!$qry)
-    {
-      if(isset($this)) // Nur bei angelegtem Object
-        $qry = $this->query;
-      else
-        return null;
-    }
-
     $qry = trim($qry);
     // DBID aus dem Query herausschneiden, falls vorhanden
     rex_sql::stripQueryDBID($qry);
@@ -170,7 +156,7 @@ class rex_sql
 
     return $this->setQuery($qry);
   }
-  
+
   /**
    * Setzt Debugmodus an/aus
    *
@@ -178,9 +164,9 @@ class rex_sql
    */
   /*public*/ function setDebug($debug = TRUE)
   {
-	  $this->debugsql = $debug;
+    $this->debugsql = $debug;
   }
-  
+
   /**
    * Setzt eine Abfrage (SQL) ab
    *
@@ -190,7 +176,7 @@ class rex_sql
    */
   /*public*/ function setQuery($qry)
   {
-    // Alle Werte zurücksetzen
+    // Alle Werte zurÃ¼cksetzen
     $this->flush();
 
     $qry = trim($qry);
@@ -199,7 +185,7 @@ class rex_sql
 
     if ($this->result)
     {
-      if (($qryType = $this->getQueryType()) !== false)
+      if (($qryType = $this->getQueryType($this->query)) !== false)
       {
         switch ($qryType)
         {
@@ -280,8 +266,8 @@ class rex_sql
   }
 
   /**
-   * Prüft den Wert einer Spalte der aktuellen Zeile ob ein Wert enthalten ist
-   * @param $feld Spaltenname des zu prüfenden Feldes
+   * PrÃ¼ft den Wert einer Spalte der aktuellen Zeile ob ein Wert enthalten ist
+   * @param $feld Spaltenname des zu prÃ¼fenden Feldes
    * @param $prop Wert, der enthalten sein soll
    */
   /*protected*/ function isValueOf($feld, $prop)
@@ -305,14 +291,14 @@ class rex_sql
   }
 
   /**
-   * Gibt den Wert einer Spalte im ResultSet zurück
+   * Gibt den Wert einer Spalte im ResultSet zurÃ¼ck
    * @param $value Name der Spalte
    * @param [$row] Zeile aus dem ResultSet
    */
   /*public*/ function getValue($feldname, $row = null)
   {
-  	if(isset($this->values[$feldname]))
-  		return $this->values[$feldname];
+    if(isset($this->values[$feldname]))
+      return $this->values[$feldname];
 
     $_row = $this->counter;
     if (is_int($row))
@@ -337,15 +323,15 @@ class rex_sql
 
   /**
    * Gibt den Wert der aktuellen Zeile im ResultSet zurueck und
-   * bewegt den internen Zeiger auf die naechste Zeile 
+   * bewegt den internen Zeiger auf die naechste Zeile
    */
   /*public*/ function getRow($fetch_type = MYSQL_ASSOC)
   {
     return mysql_fetch_array($this->result, $fetch_type);
   }
-  
+
   /**
-   * Prüft, ob eine Spalte im Resultset vorhanden ist
+   * PrÃ¼ft, ob eine Spalte im Resultset vorhanden ist
    * @param $value Name der Spalte
    */
   /*public*/ function hasValue($feldname)
@@ -354,10 +340,10 @@ class rex_sql
   }
 
   /**
-   * Prüft, ob das Feld mit dem Namen $feldname Null ist.
+   * PrÃ¼ft, ob das Feld mit dem Namen $feldname Null ist.
    *
    * Falls das Feld nicht vorhanden ist,
-   * wird Null zurückgegeben, sonst True/False
+   * wird Null zurÃ¼ckgegeben, sonst True/False
    */
   /*public*/ function isNull($feldname)
   {
@@ -368,7 +354,7 @@ class rex_sql
   }
 
   /**
-   * Gibt die Anzahl der Zeilen zurück
+   * Gibt die Anzahl der Zeilen zurÃ¼ck
    */
   /*public*/ function getRows()
   {
@@ -376,9 +362,9 @@ class rex_sql
   }
 
   /**
-   * Gibt die Zeilennummer zurück, auf der sich gerade der
-   * interne Zähler befindet
-   * 
+   * Gibt die Zeilennummer zurÃ¼ck, auf der sich gerade der
+   * interne ZÃ¤hler befindet
+   *
    * @deprecated since version 4.3.0
    */
   /*public*/ function getCounter()
@@ -387,7 +373,7 @@ class rex_sql
   }
 
   /**
-   * Gibt die Anzahl der Felder/Spalten zurück
+   * Gibt die Anzahl der Felder/Spalten zurÃ¼ck
    */
   /*public*/ function getFields()
   {
@@ -396,7 +382,7 @@ class rex_sql
 
   /**
    * Baut den SET bestandteil mit der
-   * verfügbaren values zusammen und gibt diesen zurück
+   * verfÃ¼gbaren values zusammen und gibt diesen zurÃ¼ck
    *
    * @see setValue
    */
@@ -441,7 +427,7 @@ class rex_sql
   {
     return $this->setQuery('SELECT '. $fields .' FROM `' . $this->table . '` '. $this->wherevar);
   }
-  
+
   /**
    * Setzt eine Update-Anweisung auf die angegebene Tabelle
    * mit den angegebenen Werten und WHERE Parametern ab
@@ -495,11 +481,11 @@ class rex_sql
   /**
    * Setzt den Query $query ab.
    *
-   * Wenn die Variable $successMessage gefüllt ist, dann wird diese bei
-   * erfolgreichem absetzen von $query zurückgegeben, sonst die MySQL
+   * Wenn die Variable $successMessage gefÃ¼llt ist, dann wird diese bei
+   * erfolgreichem absetzen von $query zurÃ¼ckgegeben, sonst die MySQL
    * Fehlermeldung
    *
-   * Wenn die Variable $successMessage nicht gefüllt ist, verhält sich diese
+   * Wenn die Variable $successMessage nicht gefÃ¼llt ist, verhÃ¤lt sich diese
    * Methode genauso wie setQuery()
    *
    * Beispiel:
@@ -508,7 +494,7 @@ class rex_sql
    * $sql = rex_sql::factory();
    * $message = $sql->statusQuery(
    *    'INSERT  INTO abc SET a="ab"',
-   *    'Datensatz  erfolgreich eingefügt');
+   *    'Datensatz  erfolgreich eingefÃ¼gt');
    * </code>
    *
    *  anstatt von
@@ -516,7 +502,7 @@ class rex_sql
    * <code>
    * $sql = rex_sql::factory();
    * if($sql->setQuery('INSERT INTO abc SET a="ab"'))
-   *   $message  = 'Datensatz erfolgreich eingefügt');
+   *   $message  = 'Datensatz erfolgreich eingefÃ¼gt');
    * else
    *   $message  = $sql- >getError();
    * </code>
@@ -535,7 +521,7 @@ class rex_sql
   }
 
   /**
-   * Stellt alle Werte auf den Ursprungszustand zurück
+   * Stellt alle Werte auf den Ursprungszustand zurÃ¼ck
    */
   /*public*/ function flush()
   {
@@ -554,7 +540,7 @@ class rex_sql
   }
 
   /**
-   * Stellt alle Values, die mit setValue() gesetzt wurden, zurück
+   * Stellt alle Values, die mit setValue() gesetzt wurden, zurÃ¼ck
    *
    * @see #setValue(), #getValue()
    */
@@ -565,7 +551,7 @@ class rex_sql
 
 
   /**
-   * Setzt den Cursor des Resultsets auf die nächst niedrigere Stelle
+   * Setzt den Cursor des Resultsets auf die nÃ¤chst niedrigere Stelle
    */
   /*public*/ function previous()
   {
@@ -573,15 +559,15 @@ class rex_sql
   }
 
   /**
-   * Setzt den Cursor des Resultsets auf die nächst höhere Stelle
+   * Setzt den Cursor des Resultsets auf die nÃ¤chst hÃ¶here Stelle
    */
   /*public*/ function next()
   {
     $this->counter++;
   }
-  
+
   /*
-   * Prüft ob das Resultset weitere Datensätze enthält
+   * PrÃ¼ft ob das Resultset weitere DatensÃ¤tze enthÃ¤lt
    */
   /*public*/ function hasNext()
   {
@@ -589,7 +575,7 @@ class rex_sql
   }
 
   /**
-   * Setzt den Cursor des Resultsets zurück zum Anfang
+   * Setzt den Cursor des Resultsets zurÃ¼ck zum Anfang
    */
   /*public*/ function reset()
   {
@@ -603,9 +589,9 @@ class rex_sql
   {
     $this->counter = ($this->rows - 1);
   }
-  
+
   /**
-   * Gibt die letzte InsertId zurück
+   * Gibt die letzte InsertId zurÃ¼ck
    */
   /*public*/ function getLastId()
   {
@@ -613,7 +599,7 @@ class rex_sql
   }
 
   /**
-   * Lädt das komplette Resultset in ein Array und gibt dieses zurück und
+   * LÃ¤dt das komplette Resultset in ein Array und gibt dieses zurÃ¼ck und
    * wechselt die DBID falls vorhanden
    *
    * @param string $sql Abfrage
@@ -626,7 +612,7 @@ class rex_sql
   }
 
   /**
-   * Lädt das komplette Resultset in ein Array und gibt dieses zurück
+   * LÃ¤dt das komplette Resultset in ein Array und gibt dieses zurÃ¼ck
    *
    * @param string $sql Abfrage
    * @param string $fetch_type Default: MYSQL_ASSOC; weitere: MYSQL_NUM, MYSQL_BOTH
@@ -668,7 +654,7 @@ class rex_sql
   }
 
   /**
-   * Gibt die zuletzt aufgetretene Fehlernummer zurück
+   * Gibt die zuletzt aufgetretene Fehlernummer zurÃ¼ck
    */
   /*public*/ function getErrno()
   {
@@ -676,7 +662,7 @@ class rex_sql
   }
 
   /**
-   * Gibt den zuletzt aufgetretene Fehlernummer zurück
+   * Gibt den zuletzt aufgetretene Fehlernummer zurÃ¼ck
    */
   /*public*/ function getError()
   {
@@ -684,7 +670,7 @@ class rex_sql
   }
 
   /**
-   * Prüft, ob ein Fehler aufgetreten ist
+   * PrÃ¼ft, ob ein Fehler aufgetreten ist
    */
   /*public*/ function hasError()
   {
@@ -714,12 +700,12 @@ class rex_sql
   }
 
   /**
-   * Setzt eine Spalte auf den nächst möglich auto_increment Wert
+   * Setzt eine Spalte auf den nÃ¤chst mÃ¶glich auto_increment Wert
    * @param $field Name der Spalte
    */
   /*public*/ function setNewId($field)
   {
-    // setNewId muss neues sql Objekt verwenden, da sonst bestehende informationen im Objekt überschrieben werden
+    // setNewId muss neues sql Objekt verwenden, da sonst bestehende informationen im Objekt Ã¼berschrieben werden
     $sql = rex_sql::factory();
     if($sql->setQuery('SELECT `' . $field . '` FROM `' . $this->table . '` ORDER BY `' . $field . '` DESC LIMIT 1'))
     {
@@ -738,7 +724,7 @@ class rex_sql
   }
 
   /**
-   * Gibt die Spaltennamen des ResultSets zurück
+   * Gibt die Spaltennamen des ResultSets zurÃ¼ck
    */
   /*public*/ function getFieldnames()
   {
@@ -753,70 +739,73 @@ class rex_sql
   }
 
   /**
-   * Escaped den übergeben Wert für den DB Query
+   * Escaped den Ã¼bergebenen Wert fÃ¼r den DB Query
    *
    * @param $value den zu escapenden Wert
-   * @param [$delimiter] Delimiter der verwendet wird, wenn es sich bei $value
-   * um einen String handelt
+   * @param $delimiter Delimiter der verwendet wird, wenn es sich bei $value um einen String handelt
+   * @param $force Escapen erzwingen, unabhÃ¤ngig davon ob es ein nummerischer Wert ist
    */
-  /*public*/ function escape($value, $delimiter = '')
+  /*public*/ function escape($value, $delimiter = '', $force = false)
   {
     // Quote if not a number or a numeric string
-    if (!is_numeric($value))
+    if ($force || !is_numeric($value))
     {
       $value = $delimiter . mysql_real_escape_string($value, $this->identifier) . $delimiter;
     }
     return $value;
   }
-  
+
   /**
-   * Erstellt das CREATE TABLE Statement um die Tabelle $table 
+   * Erstellt das CREATE TABLE Statement um die Tabelle $table
    * der Datenbankverbindung $DBID zu erstellen.
-   * 
+   *
    * @param $table string Name der Tabelle
-   * @param $DBID int Id der Datenbankverbindung 
+   * @param $DBID int Id der Datenbankverbindung
    * @return string CREATE TABLE Sql-Statement zu erstsellung der Tabelle
    */
-  /*public static*/ function showCreateTable($table, $DBID=1)
+  static /*public*/ function showCreateTable($table, $DBID=1)
   {
+  
     $sql = rex_sql::factory($DBID);
-    $create = reset($sql->getArray("SHOW CREATE TABLE `$table`"));
+    $create = $sql->getArray("SHOW CREATE TABLE `$table`");
+    $create = current($create);
     $create = $create['Create Table'];
-    return $create;  	
+    
+    return $create;
   }
 
   /**
    * Sucht alle Tabellen der Datenbankverbindung $DBID.
    * Falls $tablePrefix gesetzt ist, werden nur dem Prefix entsprechende Tabellen gesucht.
-   * 
-   * @param $DBID int Id der Datenbankverbindung 
-   * @param $tablePrefix string Zu suchender Tabellennamen-Prefix 
+   *
+   * @param $DBID int Id der Datenbankverbindung
+   * @param $tablePrefix string Zu suchender Tabellennamen-Prefix
    * @return array Ein Array von Tabellennamen
    */
-  /*public static*/ function showTables($DBID=1, $tablePrefix=null)
+  static /*public*/ function showTables($DBID=1, $tablePrefix=null)
   {
     $qry = 'SHOW TABLES';
     if($tablePrefix != null)
     {
       $tablePrefix = str_replace('_', '\_', $tablePrefix);
-    	$qry .= ' LIKE "'.$tablePrefix.'%"';    	
+      $qry .= ' LIKE "'.$tablePrefix.'%"';
     }
 
     $sql = rex_sql::factory($DBID);
     $tables = $sql->getArray($qry);
     $tables = array_map('reset', $tables);
-    
+
     return $tables;
   }
 
   /**
    * Sucht Spalteninformationen der Tabelle $table der Datenbankverbindung $DBID.
-   * 
+   *
    * @param $table string Name der Tabelle
-   * @param $DBID int Id der Datenbankverbindung 
-   * @return array Ein Array das die Metadaten enthält
+   * @param $DBID int Id der Datenbankverbindung
+   * @return array Ein Array das die Metadaten enthÃ¤lt
    */
-  /*public*/ function showColumns($table, $DBID=1)
+  static /*public*/ function showColumns($table, $DBID=1)
   {
     $sql = rex_sql::factory($DBID);
     $sql->setQuery('SHOW COLUMNS FROM '.$table);
@@ -839,18 +828,18 @@ class rex_sql
   }
 
   /**
-   * Gibt die Serverversion zurück.
-   * 
+   * Gibt die Serverversion zurÃ¼ck.
+   *
    * Die Versionsinformation ist erst bekannt,
    * nachdem der rex_sql Konstruktor einmalig erfolgreich durchlaufen wurde.
    */
-  /*public static*/ function getServerVersion()
+  static /*public*/ function getServerVersion()
   {
     global $REX;
     return $REX['MYSQL_VERSION'];
   }
-  
-  /*public static*/ function factory($DBID=1, $class=null)
+
+  static /*public*/ function factory($DBID=1, $class=null)
   {
     // keine spezielle klasse angegeben -> default klasse verwenden?
     if(!$class)
@@ -862,18 +851,18 @@ class rex_sql
         )
       );
     }
-    
+
     return new $class($DBID);
   }
 
   /**
-   * Gibt ein SQL Singelton Objekt zurück
-   * 
+   * Gibt ein SQL Singelton Objekt zurÃ¼ck
+   *
    * @deprecated since 4.3.0
    */
-  /*public*/ function getInstance($DBID=1, $deprecatedSecondParam = null)
+  static /*public*/ function getInstance($DBID=1, $deprecatedSecondParam = null)
   {
-  	return rex_sql::factory($DBID);
+    return rex_sql::factory($DBID);
   }
 
   /**
@@ -889,7 +878,7 @@ class rex_sql
    * Prueft die uebergebenen Zugangsdaten auf gueltigkeit und legt ggf. die
    * Datenbank an
    */
-  /*public static*/ function checkDbConnection($host, $login, $pw, $dbname, $createDb = false)
+  static /*public*/ function checkDbConnection($host, $login, $pw, $dbname, $createDb = false)
   {
     global $I18N;
 
@@ -899,19 +888,28 @@ class rex_sql
     {
       $err_msg = $I18N->msg('setup_021');
     }
-    elseif (!@ mysql_select_db($dbname, $link))
+    else
     {
-      if($createDb)
+      $result = mysql_query('SELECT VERSION() AS version', $link);
+      $result = mysql_fetch_array($result, MYSQL_ASSOC);
+      if (version_compare($result['version'], '5.0', '<'))
       {
-        mysql_query('CREATE DATABASE `'. $dbname .'`', $link);
-        if(mysql_error($link) != '')
+        $err_msg = $I18N->msg('setup_021_1', $result['version']);
+      }
+      elseif (!@ mysql_select_db($dbname, $link))
+      {
+        if($createDb)
+        {
+          mysql_query('CREATE DATABASE `'. $dbname .'`', $link);
+          if(mysql_error($link) != '')
+          {
+            $err_msg = $I18N->msg('setup_022');
+          }
+        }
+        else
         {
           $err_msg = $I18N->msg('setup_022');
         }
-      }
-      else
-      {
-        $err_msg = $I18N->msg('setup_022');
       }
     }
 
@@ -923,13 +921,13 @@ class rex_sql
   }
 
   /**
-   * Schließt die Verbindung zum DB Server
+   * SchlieÃŸt die Verbindung zum DB Server
    */
-  /*public static*/ function disconnect($DBID=1)
+  static /*public*/ function disconnect($DBID=1)
   {
     global $REX;
 
-    // Alle Connections schließen
+    // Alle Connections schlieÃŸen
     if($DBID === null)
     {
       foreach($REX['DB'] as $DBID => $DBSettings)
@@ -938,8 +936,8 @@ class rex_sql
       return;
     }
 
-    if(!$REX['DB'][$DBID]['PERSISTENT'] && 
-       isset($REX['DB'][$DBID]['IDENTIFIER']) && 
+    if(!$REX['DB'][$DBID]['PERSISTENT'] &&
+       isset($REX['DB'][$DBID]['IDENTIFIER']) &&
        is_resource($REX['DB'][$DBID]['IDENTIFIER']))
     {
       $db = rex_sql::factory($DBID);
@@ -969,7 +967,7 @@ class rex_sql
     $this->setValue('createuser', $user);
   }
 
-  /*public*/ function isValid($object)
+  static /*public*/ function isValid($object)
   {
     return is_object($object) && is_a($object, 'rex_sql');
   }

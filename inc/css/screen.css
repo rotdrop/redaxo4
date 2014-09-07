@@ -86,23 +86,24 @@ A#stoerer {
 	height:169px;
 }
 /* Navi Main Items */
-DIV#header UL.navi-1 {
+DIV#header UL.rex-navi1.cafev {
 	position:absolute;
 	top:111px;
 	left:50px;
 	width:130px;
 }
-DIV#header UL.navi-1 A {
+DIV#header UL.rex-navi1.cafev A {
 	display:block;
 	width:130px;
 	height:24px;
 	font-size:1.2em;
 	color:#181818;
 }
-DIV#header UL.navi-1 LI.selected A,
-DIV#header UL.navi-1 A.selected,
-DIV#header UL.navi-1 A:hover,
-DIV#header UL.navi-1 LI.active A {
+/* CAFEV special stuff, probably */
+DIV#header UL.rex-navi1.cafev LI.rex-current.cafev A,
+DIV#header UL.rex-navi1.cafev A.rex-current.cafev,
+DIV#header UL.rex-navi1.cafev A:hover,
+DIV#header UL.rex-navi1.cafev LI.rex-active.cafeve A {
 	color:#740502;
 }
 /**
@@ -120,19 +121,19 @@ DIV#content {
 	line-height:1.4em;
 	padding-bottom:30px;
 }
-DIV#content UL.navi-1 {
+DIV#content UL#menu-4.cafev {
 	position:absolute;
 	top:26px;
 	right:30px;
 	text-align:right;
 	color:#d3c8c8;
 }
-DIV#content UL.navi-1 A {
+DIV#content UL#menu-4.cafev A {
 	color:#d3c8c8;
 	font-size:0.9em;
 	line-height:1.4em;
 }
-DIV#content UL.navi-1 A:hover {
+DIV#content UL#menu-4.cafev A:hover {
 	color:#fff;
 }
 /**
@@ -212,7 +213,7 @@ DIV#content DIV.navi A {
 	color:#d3c8c8;
 	padding:0 1em 0 0;
 }
-DIV#content DIV.navi A.selected,
+DIV#content DIV.navi A.rec-current.cafev,
 DIV#content DIV.navi A:hover {
 	color:#fff;
 }
@@ -242,27 +243,33 @@ DIV#footer UL#menu-2 {
 DIV#footer UL#menu-3 {
 	left:50px;
 }
-DIV#footer UL.navi-1 {
+DIV#footer UL#menu-3.cafev,
+DIV#footer UL#menu-2.cafev {
 	position:absolute;
 	top:16px;
 }
-DIV#footer UL.navi-1 LI {
+DIV#footer UL#menu-3.cafev LI,
+DIV#footer UL#menu-2.cafev LI {
 	float:left;
 	background:url(../img/footer-navi-bullet.gif) no-repeat center left;
 	padding:0 0 0 2px;
 }
-DIV#footer UL.navi-1 LI.first {
+DIV#footer UL#menu-3.cafev LI.first,
+DIV#footer UL#menu-2.cafev LI.first {
 	background:none;
 	padding:0;
 }
-DIV#footer UL.navi-1 A {
+DIV#footer UL#menu-3.cafev A,
+DIV#footer UL#menu-2.cafev A {
 	color:#d3c8c8;
 	color:#000;
 	font-size:0.9em;
 	padding:0 13px 0 15px;
 }
-DIV#footer UL.navi-1 A:hover,
-DIV#footer UL.navi-1 A.selected {
+DIV#footer UL#menu-3.cafev A:hover,
+DIV#footer UL#menu-3.cafev A.rex-active.cafev,
+DIV#footer UL#menu-2.cafev A:hover,
+DIV#footer UL#menu-2.cafev A.rex-active.cafev {
 	color:#740502;
 }
 /**

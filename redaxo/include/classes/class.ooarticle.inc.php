@@ -17,35 +17,35 @@ class OOArticle extends OORedaxo
    * CLASS Function:
    * Return an OORedaxo object based on an id
    */
-  /*public static*/ function getArticleById($article_id, $clang = FALSE, $OOCategory = FALSE)
+  static /*public*/ function getArticleById($article_id, $clang = FALSE, $OOCategory = FALSE)
   {
     global $REX;
-    
+
     $article_id = (int) $article_id;
-    
+
     if(!is_int($article_id))
       return NULL;
-      
+
     if ($clang === FALSE)
       $clang = $REX['CUR_CLANG'];
-    
-    $article_path = $REX['INCLUDE_PATH'].'/generated/articles/'.$article_id.'.'.$clang.'.article';
+
+    $article_path = $REX['GENERATED_PATH'].'/articles/'.$article_id.'.'.$clang.'.article';
     if (!file_exists($article_path))
-		{
-			require_once ($REX['INCLUDE_PATH'].'/functions/function_rex_generate.inc.php');
-    	rex_generateArticleMeta($article_id, $clang);
-		}
+    {
+      require_once ($REX['INCLUDE_PATH'].'/functions/function_rex_generate.inc.php');
+      rex_generateArticleMeta($article_id, $clang);
+    }
 
     if (file_exists($article_path))
     {
       require_once ($article_path);
-      
+
       if ($OOCategory)
         return new OOCategory(OORedaxo :: convertGeneratedArray($REX['ART'][$article_id], $clang));
       else
         return new OOArticle(OORedaxo :: convertGeneratedArray($REX['ART'][$article_id], $clang));
     }
-    
+
     return NULL;
   }
 
@@ -53,13 +53,13 @@ class OOArticle extends OORedaxo
    * CLASS Function:
    * Return the site wide start article
    */
-  /*public static*/ function getSiteStartArticle($clang = FALSE)
+  static /*public*/ function getSiteStartArticle($clang = FALSE)
   {
     global $REX;
-    
+
     if ($clang === FALSE)
       $clang = $REX['CUR_CLANG'];
-      
+
     return OOArticle :: getArticleById($REX['START_ARTICLE_ID'], $clang);
   }
 
@@ -67,13 +67,13 @@ class OOArticle extends OORedaxo
    * CLASS Function:
    * Return start article for a certain category
    */
-  /*public static*/ function getCategoryStartArticle($a_category_id, $clang = FALSE)
+  static /*public*/ function getCategoryStartArticle($a_category_id, $clang = FALSE)
   {
     global $REX;
-    
+
     if ($clang === FALSE)
       $clang = $REX['CUR_CLANG'];
-      
+
     return OOArticle :: getArticleById($a_category_id, $clang);
   }
 
@@ -81,17 +81,17 @@ class OOArticle extends OORedaxo
    * CLASS Function:
    * Return a list of articles for a certain category
    */
-  /*public static*/ function getArticlesOfCategory($a_category_id, $ignore_offlines = FALSE, $clang = FALSE)
+  static /*public*/ function getArticlesOfCategory($a_category_id, $ignore_offlines = FALSE, $clang = FALSE)
   {
     global $REX;
 
     if ($clang === FALSE)
       $clang = $REX['CUR_CLANG'];
 
-    $articlelist = $REX['INCLUDE_PATH']."/generated/articles/".$a_category_id.".".$clang.".alist";
+    $articlelist = $REX['GENERATED_PATH']."/articles/".$a_category_id.".".$clang.".alist";
     if(!file_exists($articlelist))
     {
-			include_once ($REX['INCLUDE_PATH'].'/functions/function_rex_generate.inc.php');
+      include_once ($REX['INCLUDE_PATH'].'/functions/function_rex_generate.inc.php');
       rex_generateLists($a_category_id, $clang);
     }
 
@@ -99,24 +99,24 @@ class OOArticle extends OORedaxo
     if(file_exists($articlelist))
     {
       include_once($articlelist);
-      
+
       if(isset($REX['RE_ID'][$a_category_id]))
       {
-  	    foreach ($REX['RE_ID'][$a_category_id] as $var)
-  	    {
-  	      $article = OOArticle :: getArticleById($var, $clang);
-  	      if ($ignore_offlines)
-  	      {
-  	        if ($article->isOnline())
-  	        {
-  	          $artlist[] = $article;
-  	        }
-  	      }
-  	      else
-  	      {
-  	        $artlist[] = $article;
-  	      }
-  	    }
+        foreach ($REX['RE_ID'][$a_category_id] as $var)
+        {
+          $article = OOArticle :: getArticleById($var, $clang);
+          if ($ignore_offlines)
+          {
+            if ($article->isOnline())
+            {
+              $artlist[] = $article;
+            }
+          }
+          else
+          {
+            $artlist[] = $article;
+          }
+        }
       }
     }
 
@@ -127,7 +127,7 @@ class OOArticle extends OORedaxo
    * CLASS Function:
    * Return a list of top-level articles
    */
-  /*public static*/ function getRootArticles($ignore_offlines = FALSE, $clang = FALSE)
+  static /*public*/ function getRootArticles($ignore_offlines = FALSE, $clang = FALSE)
   {
     return OOArticle :: getArticlesOfCategory(0, $ignore_offlines, $clang);
   }
@@ -158,54 +158,43 @@ class OOArticle extends OORedaxo
   {
       if($this->isStartArticle())
         return $this->_path.$this->_id .'|';
-        
+
       return $this->_path;
   }
-  
+
   /**
    * Accessor Method:
    * returns the path ids of the category/article as an array
    */
   /*public*/ function getPathAsArray()
   {
-    $p = $this->_path;
-    if($this->isStartArticle())
-      $p = $this->_path.$this->_id .'|';
-      
-  	foreach($p as $k => $v)
-  	{
-  		if($v == "")
-  			unset($p[$k]);
-  		else
-  		  $p[$k] = (int) $v;
-  	}
-  	
-    return array_values($p);
+    $path = explode('|', $this->getPath());
+    return array_values(array_map('intval', array_filter($path)));
   }
-  
+
   /*
    * Static Method: Returns True when the given article is a valid OOArticle
    */
-  /*public static*/ function isValid($article)
+  static /*public*/ function isValid($article)
   {
     return is_object($article) && is_a($article, 'ooarticle');
   }
 
   /*public*/ function getValue($value)
   {
-    // alias für re_id -> category_id
+    // alias fÃ¼r re_id -> category_id
     if(in_array($value, array('re_id', '_re_id', 'category_id', '_category_id')))
     {
-      // für die CatId hier den Getter verwenden,
-      // da dort je nach ArtikelTyp unterscheidungen getroffen werden müssen
+      // fÃ¼r die CatId hier den Getter verwenden,
+      // da dort je nach ArtikelTyp unterscheidungen getroffen werden mÃ¼ssen
       return $this->getCategoryId();
     }
     return parent::getValue($value);
   }
-  
-  /*public*/ function hasValue($value)
+
+  static /*public*/ function hasValue($value)
   {
-  	return parent::hasValue($value, array('art_'));
+    return parent::hasValueWithPrefixes($value, array('art_'));
   }
-  
+
 }

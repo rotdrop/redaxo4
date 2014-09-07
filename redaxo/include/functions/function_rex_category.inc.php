@@ -2,13 +2,13 @@
 
 /**
  * Regelt die Rechte an den einzelnen Kategorien und gibt den Pfad aus
- * Kategorien = Startartikel und Bezüge
+ * Kategorien = Startartikel und BezÃ¼ge
  * @package redaxo4
  * @version svn:$Id$
  */
 
 $KATebene = 0; // aktuelle Ebene: default
-$KATPATH = '|'; // Standard für path Eintragungen in DB
+$KATPATH = '|'; // Standard fÃ¼r path Eintragungen in DB
 if (!isset($KATout)) $KATout = ''; // Variable definiert und vorbelegt wenn nicht existent
 
 $KATPERM = false;
@@ -44,10 +44,10 @@ else
 
     if ($SKAT->getRows()==1)
     {
+      $KATPATH .= $KPATH[$ii]."|";
       if ($KATPERM || $REX['USER']->hasCategoryPerm($catid))
       {
         $KATout .= ' <li>: <a href="index.php?page=structure&amp;category_id='. $catid .'&amp;clang='. $clang .'"'. rex_tabindex() .'>'. $catname .'</a></li>';
-        $KATPATH .= $KPATH[$ii]."|";
 
         if($REX['USER']->hasPerm('csw['.$catid.']'))
         {

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 06. Sep 2014 um 22:48
+-- Erstellungszeit: 06. Sep 2014 um 23:35
 -- Server Version: 10.0.13-MariaDB-log
 -- PHP-Version: 5.5.16-pl0-gentoo
 
@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS `rex_62_params` (
   `default` varchar(255) NOT NULL,
   `params` text,
   `validate` varchar(255) DEFAULT NULL,
+  `restrictions` text NOT NULL,
   `createuser` varchar(255) NOT NULL,
   `createdate` int(11) NOT NULL,
   `updateuser` varchar(255) NOT NULL,
@@ -48,18 +49,18 @@ CREATE TABLE IF NOT EXISTS `rex_62_params` (
 -- Daten für Tabelle `rex_62_params`
 --
 
-INSERT INTO `rex_62_params` (`field_id`, `title`, `name`, `prior`, `attributes`, `type`, `default`, `params`, `validate`, `createuser`, `createdate`, `updateuser`, `updatedate`) VALUES
-(1, 'translate:pool_file_description', 'med_description', 1, '', 2, '', '', '', 'admin', 1189343866, 'admin', 1189344596),
-(2, 'translate:pool_file_copyright', 'med_copyright', 2, '', 1, '', '', '', 'admin', 1189343877, 'admin', 1189344617),
-(3, 'translate:online_from', 'art_online_from', 1, '', 10, '', '', '', 'admin', 1189344934, 'admin', 1189344934),
-(4, 'translate:online_to', 'art_online_to', 2, '', 10, '', '', '', 'admin', 1189344947, 'admin', 1189344947),
-(5, 'translate:description', 'art_description', 3, '', 2, '', '', '', 'admin', 1189345025, 'admin', 1189345025),
-(6, 'translate:keywords', 'art_keywords', 4, '', 2, '', '', '', 'admin', 1189345068, 'admin', 1189345068),
-(7, 'translate:metadata_image', 'art_file', 5, '', 6, '', '', '', 'admin', 1189345109, 'admin', 1189345109),
-(8, 'translate:teaser', 'art_teaser', 6, '', 5, '', '', '', 'admin', 1189345182, 'admin', 1189345182),
-(9, 'translate:header_article_type', 'art_type_id', 7, 'size=1', 3, '', 'Standard|Zugriff für alle', '', 'admin', 1191963797, 'admin', 1191964038),
-(10, 'Hauptkategorie', 'cat_type', 1, '', 5, '', '', '', 'admin', 1258130095, 'admin', 1259154208),
-(11, 'Anzeigen im Menu', 'cat_menu', 2, '', 3, '1', '1:Hauptmenu|2:Footermenu|3:Kontaktmenu', '', 'admin', 1259154178, 'admin', 1259154608);
+INSERT INTO `rex_62_params` (`field_id`, `title`, `name`, `prior`, `attributes`, `type`, `default`, `params`, `validate`, `restrictions`, `createuser`, `createdate`, `updateuser`, `updatedate`) VALUES
+(1, 'translate:pool_file_description', 'med_description', 1, '', 2, '', '', '', '', 'admin', 1189343866, 'admin', 1189344596),
+(2, 'translate:pool_file_copyright', 'med_copyright', 2, '', 1, '', '', '', '', 'admin', 1189343877, 'admin', 1189344617),
+(3, 'translate:online_from', 'art_online_from', 1, '', 10, '', '', '', '', 'admin', 1189344934, 'admin', 1189344934),
+(4, 'translate:online_to', 'art_online_to', 2, '', 10, '', '', '', '', 'admin', 1189344947, 'admin', 1189344947),
+(5, 'translate:description', 'art_description', 3, '', 2, '', '', '', '', 'admin', 1189345025, 'admin', 1189345025),
+(6, 'translate:keywords', 'art_keywords', 4, '', 2, '', '', '', '', 'admin', 1189345068, 'admin', 1189345068),
+(7, 'translate:metadata_image', 'art_file', 5, '', 6, '', '', '', '', 'admin', 1189345109, 'admin', 1189345109),
+(8, 'translate:teaser', 'art_teaser', 6, '', 5, '', '', '', '', 'admin', 1189345182, 'admin', 1189345182),
+(9, 'translate:header_article_type', 'art_type_id', 7, 'size=1', 3, '', 'Standard|Zugriff für alle', '', '', 'admin', 1191963797, 'admin', 1191964038),
+(10, 'Hauptkategorie', 'cat_type', 1, '', 5, '', '', '', '', 'admin', 1258130095, 'admin', 1259154208),
+(11, 'Anzeigen im Menu', 'cat_menu', 2, '', 3, '1', '1:Hauptmenu|2:Footermenu|3:Kontaktmenu', '', '', 'admin', 1259154178, 'admin', 1259154608);
 
 -- --------------------------------------------------------
 
@@ -780,7 +781,7 @@ CREATE TABLE IF NOT EXISTS `rex_user` (
 
 INSERT INTO `rex_user` (`user_id`, `name`, `description`, `login`, `psw`, `status`, `rights`, `login_tries`, `createuser`, `updateuser`, `createdate`, `updatedate`, `lasttrydate`, `session_id`, `cookiekey`, `revision`) VALUES
 (1, 'Administrator', '', 'admin', '934c0deba77aeb88bd2510bc55207b338635fdd9', '1', '#admin[]#', 0, 'setup', 'cafev', 1259585724, 1382577312, 1409227070, '1pq5qg58b268133l4l8mhs91k1', NULL, 0),
-(2, 'CafevAdmin', '', 'cafev', '586ca826eb43bce4f669460e9dbd8028f24de0e1', '1', '#admin[]#image_resize[]#import_export[export]#import_export[import]#mediapool[]#phpmailer[]#textile[]#tiny_mce[]#accesskeys[]#advancedMode[]#article2startpage[]#be_search[mediapool]#be_search[structure]#copyArticle[]#copyContent[]#moveArticle[]#moveCategory[]#moveSlice[]#publishArticle[]#publishCategory[]#textile[help]#be_lang[default]#', 0, 'setup', 'cafev', 1259585724, 1395885108, 1410004276, 'ljhq696ba8p2igoqqf749pm2g4', NULL, 0),
+(2, 'CafevAdmin', '', 'cafev', '586ca826eb43bce4f669460e9dbd8028f24de0e1', '1', '#admin[]#image_resize[]#import_export[export]#import_export[import]#mediapool[]#phpmailer[]#textile[]#tiny_mce[]#accesskeys[]#advancedMode[]#article2startpage[]#be_search[mediapool]#be_search[structure]#copyArticle[]#copyContent[]#moveArticle[]#moveCategory[]#moveSlice[]#publishArticle[]#publishCategory[]#textile[help]#be_lang[default]#', 0, 'setup', 'cafev', 1259585724, 1395885108, 1410038909, '78tpmj5rugut5hscqk77hinuq2', NULL, 0),
 (4, 'Claus-Justus', 'Kassenwart & Blah', 'claus', '934c0deba77aeb88bd2510bc55207b338635fdd9', '1', '#csw[0]#media[0]#image_resize[]#import_export[export]#import_export[import]#mediapool[]#phpmailer[]#textile[]#tiny_mce[]#accesskeys[]#advancedMode[]#article2startpage[]#be_search[mediapool]#be_search[structure]#copyArticle[]#copyContent[]#moveArticle[]#moveCategory[]#moveSlice[]#publishArticle[]#publishCategory[]#textile[help]#clang[0]#be_lang[de_de_utf8]#module[1]#module[2]#module[3]#module[5]#module[7]#module[8]#module[4]#module[6]#module[9]#module[11]#module[10]#', 0, 'cafev', 'cafev', 1309799958, 1392154208, 1410004269, '', NULL, 0),
 (3, 'Katharina', '', 'Katharina', 'd5149839332ef9a4849069c0f1ac97aad35dc109', '1', '#csw[0]#media[0]#image_resize[]#import_export[export]#import_export[import]#mediapool[]#phpmailer[]#textile[]#tiny_mce[]#accesskeys[]#advancedMode[]#article2startpage[]#be_search[mediapool]#be_search[structure]#copyArticle[]#copyContent[]#moveArticle[]#moveCategory[]#moveSlice[]#publishArticle[]#publishCategory[]#textile[help]#clang[0]#module[1]#module[2]#module[3]#module[5]#module[7]#module[8]#module[4]#module[6]#module[9]#module[11]#module[10]#', 0, 'admin', 'cafev', 1264776343, 1352459009, 1406300266, '', NULL, 0),
 (5, 'Georg', '', 'georg', '36700c91ee5940ca2ba6dbd490006713f99ae952', '1', '#csw[0]#media[0]#image_resize[]#import_export[export]#import_export[import]#mediapool[]#phpmailer[]#textile[]#tiny_mce[]#accesskeys[]#advancedMode[]#article2startpage[]#be_search[mediapool]#be_search[structure]#copyArticle[]#copyContent[]#moveArticle[]#moveCategory[]#moveSlice[]#publishArticle[]#publishCategory[]#textile[help]#clang[0]#module[1]#module[2]#module[3]#module[5]#module[7]#module[8]#module[4]#module[6]#module[9]#module[11]#module[10]#', 0, 'cafev', 'cafev', 1339955037, 1341109652, 1367596607, 'stb0o81q3sec1adq4k4csvost7', NULL, 0),

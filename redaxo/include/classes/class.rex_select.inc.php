@@ -10,10 +10,12 @@
 ################ Class Select
 class rex_select
 {
-	var $attributes;
-  var $options;
+  var $attributes = array();
+  var $options = array();
   var $option_selected;
-  
+  var $currentOptgroup = 0;
+  var $optgroups = array();
+
   ################ Konstruktor
   /*public*/ function rex_select()
   {
@@ -33,31 +35,31 @@ class rex_select
 
   /*public*/ function setAttribute($name, $value)
   {
-  	$this->attributes[$name] = $value;
+    $this->attributes[$name] = $value;
   }
 
   /*public*/ function delAttribute($name)
   {
-  	if($this->hasAttribute($name))
-  	{
-  		unset($this->attributes[$name]);
-  		return true;
-  	}
-  	return false;
+    if($this->hasAttribute($name))
+    {
+      unset($this->attributes[$name]);
+      return true;
+    }
+    return false;
   }
 
   /*public*/ function hasAttribute($name)
   {
-  	return isset($this->attributes[$name]);
+    return isset($this->attributes[$name]);
   }
 
   /*public*/ function getAttribute($name, $default = '')
   {
-  	if($this->hasAttribute($name))
-  	{
-	  	return $this->attributes[$name];
-  	}
-  	return $default;
+    if($this->hasAttribute($name))
+    {
+      return $this->attributes[$name];
+    }
+    return $default;
   }
 
   ############### multiple felder ?
@@ -68,7 +70,7 @@ class rex_select
     else
       $this->delAttribute('multiple');
   }
-  
+
   ############### disabled ?
   /*public*/ function setDisabled($disabled = true)
   {
@@ -77,17 +79,17 @@ class rex_select
     else
       $this->delAttribute('disabled');
   }
-  
+
   ################ select name
   /*public*/ function setName($name)
   {
-  	$this->setAttribute('name', $name);
+    $this->setAttribute('name', $name);
   }
 
   ################ select id
   /*public*/ function setId($id)
   {
-  	$this->setAttribute('id', $id);
+    $this->setAttribute('id', $id);
   }
 
   /**
@@ -103,37 +105,37 @@ class rex_select
   {
     if (strpos($style, 'class=') !== false)
     {
-    	if(preg_match('/class=["\']?([^"\']*)["\']?/i', $style, $matches))
-    	{
-	    	$this->setAttribute('class', $matches[1]);
-    	}
+      if(preg_match('/class=["\']?([^"\']*)["\']?/i', $style, $matches))
+      {
+        $this->setAttribute('class', $matches[1]);
+      }
     }
     else
     {
-    	$this->setAttribute('style', $style);
+      $this->setAttribute('style', $style);
     }
   }
 
   ################ select size
   /*public*/ function setSize($size)
   {
-  	$this->setAttribute('size', $size);
+    $this->setAttribute('size', $size);
   }
 
   ################ selected feld - option value uebergeben
   /*public*/ function setSelected($selected)
   {
-  	if(is_array($selected))
-  	{
-  		foreach($selected as $sectvalue)
-  		{
-  			$this->setSelected($sectvalue);
-  		}
-  	}
-  	else
-  	{
-	    $this->option_selected[] = htmlspecialchars($selected);
-  	}
+    if(is_array($selected))
+    {
+      foreach($selected as $sectvalue)
+      {
+        $this->setSelected($sectvalue);
+      }
+    }
+    else
+    {
+      $this->option_selected[] = htmlspecialchars($selected);
+    }
   }
 
   /*public*/ function resetSelected()
@@ -141,17 +143,22 @@ class rex_select
     $this->option_selected = array ();
   }
 
-  ################ optionen hinzufuegen
-  /**
-   * Fügt eine Option hinzu
-   */
-  /*public*/ function addOption($name, $value, $id = 0, $re_id = 0, $attributes = array())
+  /*public*/ function addOptgroup($label)
   {
-    $this->options[$re_id][] = array ($name, $value, $id, $attributes);
+    $this->currentOptgroup++;
+    $this->optgroups[$this->currentOptgroup] = $label;
   }
 
   /**
-   * Fügt ein Array von Optionen hinzu, dass eine mehrdimensionale Struktur hat.
+   * FÃ¼gt eine Option hinzu
+   */
+  /*public*/ function addOption($name, $value, $id = 0, $re_id = 0, $attributes = array())
+  {
+    $this->options[$this->currentOptgroup][$re_id][] = array($name, $value, $id, $attributes);
+  }
+
+  /**
+   * FÃ¼gt ein Array von Optionen hinzu, dass eine mehrdimensionale Struktur hat.
    *
    * Dim   Wert
    * 0.    Name
@@ -167,19 +174,19 @@ class rex_select
     {
       // Hier vorher auf is_array abfragen, da bei Strings auch die Syntax mit [] funktioniert
       // $ab = "hallo"; $ab[2] -> "l"
-			$grouped = isset($options[0]) && is_array($options[0]) && isset ($options[0][2]) && isset ($options[0][3]);
+      $grouped = isset($options[0]) && is_array($options[0]) && isset ($options[0][2]) && isset ($options[0][3]);
       foreach ($options as $key => $option)
       {
-      	$option = (array) $option;
-      	$attributes = array();
-      	if (isset($option[5]) && is_array($option[5]))
-      	  $attributes = $option[5];
+        $option = (array) $option;
+        $attributes = array();
+        if (isset($option[5]) && is_array($option[5]))
+          $attributes = $option[5];
         if ($grouped)
         {
           $this->addOption($option[0], $option[1], $option[2], $option[3], $attributes);
           if(isset($option[4]) && $option[4])
           {
-          	$this->setSelected($option[1]);
+            $this->setSelected($option[1]);
           }
         }
         else
@@ -201,22 +208,22 @@ class rex_select
   }
 
   /**
-   * Fügt ein Array von Optionen hinzu, dass eine Key/Value Struktur hat.
-   * Wenn $use_keys mit false, werden die Array-Keys mit den Array-Values überschrieben
+   * FÃ¼gt ein Array von Optionen hinzu, dass eine Key/Value Struktur hat.
+   * Wenn $use_keys mit false, werden die Array-Keys mit den Array-Values Ã¼berschrieben
    */
   /*public*/ function addArrayOptions($options, $use_keys = true)
   {
-  	foreach($options as $key => $value)
-  	{
+    foreach($options as $key => $value)
+    {
       if(!$use_keys)
         $key = $value;
 
       $this->addOption($value, $key);
-  	}
+    }
   }
 
   /**
-   * Fügt Optionen anhand der Übergeben SQL-Select-Abfrage hinzu.
+   * FÃ¼gt Optionen anhand der Ãœbergeben SQL-Select-Abfrage hinzu.
    */
   /*public*/ function addSqlOptions($qry)
   {
@@ -225,7 +232,7 @@ class rex_select
   }
 
   /**
-   * Fügt Optionen anhand der Übergeben DBSQL-Select-Abfrage hinzu.
+   * FÃ¼gt Optionen anhand der Ãœbergeben DBSQL-Select-Abfrage hinzu.
    */
   /*public*/ function addDBSqlOptions($qry)
   {
@@ -236,17 +243,27 @@ class rex_select
   ############### show select
   /*public*/ function get()
   {
-  	$attr = '';
-  	foreach($this->attributes as $name => $value)
-  	{
-  		$attr .= ' '. $name .'="'. $value .'"';
-  	}
-  	
-    $ausgabe = "\n";
-		$ausgabe .= '<select'.$attr.'>'."\n";
+    $attr = '';
+    foreach($this->attributes as $name => $value)
+    {
+      $attr .= ' '. $name .'="'. $value .'"';
+    }
 
-    if (is_array($this->options))
-      $ausgabe .= $this->_outGroup(0);
+    $ausgabe = "\n";
+    $ausgabe .= '<select'.$attr.'>'."\n";
+
+    foreach ($this->options as $optgroup => $options) {
+      $this->currentOptgroup = $optgroup;
+      if ($optgroupLabel = isset($this->optgroups[$optgroup]) ? $this->optgroups[$optgroup] : null) {
+        $ausgabe .= '  <optgroup label="' . htmlspecialchars($optgroupLabel) . '">' . "\n";
+      }
+      if (is_array($options)) {
+        $ausgabe .= $this->_outGroup(0);
+      }
+      if ($optgroupLabel) {
+        $ausgabe .= '  </optgroup>' . "\n";
+      }
+    }
 
     $ausgabe .= '</select>'. "\n";
     return $ausgabe;
@@ -255,10 +272,10 @@ class rex_select
   ############### show select
   /*public*/ function show()
   {
-  	echo $this->get();
+    echo $this->get();
   }
 
-  /*private*/ function _outGroup($re_id, $level = 0)
+  /*protected*/ function _outGroup($re_id, $level = 0)
   {
 
     if ($level > 100)
@@ -297,15 +314,15 @@ class rex_select
     $bsps = '';
     if ($level > 0)
       $bsps = str_repeat('&nbsp;&nbsp;&nbsp;', $level);
-    
+
     if ($this->option_selected !== null && in_array($value, $this->option_selected))
       $attributes['selected'] = 'selected';
-    
+
     $attr = '';
-  	foreach($attributes as $n => $v)
-  	{
-  		$attr .= ' '. $n .'="'. $v .'"';
-  	}
+    foreach($attributes as $n => $v)
+    {
+      $attr .= ' '. $n .'="'. $v .'"';
+    }
 
     return '    <option value="'.$value.'"'.$attr.'>'.$bsps.$name.'</option>'."\n";
   }
@@ -318,12 +335,8 @@ class rex_select
       return false;
     }
 
-    foreach ($this->options as $gname => $group)
-    {
-      if ($gname == $re_id)
-      {
-        return $group;
-      }
+    if (isset($this->options[$this->currentOptgroup][$re_id])) {
+      return $this->options[$this->currentOptgroup][$re_id];
     }
 
     return false;
@@ -337,6 +350,7 @@ class rex_category_select extends rex_select
   /*private*/ var $clang;
   /*private*/ var $check_perms;
   /*private*/ var $rootId;
+  /*private*/ var $loaded;
 
   /*public*/ function rex_category_select($ignore_offlines = false, $clang = false, $check_perms = true, $add_homepage = true)
   {
@@ -345,27 +359,28 @@ class rex_category_select extends rex_select
     $this->check_perms = $check_perms;
     $this->add_homepage = $add_homepage;
     $this->rootId = null;
+    $this->loaded = false;
 
     parent::rex_select();
   }
 
   /**
    * Kategorie-Id oder ein Array von Kategorie-Ids als Wurzelelemente der Select-Box.
-   * 
-   * @param $rootId mixed Kategorie-Id oder Array von Kategorie-Ids zur Identifikation der Wurzelelemente. 
+   *
+   * @param $rootId mixed Kategorie-Id oder Array von Kategorie-Ids zur Identifikation der Wurzelelemente.
    */
   /*public*/ function setRootId($rootId)
   {
     $this->rootId = $rootId;
   }
-  
+
   /*protected*/ function addCatOptions()
   {
     global $REX;
 
     if($this->add_homepage)
       $this->addOption('Homepage', 0);
-      
+
     if($this->rootId !== null)
     {
       if(is_array($this->rootId))
@@ -410,7 +425,7 @@ class rex_category_select extends rex_select
       }
     }
   }
-  
+
   /*protected*/ function addCatOption(/*OOCategory*/ $cat, $group = null)
   {
     global $REX;
@@ -420,13 +435,13 @@ class rex_category_select extends rex_select
     {
       $cid = $cat->getId();
       $cname = $cat->getName();
-      
+
       if($REX['USER']->hasPerm('advancedMode[]'))
         $cname .= ' ['. $cid .']';
-      
+
       if($group === null)
         $group = $cat->getParentId();
-      
+
       $this->addOption($cname, $cid, $cid, $group);
       $childs = $cat->getChildren($this->ignore_offlines, $this->clang);
       if (is_array($childs))
@@ -441,20 +456,19 @@ class rex_category_select extends rex_select
 
   /*public*/ function get()
   {
-    static $loaded = false;
-    
-    if(!$loaded)
+    if(!$this->loaded)
     {
       $this->addCatOptions();
+      $this->loaded = true;
     }
-    
+
     return parent::get();
   }
-  
-  /*private*/ function _outGroup($re_id, $level = 0)
+
+  /*protected*/ function _outGroup($re_id, $level = 0, $optgroups = false)
   {
-		global $REX;
-  	if ($level > 100)
+    global $REX;
+    if ($level > 100)
     {
       // nur mal so zu sicherheit .. man weiss nie ;)
       echo "select->_outGroup overflow ($groupname)";
@@ -473,9 +487,9 @@ class rex_category_select extends rex_select
           $ausgabe .= $this->_outOption($name, $value, $level);
       }elseif(($this->check_perms && $REX['USER']->hasCategoryPerm($option[2],FALSE)))
       {
-      	$level--;
+        $level--;
       }
-      
+
       $subgroup = $this->_getGroup($id, true);
       if ($subgroup !== false)
       {
@@ -484,7 +498,7 @@ class rex_category_select extends rex_select
     }
     return $ausgabe;
   }
-  
+
 }
 
 ################ Class MediaKategorie Select
@@ -492,25 +506,27 @@ class rex_mediacategory_select extends rex_select
 {
   var $check_perms;
   var $rootId;
-  
+  /*private*/ var $loaded;
+
   /*public*/ function rex_mediacategory_select($check_perms = true)
   {
     $this->check_perms = $check_perms;
     $this->rootId = null;
-    
+    $this->loaded = false;
+
     parent::rex_select();
   }
-  
+
   /**
    * Kategorie-Id oder ein Array von Kategorie-Ids als Wurzelelemente der Select-Box.
-   * 
-   * @param $rootId mixed Kategorie-Id oder Array von Kategorie-Ids zur Identifikation der Wurzelelemente. 
+   *
+   * @param $rootId mixed Kategorie-Id oder Array von Kategorie-Ids zur Identifikation der Wurzelelemente.
    */
   /*public*/ function setRootId($rootId)
   {
     $this->rootId = $rootId;
   }
-  
+
   /*protected*/ function addCatOptions()
   {
     if($this->rootId !== null)
@@ -544,20 +560,20 @@ class rex_mediacategory_select extends rex_select
       }
     }
   }
-  
+
   /*protected*/ function addCatOption(/*OOMediaCategory*/ $mediacat)
   {
     global $REX;
-    
+
     if(!$this->check_perms ||
         $this->check_perms && $REX['USER']->hasMediaCategoryPerm($mediacat->getId()))
     {
       $mid = $mediacat->getId();
       $mname = $mediacat->getName();
-      
+
       if($REX['USER']->hasPerm('advancedMode[]'))
         $mname .= ' ['. $mid .']';
-        
+
       $this->addOption($mname, $mid, $mid, $mediacat->getParentId());
       $childs = $mediacat->getChildren();
       if (is_array($childs))
@@ -569,16 +585,15 @@ class rex_mediacategory_select extends rex_select
       }
     }
   }
-  
+
   /*public*/ function get()
   {
-    static $loaded = false;
-    
-    if(!$loaded)
+    if(!$this->loaded)
     {
       $this->addCatOptions();
+      $this->loaded = true;
     }
-    
+
     return parent::get();
   }
 }

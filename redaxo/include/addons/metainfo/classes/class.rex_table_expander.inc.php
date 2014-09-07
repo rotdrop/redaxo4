@@ -41,7 +41,7 @@ class rex_a62_tableExpander extends rex_form
     $select =& $field->getSelect();
     $select->setSize(1);
     $select->addOption($I18N->msg('minfo_field_first_prior'), 1);
-    // Im Edit Mode das Feld selbst nicht als Position einfügen
+    // Im Edit Mode das Feld selbst nicht als Position einfÃ¼gen
     $qry = 'SELECT name,prior FROM '. $this->tableName .' WHERE `name` LIKE "'. $this->metaPrefix .'%"';
     if($this->isEditMode())
     {
@@ -63,17 +63,17 @@ class rex_a62_tableExpander extends rex_form
     $field->setLabel($I18N->msg('minfo_field_label_title'));
     $field->setNotice($I18N->msg('minfo_field_notice_title'));
 
-	  $gq = new rex_sql;
-		$gq->setQuery('SELECT dbtype,id FROM '. $REX['TABLE_PREFIX'] .'62_type');
-		$textFields = array();
-		foreach($gq->getArray() as $f) 
-		{
-		  if($f["dbtype"] == "text")
-		  {
-		  $textFields[$f['id']] = $f['id'];
-		  }
-		}
-    
+    $gq = new rex_sql;
+    $gq->setQuery('SELECT dbtype,id FROM '. $REX['TABLE_PREFIX'] .'62_type');
+    $textFields = array();
+    foreach($gq->getArray() as $f)
+    {
+      if($f["dbtype"] == "text")
+      {
+      $textFields[$f['id']] = $f['id'];
+      }
+    }
+
     $field =& $this->addSelectField('type');
     $field->setLabel($I18N->msg('minfo_field_label_type'));
     $field->setAttribute('onchange', 'meta_checkConditionalFields(this, new Array('. implode(',', $typeFields) .'), new Array('. implode(',', $textFields) .'));');
@@ -81,7 +81,7 @@ class rex_a62_tableExpander extends rex_form
     $select->setSize(1);
 
     $changeTypeFieldId = $field->getAttribute('id');
-    
+
     $qry = 'SELECT label,id FROM '. $REX['TABLE_PREFIX'] .'62_type';
     $select->addSqlOptions($qry);
 
@@ -116,7 +116,7 @@ class rex_a62_tableExpander extends rex_form
     $field =& $this->addField('', 'restrictions', $value = null, $attributes);
     $field->setLabel($I18N->msg('minfo_field_label_restrictions'));
     $field->setAttribute('size', 10);
-    
+
     parent::init();
   }
 
@@ -128,21 +128,21 @@ class rex_a62_tableExpander extends rex_form
 
   /*protected*/ function delete()
   {
-  	// Infos zuerst selektieren, da nach parent::delete() nicht mehr in der db
+    // Infos zuerst selektieren, da nach parent::delete() nicht mehr in der db
     $sql = rex_sql::factory();
     $sql->debugsql =& $this->debug;
     $sql->setTable($this->tableName);
     $sql->setWhere($this->whereCondition);
     $sql->select('name');
     $columnName = $sql->getValue('name');
-    
+
     if(($result = parent::delete()) === true)
     {
-      // Prios neu setzen, damit keine lücken entstehen
+      // Prios neu setzen, damit keine LÃ¼cken entstehen
       $this->organizePriorities(1,2);
       return $this->tableManager->deleteColumn($columnName);
     }
-    
+
     return $result;
   }
 
@@ -155,7 +155,7 @@ class rex_a62_tableExpander extends rex_form
       // Den Namen mit Prefix speichern
       return $this->addPrefix($fieldValue);
     }
-    
+
     return parent::preSave($fieldsetName, $fieldName, $fieldValue, $saveSql);
   }
 
@@ -200,7 +200,7 @@ class rex_a62_tableExpander extends rex_form
     if(preg_match('/[^a-zA-Z0-9\_]/', $fieldName))
       return $I18N->msg('minfo_field_error_chars_name');
 
-    // Prüfen ob schon eine Spalte mit dem Namen existiert (nur beim add nötig)
+    // PrÃ¼fen ob schon eine Spalte mit dem Namen existiert (nur beim add nÃ¶tig)
     if(!$this->isEditMode())
     {
       $sql = rex_sql::factory();
@@ -219,10 +219,10 @@ class rex_a62_tableExpander extends rex_form
     $fieldName = $this->elementPostValue($this->getFieldsetName(), 'name');
 
     // Den alten Wert aus der DB holen
-    // Dies muss hier geschehen, da in parent::save() die Werte für die DB mit den
-    // POST werten überschrieben werden!
+    // Dies muss hier geschehen, da in parent::save() die Werte fÃ¼r die DB mit den
+    // POST werten Ã¼berschrieben werden!
     $fieldOldName = '';
-    $fieldOldPrior = 9999999999999; // dirty, damit die prio richtig läuft...
+    $fieldOldPrior = 9999999999999; // dirty, damit die prio richtig lÃ¤uft...
     $fieldOldDefault = '';
     if($this->sql->getRows() == 1)
     {
@@ -236,7 +236,6 @@ class rex_a62_tableExpander extends rex_form
       global $REX, $I18N;
 
       $this->organizePriorities($this->elementPostValue($this->getFieldsetName(), 'prior'), $fieldOldPrior);
-      rex_generateAll();
 
       $fieldName = $this->addPrefix($fieldName);
       $fieldType = $this->elementPostValue($this->getFieldsetName(), 'type');
@@ -247,14 +246,14 @@ class rex_a62_tableExpander extends rex_form
       $result = $sql->getArray('SELECT `dbtype`, `dblength` FROM `'. $REX['TABLE_PREFIX'] .'62_type` WHERE id='. $fieldType);
       $fieldDbType = $result[0]['dbtype'];
       $fieldDbLength = $result[0]['dblength'];
-      
-      // TEXT Spalten dürfen in MySQL keine Defaultwerte haben
+
+      // TEXT Spalten dÃ¼rfen in MySQL keine Defaultwerte haben
       if($fieldDbType == 'text')
         $fieldDefault = null;
 
       if($this->isEditMode())
       {
-        // Spalte in der Tabelle verändern
+        // Spalte in der Tabelle verÃ¤ndern
         $tmRes = $this->tableManager->editColumn($fieldOldName, $fieldName, $fieldDbType, $fieldDbLength, $fieldDefault);
       }
       else
@@ -262,7 +261,9 @@ class rex_a62_tableExpander extends rex_form
         // Spalte in der Tabelle anlegen
         $tmRes = $this->tableManager->addColumn($fieldName, $fieldDbType, $fieldDbLength, $fieldDefault);
       }
-      
+      OORedaxo::$vars = array();
+      rex_generateAll();
+
       if($tmRes)
       {
         // DefaultWerte setzen
@@ -275,15 +276,15 @@ class rex_a62_tableExpander extends rex_form
           $upd->setValue($fieldName, addSlashes($fieldDefault));
           return $upd->update();
         }
-        
-        // Default werte haben schon zuvor gepasst, daher true zurückgeben
+
+        // Default werte haben schon zuvor gepasst, daher true zurÃ¼ckgeben
         return true;
       }
     }
 
     return false;
   }
-  
+
   /*public*/ function getPrefix()
   {
     return $this->metaPrefix;
@@ -298,7 +299,7 @@ class rex_a62_tableExpander extends rex_form
       $this->tableName,
       'prior',
       'name LIKE "'. $this->metaPrefix .'%"',
-      'prior, updatedate desc', 
+      'prior, updatedate desc',
       'field_id'
     );
   }

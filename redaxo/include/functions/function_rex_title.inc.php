@@ -9,7 +9,7 @@
  * Ausgabe des Seitentitels
  *
  *
- * Beispiel für einen Seitentitel
+ * Beispiel fÃ¼r einen Seitentitel
  *
  * <code>
  * $subpages = array(
@@ -22,7 +22,7 @@
  * </code>
  *
  *
- * Beispiel für einen Seitentitel mit Rechteprüfung
+ * Beispiel fÃ¼r einen Seitentitel mit RechteprÃ¼fung
  *
  * <code>
  * $subpages = array(
@@ -35,7 +35,7 @@
  * </code>
  *
  *
- * Beispiel für einen Seitentitel eigenen Parametern
+ * Beispiel fÃ¼r einen Seitentitel eigenen Parametern
  *
  * <code>
  * $subpages = array(
@@ -49,7 +49,7 @@
  */
 function rex_title($head, $subtitle = '')
 {
-	global $article_id, $category_id, $page, $I18N;
+  global $article_id, $category_id, $page, $I18N;
 
   if(empty($subtitle))
   {
@@ -69,7 +69,7 @@ function rex_title($head, $subtitle = '')
   else
   {
     // REDAXO <= 4.2 compat
-	  $subtitle = '<div class="rex-title-row rex-title-row-sub">'.rex_get_subtitle($subtitle).'</div>';    
+    $subtitle = '<div class="rex-title-row rex-title-row-sub">'.rex_get_subtitle($subtitle).'</div>';
   }
 
   // ----- EXTENSION POINT
@@ -82,10 +82,10 @@ function rex_title($head, $subtitle = '')
   );
 
   print '
-	<div id="rex-title">
-  		<div class="rex-title-row"><h1>'.$head.'</h1></div>
-  		'.$subtitle.'
-	</div>';
+  <div id="rex-title">
+      <div class="rex-title-row"><h1>'.$head.'</h1></div>
+      '.$subtitle.'
+  </div>';
 
   rex_register_extension_point('PAGE_TITLE_SHOWN', $subtitle,
     array(
@@ -97,8 +97,8 @@ function rex_title($head, $subtitle = '')
 
   print '
 <!-- *** OUTPUT OF CONTENT - START *** -->
-	<div id="rex-output">
-	';
+  <div id="rex-output">
+  ';
 }
 
 /**
@@ -115,7 +115,6 @@ function rex_get_subtitle($subline)
 
   $subtitle_str = $subline;
   $subtitle = $subline;
-  $attr = '';
   $cur_subpage = rex_request('subpage', 'string');
   $cur_page    = rex_request('page', 'string');
 
@@ -133,16 +132,16 @@ function rex_get_subtitle($subline)
 
       $link = $subpage[0];
       $label = $subpage[1];
-      
+
       $perm = !empty($subpage[2]) ? $subpage[2] : '';
       $params = !empty($subpage[3]) ? rex_param_string($subpage[3]) : '';
-      // Berechtigung prüfen
+      // Berechtigung prÃ¼fen
       if ($perm != '')
       {
-        // Hat der User das Recht für die aktuelle Subpage?
+        // Hat der User das Recht fÃ¼r die aktuelle Subpage?
         if (!$REX['USER']->isAdmin() && !$REX['USER']->hasPerm($perm))
         {
-          // Wenn der User kein Recht hat, und diese Seite öffnen will -> Fehler
+          // Wenn der User kein Recht hat, und diese Seite Ã¶ffnen will -> Fehler
           if ($cur_subpage == $link)
           {
             exit ('You have no permission to this area!');
@@ -164,20 +163,28 @@ function rex_get_subtitle($subline)
       $active = (empty ($cur_subpage) && $link == '') || (!empty ($cur_subpage) && $cur_subpage == $link);
 
       // restliche attribute direkt in den link-tag schreiben
-      foreach($subpage as $attr_name => $attr_value)
+      $attr = '';
+      $add_class = '';
+      if(!empty($subpage[4]) && is_array($subpage[4]))
       {
-        if(is_int($attr_name)) continue;
-        
-        $attr .= $attr_name .'="'. $attr_value .'" ';
+        foreach($subpage[4] as $attr_name => $attr_value)
+        {
+          if($active && $attr_name == 'class')
+          {
+           $add_class = ' '.$attr_value;
+           break;
+          }
+          $attr .= ' '.$attr_name .'="'. $attr_value .'"';
+        }
       }
-      
+
       // Auf der aktiven Seite den Link nicht anzeigen
       if ($active)
       {
         // $format = '%s';
         // $subtitle[] = sprintf($format, $label);
-        $format = '<a href="?page='. $cur_page .'&amp;subpage=%s%s"%s'. rex_tabindex() .' class="rex-active">%s</a>';
-        $subtitle[] = sprintf($format, $link, $params, $attr, $label);
+        $format = '<a href="?page='. $cur_page .'&amp;subpage=%s%s"%s'. rex_tabindex() .' class="rex-active%s">%s</a>';
+        $subtitle[] = sprintf($format, $link, $params, $attr, $add_class, $label);
       }
       elseif ($link == '')
       {
@@ -198,11 +205,11 @@ function rex_get_subtitle($subline)
       $i = 1;
       foreach($subtitle as $part)
       {
-	      if($i == 1) 
-					$items .= '<li class="rex-navi-first">'. $part .'</li>';
-				else 
-	        $items .= '<li>'. $part .'</li>';
-					
+        if($i == 1)
+          $items .= '<li class="rex-navi-first">'. $part .'</li>';
+        else
+          $items .= '<li>'. $part .'</li>';
+
         $i++;
       }
       $subtitle_str = '
@@ -214,6 +221,6 @@ function rex_get_subtitle($subline)
       ';
     }
   }
-  // \n aus Quellcode formatierungsgründen
+  // \n aus Quellcode formatierungsgrÃ¼nden
   return $subtitle_str;
 }

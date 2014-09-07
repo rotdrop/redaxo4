@@ -120,7 +120,7 @@ if ($PERMALL)
       <form action="index.php" method="post">
         <fieldset class="rex-form-col-1">
           <legend>'. $legend .'</legend>
-          
+
           <div class="rex-form-wrapper">
             <input type="hidden" name="page" value="mediapool" />
             <input type="hidden" name="subpage" value="categories" />
@@ -207,6 +207,13 @@ if ($PERMALL)
   {
     echo '
         </div>
+        <script type="text/javascript">
+          <!--
+          jQuery(function($){
+            $("#rex-form-field-name").focus();
+          });
+          //-->
+        </script>
       </fieldset>
     </form>
   </div>

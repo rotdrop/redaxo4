@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 function rex_linkmap_url($local = array(),$globals = array())
 {
@@ -100,7 +100,7 @@ function rex_linkmap_tree($tree, $category_id, $children, $GlobalParams)
     if($ulclasses != '')
       $ulclasses = ' class="'. rtrim($ulclasses) .'"';
 
-    if ($li!='') $ul = '<ul>'."\n".$li.'</ul>'. "\n";
+    if ($li!='') $ul = '<ul'.$ulclasses.'>'."\n".$li.'</ul>'. "\n";
   }
   return $ul;
 }

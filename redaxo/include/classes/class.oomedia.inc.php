@@ -59,7 +59,7 @@ class OOMedia
   /**
    * @access public
    */
-  function getMediaByName($filename)
+  static function getMediaByName($filename)
   {
     return OOMedia :: getMediaByFileName($filename);
   }
@@ -70,27 +70,27 @@ class OOMedia
    * @example OOMedia::getMediaByExtension('css');
    * @example OOMedia::getMediaByExtension('gif');
    */
-  function getMediaByExtension($extension)
+  static function getMediaByExtension($extension)
   {
     global $REX;
-    
-    $extlist_path = $REX['INCLUDE_PATH'].'/generated/files/'.$extension.'.mextlist';
+
+    $extlist_path = $REX['GENERATED_PATH'].'/files/'.$extension.'.mextlist';
     if (!file_exists($extlist_path))
-		{
-			require_once ($REX['INCLUDE_PATH'].'/functions/function_rex_generate.inc.php');
-    	rex_generateMediaExtensionList($extension);
-		}
-    
+    {
+      require_once ($REX['INCLUDE_PATH'].'/functions/function_rex_generate.inc.php');
+      rex_generateMediaExtensionList($extension);
+    }
+
     $media = array();
 
     if (file_exists($extlist_path))
     {
       require_once ($extlist_path);
-      
-      if (isset($REX['MEDIA']['EXTENSION'][$extension]) && is_array($REX['MEDIA']['EXTENSION'][$extension])) 
+
+      if (isset($REX['MEDIA']['EXTENSION'][$extension]) && is_array($REX['MEDIA']['EXTENSION'][$extension]))
       {
         foreach($REX['MEDIA']['EXTENSION'][$extension] as $filename)
-          $media[] = & OOMedia :: getMediaByFileName($filename);
+          $media[] = OOMedia :: getMediaByFileName($filename);
       }
     }
 
@@ -100,19 +100,19 @@ class OOMedia
   /**
    * @access public
    */
-  function getMediaByFileName($name)
+  static function getMediaByFileName($name)
   {
     global $REX;
-    
+
     if ($name == '')
       return null;
-    
-    $media_path = $REX['INCLUDE_PATH'].'/generated/files/'.$name.'.media';
+
+    $media_path = $REX['GENERATED_PATH'].'/files/'.$name.'.media';
     if (!file_exists($media_path))
-		{
-			require_once ($REX['INCLUDE_PATH'].'/functions/function_rex_generate.inc.php');
-    	rex_generateMedia($name);
-		}
+    {
+      require_once ($REX['INCLUDE_PATH'].'/functions/function_rex_generate.inc.php');
+      rex_generateMedia($name);
+    }
 
     if (file_exists($media_path))
     {
@@ -126,7 +126,7 @@ class OOMedia
         'filetype' => 'type',
         'filesize' => 'size'
       );
-      
+
       $media = new OOMedia();
       foreach($REX['MEDIA']['FILENAME'][$name] as $key => $value)
       {
@@ -134,15 +134,15 @@ class OOMedia
           $var_name = '_'. $aliasMap[$key];
         else
           $var_name = '_'. $key;
-  
+
         $media->$var_name = $value;
       }
       $media->_cat = null;
       $media->_cat_name = null;
-  
+
       return $media;
     }
-    
+
     return NULL;
   }
 
@@ -161,7 +161,7 @@ class OOMedia
   {
     if ($this->_cat === null)
     {
-      $this->_cat = & OOMediaCategory :: getCategoryById($this->getCategoryId());
+      $this->_cat = OOMediaCategory :: getCategoryById($this->getCategoryId());
     }
     return $this->_cat;
   }
@@ -253,7 +253,7 @@ class OOMedia
   function getPath()
   {
     global $REX;
-    return $REX['HTDOCS_PATH'].'files';
+    return $REX['HTDOCS_PATH'].$REX['MEDIA_DIR'];
   }
 
   /**
@@ -307,7 +307,7 @@ class OOMedia
   /**
    * @access protected
    */
-  function _getFormattedSize($size)
+  static function _getFormattedSize($size)
   {
 
     // Setup some common file size measurements.
@@ -325,19 +325,19 @@ class OOMedia
     }
     elseif ($size < $mb)
     {
-      return round($size / $kb, 2)." KBytes";
+      return round($size / $kb, 2)." KB";
     }
     elseif ($size < $gb)
     {
-      return round($size / $mb, 2)." MBytes";
+      return round($size / $mb, 2)." MB";
     }
     elseif ($size < $tb)
     {
-      return round($size / $gb, 2)." GBytes";
+      return round($size / $gb, 2)." GB";
     }
     else
     {
-      return round($size / $tb, 2)." TBytes";
+      return round($size / $tb, 2)." TB";
     }
   }
 
@@ -352,7 +352,7 @@ class OOMedia
    * @access public
    * @static
    */
-  function _getDate($date, $format = null)
+  static function _getDate($date, $format = null)
   {
     if ($format !== null)
     {
@@ -382,7 +382,7 @@ class OOMedia
    */
   function getUpdateDate($format = null)
   {
-    return $this->_getDate($this->_updatedate, $format);
+    return self::_getDate($this->_updatedate, $format);
   }
 
   /**
@@ -399,7 +399,7 @@ class OOMedia
    */
   function getCreateDate($format = null)
   {
-    return $this->_getDate($this->_createdate, $format);
+    return self::_getDate($this->_createdate, $format);
   }
 
   /**
@@ -474,7 +474,7 @@ class OOMedia
             $resizeParam = 100;
           }
 
-          // Evtl. Größeneinheiten entfernen
+          // Evtl. GrÃ¶ÃŸeneinheiten entfernen
           $resizeParam = str_replace(array (
             'px',
             'pt',
@@ -492,14 +492,14 @@ class OOMedia
       else
       {
         // Bild 1:1 anzeigen
-        $path .= 'files/';
+        $path .= $REX['MEDIA_DIR'].'/';
         $file = $this->getFileName();
       }
     }
 
     $title = $this->getTitle();
 
-    // Alternativtext hinzufügen
+    // Alternativtext hinzufÃ¼gen
     if (!isset($params['alt']))
     {
       if ($title != '')
@@ -508,7 +508,7 @@ class OOMedia
       }
     }
 
-    // Titel hinzufügen
+    // Titel hinzufÃ¼gen
     if (!isset($params['title']))
     {
       if ($title != '')
@@ -517,7 +517,7 @@ class OOMedia
       }
     }
 
-    // Evtl. Zusatzatrribute anfügen
+    // Evtl. Zusatzatrribute anfÃ¼gen
     $additional = '';
     foreach ($params as $name => $value)
     {
@@ -572,7 +572,7 @@ class OOMedia
    * @access public
    * @static
    */
-  function isValid($media)
+  static function isValid($media)
   {
     return is_object($media) && is_a($media, 'oomedia');
   }
@@ -589,22 +589,10 @@ class OOMedia
    * @access public
    * @static
    */
-  function _isImage($filename)
+  static function _isImage($filename)
   {
-    static $imageExtensions;
-
-    if (!isset ($imageExtensions))
-    {
-      $imageExtensions = array (
-        'gif',
-        'jpeg',
-        'jpg',
-        'png',
-        'bmp'
-      );
-    }
-
-    return in_array(OOMedia :: _getExtension($filename), $imageExtensions);
+    global $REX;
+    return in_array(OOMedia :: _getExtension($filename), $REX['MEDIAPOOL']['IMAGE_EXTENSIONS']);
   }
 
   /**
@@ -613,7 +601,7 @@ class OOMedia
   function isInUse()
   {
     global $REX, $I18N;
-    
+
     // Im Frontend gibts kein I18N
     if(!is_object($I18N))
       $I18N = rex_create_lang($REX['LANG']);
@@ -624,7 +612,10 @@ class OOMedia
     $values = array();
     for ($i = 1; $i < 21; $i++)
     {
-      $values[] = 'value'.$i.' LIKE "%'.$filename.'%"';
+      // check if valueX contains $filename,
+      // but take care that other files that end with $filename are not matched
+      // example: "abc.jpg" should not be matched for $filename="bc.jpg"
+      $values[] = 'value'.$i.' REGEXP "(^|[^[:alnum:]+_-])'. $filename .'"';
     }
 
     $files = array();
@@ -632,7 +623,7 @@ class OOMedia
     for ($i = 1; $i < 11; $i++)
     {
       $files[] = 'file'.$i.'="'.$filename.'"';
-      $filelists[] = '(filelist'.$i.' = "'.$filename.'" OR filelist'.$i.' LIKE "'.$filename.',%" OR filelist'.$i.' LIKE "%,'.$filename.',%" OR filelist'.$i.' LIKE "%,'.$filename.'" ) ';
+      $filelists[] = 'FIND_IN_SET("'.$filename.'",filelist'.$i.')';
     }
 
     $where = '';
@@ -640,15 +631,6 @@ class OOMedia
     $where .= implode(' OR ', $filelists) .' OR ';
     $where .= implode(' OR ', $values);
     $query = 'SELECT DISTINCT article_id, clang FROM '.$REX['TABLE_PREFIX'].'article_slice WHERE '. $where;
-
-    // deprecated since REX 4.3
-    // ----- EXTENSION POINT
-    $query = rex_register_extension_point('OOMEDIA_IS_IN_USE_QUERY', $query,
-      array(
-        'filename' => $this->getFileName(),
-        'media' => $this,
-      )
-    );
 
     $warning = array();
     $res = $sql->getArray($query);
@@ -736,7 +718,7 @@ class OOMedia
    * @access public
    * @static
    */
-  function _getExtension($filename)
+  static function _getExtension($filename)
   {
     return substr(strrchr($filename, "."), 1);
   }
@@ -752,7 +734,7 @@ class OOMedia
     $folder = $REX['HTDOCS_PATH'] .'redaxo/media/';
     $icon = $folder .'mime-'.$ext.'.gif';
 
-    // Dateityp für den kein Icon vorhanden ist
+    // Dateityp fÃ¼r den kein Icon vorhanden ist
     if (!file_exists($icon))
     {
       if($useDefaultIcon)
@@ -762,11 +744,11 @@ class OOMedia
     }
     return $icon;
   }
-  
+
   /**
    * @access protected
    */
-  function _getTableName()
+  static function _getTableName()
   {
     global $REX;
     return $REX['TABLE_PREFIX'].'file';
@@ -816,7 +798,7 @@ class OOMedia
   function delete($filename = null)
   {
     global $REX;
-    
+
     if($filename != null)
     {
       $OOMed = OOMedia::getMediaByFileName($filename);
@@ -829,92 +811,64 @@ class OOMedia
       $qry = 'DELETE FROM '.$this->_getTableName().' WHERE file_id = '.$this->getId().' LIMIT 1';
       $sql = rex_sql::factory();
       $sql->setQuery($qry);
-  
+
       if($this->fileExists())
       {
         unlink($REX['MEDIAFOLDER'].DIRECTORY_SEPARATOR.$this->getFileName());
       }
-      
+
+      require_once ($REX['INCLUDE_PATH'].'/functions/function_rex_generate.inc.php');
       rex_deleteCacheMedia($this->getFileName());
-  
+
+      // ----- EXTENSION POINT
+      rex_register_extension_point('MEDIA_DELETED', '',
+        array(
+          'filename' => $filename
+        )
+      );
+
       return $sql->getError();
     }
     return false;
   }
-  
+
   function fileExists($filename = null)
   {
     global $REX;
-    
+
     if($filename === null)
     {
       $filename = $this->getFileName();
     }
-    
+
     return file_exists($REX['MEDIAFOLDER'].DIRECTORY_SEPARATOR.$filename);
   }
 
   // allowed filetypes
-  function getDocTypes()
+  static function getDocTypes()
   {
-    static $docTypes = array (
-      'bmp',
-      'css',
-      'doc',
-      'docx',
-      'eps',
-      'gif',
-      'gz',
-      'jpg',
-      'mov',
-      'mp3',
-      'ogg',
-      'pdf',
-      'png',
-      'ppt',
-      'pptx',
-      'pps',
-      'ppsx',
-      'rar',
-      'rtf',
-      'swf',
-      'tar',
-      'tif',
-      'txt',
-      'wma',
-      'xls',
-      'xlsx',
-      'zip'
-    );
-    return $docTypes;
+    global $REX;
+    return $REX['MEDIAPOOL']['ALLOWED_DOCTYPES'];
   }
 
-  function isDocType($type)
+  static function isDocType($type)
   {
     return in_array($type, OOMedia :: getDocTypes());
   }
 
   // allowed image upload types
-  function getImageTypes()
+  static function getImageTypes()
   {
-    static $imageTypes = array (
-      'image/gif',
-      'image/jpg',
-      'image/jpeg',
-      'image/png',
-      'image/x-png',
-      'image/pjpeg',
-      'image/bmp'
-    );
-    return $imageTypes;
+    global $REX;
+    return $REX['MEDIAPOOL']['IMAGE_TYPES'];
   }
 
-  function isImageType($type)
+  static function isImageType($type)
   {
     return in_array($type, OOMedia :: getImageTypes());
   }
 
-  function compareImageTypes($type1, $type2)
+  static function compareImageTypes($type1, $type2)
   {
     static $jpg = array (
       'image/jpg',
@@ -940,7 +894,7 @@ class OOMedia
     {
       $value = "_".$value;
     }
-    
+
     // Extra-Abfrage, da die Variable _cat_name erst in getCategoryName() gesetzt wird
     if ($value == '_cat_name')
     {
@@ -958,16 +912,16 @@ class OOMedia
       return $this->getValue('med'. $value);
     }
   }
-  
+
   /**
    * @access public
    * @deprecated 20.02.2010
    * Stattdessen getMediaByFileName() nutzen
    */
-  function getMediaById($id)
+  static function getMediaById($id)
   {
     global $REX;
-    
+
     $id = (int) $id;
     if ($id==0)
       return null;
@@ -979,7 +933,7 @@ class OOMedia
     {
       return OOMedia :: getMediaByFileName($sql->getValue('filename'));
     }
-    
+
     return NULL;
   }
 }

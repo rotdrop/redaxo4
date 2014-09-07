@@ -9,7 +9,7 @@
 
 /**
  * URL Simple Rewrite Anleitung:
- * 
+ *
  *   .htaccess file in das root verzeichnis:
  *     RewriteEngine Off
  */
@@ -22,7 +22,7 @@ class myUrlRewriter extends rexUrlRewriter
     $this->rexUrlRewriter();
   }
 
-  // Parameter aus der URL für das Script verarbeiten
+  // Parameter aus der URL fÃ¼r das Script verarbeiten
   function prepare()
   {
     global $article_id, $clang, $REX;
@@ -41,12 +41,12 @@ class myUrlRewriter extends rexUrlRewriter
   // Url neu schreiben
   function rewrite($params)
   {
-  	// Url wurde von einer anderen Extension bereits gesetzt
-  	if($params['subject'] != '')
-  	{
-  		return $params['subject'];
-  	}
-  	
-  	return '?/'.$params['id'].'-'.$params['clang'].'-'.$params['name'].'.htm'.$params['params'];
+    // Url wurde von einer anderen Extension bereits gesetzt
+    if($params['subject'] != '')
+    {
+      return $params['subject'];
+    }
+
+    return '?/'.$params['id'].'-'.$params['clang'].'-'.$params['name'].'.htm'.$params['params'];
   }
 }

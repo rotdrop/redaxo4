@@ -2,7 +2,7 @@
 
 /**
  * Klasse regelt den Zugriff auf Artikelinhalte.
- * Alle benötigten Daten werden von der DB bezogen.
+ * Alle benÃ¶tigten Daten werden von der DB bezogen.
  *
  * @package redaxo4
  * @version svn:$Id$
@@ -76,7 +76,7 @@ class rex_article_base
     $this->slice_revision = (int) $sr;
   }
 
-  // ----- Slice Id setzen für Editiermodus
+  // ----- Slice Id setzen fÃ¼r Editiermodus
   /*public*/ function setSliceId($value)
   {
     $this->slice_id = $value;
@@ -156,7 +156,7 @@ class rex_article_base
       if ($this->getValue('startpage')!=1) $value = 're_id';
       else $value = 'id';
     }
-    // über SQL muss article_id -> id heissen
+    // Ã¼ber SQL muss article_id -> id heissen
     else if ($value == 'article_id')
     {
       $value = 'id';
@@ -201,9 +201,9 @@ class rex_article_base
     if($this->getSlice)
     {
       foreach($RE_CONTS as $k => $v)
-      	$I_ID = $k;
+        $I_ID = $k;
     }
-    
+
     return $this->replaceVars($artDataSql, $RE_MODUL_OUT[$I_ID]);
   }
 
@@ -218,7 +218,7 @@ class rex_article_base
     {
       return $I18N->msg('no_article_available');
     }
-    
+
     $sliceLimit = '';
     if ($this->getSlice) {
       $sliceLimit = " AND ".$REX['TABLE_PREFIX']."article_slice.id = '" . $this->getSlice . "' ";
@@ -238,7 +238,7 @@ class rex_article_base
             WHERE
               ".$REX['TABLE_PREFIX']."article_slice.article_id='".$this->article_id."' AND
               ".$REX['TABLE_PREFIX']."article_slice.clang='".$this->clang."' AND
-              ".$REX['TABLE_PREFIX']."article.clang='".$this->clang."' AND 
+              ".$REX['TABLE_PREFIX']."article.clang='".$this->clang."' AND
               ".$REX['TABLE_PREFIX']."article_slice.revision='".$this->slice_revision."'
               ". $sliceLimit ."
               ORDER BY ".$REX['TABLE_PREFIX']."article_slice.re_article_slice_id";
@@ -350,7 +350,7 @@ class rex_article_base
     $articleContent = $this->postArticle($articleContent, $LCTSL_ID, $module_id);
 
     // -------------------------- schreibe content
-    if ($this->eval === FALSE) echo $this->replaceLinks($articleContent);
+    if ($this->eval === FALSE) echo $articleContent;
     else eval("?>".$articleContent);
 
     // ----- end: article caching
@@ -371,7 +371,7 @@ class rex_article_base
     return $articleContent;
   }
 
-  // ----- Template inklusive Artikel zurückgeben
+  // ----- Template inklusive Artikel zurÃ¼ckgeben
   /*public*/ function getArticleTemplate()
   {
     // global $REX hier wichtig, damit in den Artikeln die Variable vorhanden ist!
@@ -389,6 +389,8 @@ class rex_article_base
 
       $CONTENT = ob_get_contents();
       ob_end_clean();
+
+      $CONTENT = $this->replaceLinks($CONTENT);
     }
     else
     {
@@ -426,9 +428,9 @@ class rex_article_base
           {
             // Wenn der aktuelle Slice nicht gespeichert werden soll
             // (via Action wurde das Nicht-Speichern-Flag gesetzt)
-            // Dann die Werte manuell aus dem Post übernehmen
-            // und anschließend die Werte wieder zurücksetzen,
-            // damit die nächsten Slices wieder die Werte aus der DB verwenden
+            // Dann die Werte manuell aus dem Post Ã¼bernehmen
+            // und anschlieÃŸend die Werte wieder zurÃ¼cksetzen,
+            // damit die nÃ¤chsten Slices wieder die Werte aus der DB verwenden
             $var->setACValues($sql,$REX['ACTION']);
             $tmp = $var->getBEInput($sql,$content);
             $flushValues = true;
@@ -450,15 +452,15 @@ class rex_article_base
         $tmp = $var->getFEOutput($sql,$content);
       }
 
-      // Rückgabewert nur auswerten wenn auch einer vorhanden ist
-      // damit $content nicht verfälscht wird
-      // null ist default Rückgabewert, falls kein RETURN in einer Funktion ist
+      // RÃ¼ckgabewert nur auswerten wenn auch einer vorhanden ist
+      // damit $content nicht verfÃ¤lscht wird
+      // null ist default RÃ¼ckgabewert, falls kein RETURN in einer Funktion ist
       if($tmp !== null)
       {
         $content = $tmp;
       }
     }
-    
+
     if ($flushValues)
       $sql->flushValues();
 
@@ -486,7 +488,7 @@ class rex_article_base
         $user_login = '';
       }
     }
-    
+
     if (!$template_id)
       $template_id = $this->getTemplateId();
 
@@ -513,31 +515,13 @@ class rex_article_base
 
   /*protected*/ function replaceLinks($content)
   {
-    // Hier beachten, dass man auch ein Zeichen nach dem jeweiligen Link mitmatched,
-    // damit beim ersetzen von z.b. redaxo://11 nicht auch innerhalb von redaxo://112
-    // ersetzt wird
-    // siehe dazu: http://forum.redaxo.de/ftopic7563.html
-
-    // -- preg match redaxo://[ARTICLEID]-[CLANG] --
-    preg_match_all('@redaxo://([0-9]*)\-([0-9]*)(.){1}/?@im',$content,$matches,PREG_SET_ORDER);
-    foreach($matches as $match)
-    {
-      if(empty($match)) continue;
-
-      $url = rex_getURL($match[1], $match[2]);
-      $content = str_replace($match[0],$url.$match[3],$content);
-    }
-
-    // -- preg match redaxo://[ARTICLEID] --
-    preg_match_all('@redaxo://([0-9]*)(.){1}/?@im',$content,$matches,PREG_SET_ORDER);
-    foreach($matches as $match)
-    {
-      if(empty($match)) continue;
-
-      $url = rex_getURL($match[1], $this->clang);
-      $content = str_replace($match[0],$url.$match[2],$content);
-    }
-
-    return $content;
+    return preg_replace_callback(
+      '@redaxo://(\d+)(?:-(\d+))?/?@i',
+      create_function(
+        '$matches',
+        'return rex_getUrl($matches[1], isset($matches[2]) ? $matches[2] : '. (integer) $this->clang .');'
+      ),
+      $content
+    );
   }
 }

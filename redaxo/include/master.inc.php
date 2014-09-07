@@ -1,32 +1,40 @@
 <?php
 
-error_reporting(E_ALL ^ E_STRICT ^ E_DEPRECATED ^ E_NOTICE);
-
 /**
  * Hauptkonfigurationsdatei
  * @package redaxo4
  * @version svn:$Id$
  */
 
+#error_reporting(E_ALL ^ E_STRICT ^ E_DEPRECATED ^ E_NOTICE);
+
+define('REX_MIN_PHP_VERSION', '5.3.0');
+
+if (version_compare(PHP_VERSION, REX_MIN_PHP_VERSION) < 0) {
+  // out the error directly instead of trigger_error() to be 100% sure it is displayed and not hidden within any logfile
+  echo 'PHP version >=' . REX_MIN_PHP_VERSION . ' needed!';
+  exit();
+}
+
 // -----------------
 
-if (!$REX['GG']) 
-	$REX['GG'] = false;
+if (!$REX['GG'])
+  $REX['GG'] = false;
 
 // ----------------- SERVER VARS
 
 // Setupservicestatus - if everything ok -> false; if problem set to true;
 $REX['SETUP'] = false;
-$REX['SERVER'] = "http://fritz.claus-justus-heine.info/cafevwww-new";
-$REX['SERVERNAME'] = "camerata academica freiburg";
+$REX['SERVER'] = 'http://fritz.claus-justus-heine.info/cafevwww-new';
+$REX['SERVERNAME'] = 'camerata academica freiburg';
 $REX['VERSION'] = "4";
-$REX['SUBVERSION'] = "2";
+$REX['SUBVERSION'] = "5";
 $REX['MINORVERSION'] = "1";
-$REX['ERROR_EMAIL'] = "cafevwww@claus-justus-heine.de";
+$REX['ERROR_EMAIL'] = 'cafevwww@claus-justus-heine.de';
 $REX['FILEPERM'] = octdec(664); // oktaler wert
 $REX['DIRPERM'] = octdec(775); // oktaler wert
-$REX['INSTNAME'] = "rex20140906222143";
-$REX['SESSION_DURATION'] = 3000;
+$REX['INSTNAME'] = 'rex20140906232219';
+$REX['SESSION_DURATION'] = 7200;
 
 // Is set first time SQL Object ist initialised
 $REX['MYSQL_VERSION'] = "";
@@ -41,10 +49,10 @@ $REX['NOTFOUND_ARTICLE_ID'] = 1;
 $REX['START_CLANG_ID'] = 0;
 
 // default template id, if > 0 used as default, else template_id determined by inheritance
-$REX['DEFAULT_TEMPLATE_ID'] = 0;
+$REX['DEFAULT_TEMPLATE_ID'] = 1;
 
 // default language
-$REX['LANG'] = "de_de_utf8";
+$REX['LANG'] = 'de_de';
 
 // activate frontend mod_rewrite support for url-rewriting
 // Boolean: true/false
@@ -67,9 +75,13 @@ $REX['USE_LAST_MODIFIED'] = "false"; // String: "true"/"false"/"fronted"/"backen
 $REX['USE_MD5'] = "false"; // String: "true"/"false"/"fronted"/"backend"
 
 // versch. Pfade
-$REX['INCLUDE_PATH']  = realpath($REX['HTDOCS_PATH'].'redaxo/include');
-$REX['FRONTEND_PATH'] = realpath($REX['HTDOCS_PATH']);
-$REX['MEDIAFOLDER']   = realpath($REX['HTDOCS_PATH'].'files');
+$REX['MEDIA_DIR'] = 'files';
+$REX['MEDIA_ADDON_DIR'] = 'files/addons';
+
+$REX['INCLUDE_PATH']   = realpath($REX['HTDOCS_PATH'].'redaxo/include');
+$REX['GENERATED_PATH'] = realpath($REX['HTDOCS_PATH'].'redaxo/include/generated');
+$REX['FRONTEND_PATH']  = realpath($REX['HTDOCS_PATH']);
+$REX['MEDIAFOLDER']    = realpath($REX['HTDOCS_PATH'].$REX['MEDIA_DIR']);
 
 // Prefixes
 $REX['TABLE_PREFIX']  = 'rex_';
@@ -78,8 +90,8 @@ $REX['TEMP_PREFIX']   = 'tmp_';
 // Frontenddatei
 $REX['FRONTEND_FILE']	= 'index.php';
 
-// Passwortverschlüsselung, z.B: md5 / mcrypt ...
-$REX['PSWFUNC'] = "sha1";
+// PasswortverschlÃ¼sselung, z.B: md5 / mcrypt ...
+$REX['PSWFUNC'] = 'sha1';
 
 // bei fehllogin 5 sekunden kein relogin moeglich
 $REX['RELOGINDELAY'] = 5;
@@ -98,18 +110,23 @@ $REX['TIMEZONE'] = 'Europe/Berlin';
 
 if(function_exists("date_default_timezone_set"))
 {
-	date_default_timezone_set($REX['TIMEZONE']);
+  date_default_timezone_set($REX['TIMEZONE']);
 }
 
 // ----------------- OTHER STUFF
-$REX['SYSTEM_ADDONS'] = array('import_export', 'metainfo', 'be_search', 'image_manager');
+$REX['SYSTEM_ADDONS']                   = array('import_export', 'metainfo', 'be_search', 'image_manager');
+
+// ----------------- MEDIA RELATED
 $REX['MEDIAPOOL']['BLOCKED_EXTENSIONS'] = array('.php','.php3','.php4','.php5','.php6','.phtml','.pl','.asp','.aspx','.cfm','.jsp');
+$REX['MEDIAPOOL']['IMAGE_EXTENSIONS']   = array('gif','jpeg','jpg','png','bmp');
+$REX['MEDIAPOOL']['IMAGE_TYPES']        = array('image/gif','image/jpg','image/jpeg','image/png','image/x-png','image/pjpeg','image/bmp');
+$REX['MEDIAPOOL']['ALLOWED_DOCTYPES']   = array('bmp','css','doc','docx','eps','gif','gz','jpg','mov','mp3','ogg','pdf','png','ppt','pptx','pps','ppsx','rar','rtf','swf','tar','tif','txt','wma','xls','xlsx','zip');
 
 // ----------------- DB1
-$REX['DB']['1']['HOST'] = "localhost";
-$REX['DB']['1']['LOGIN'] = "camerata";
-$REX['DB']['1']['PSW'] = "four4lobed";
-$REX['DB']['1']['NAME'] = "camerata_redaxoupgrade";
+$REX['DB']['1']['HOST'] = 'localhost';
+$REX['DB']['1']['LOGIN'] = 'camerata';
+$REX['DB']['1']['PSW'] = 'four4lobed';
+$REX['DB']['1']['NAME'] = 'camerata_redaxoupgrade';
 $REX['DB']['1']['PERSISTENT'] = false;
 
 // ----------------- DB2 - if necessary
@@ -120,12 +137,12 @@ $REX['DB']['2']['NAME'] = "";
 $REX['DB']['2']['PERSISTENT'] = false;
 
 // ----------------- Accesskeys
-$REX['ACKEY']['SAVE'] = 's';
-$REX['ACKEY']['APPLY'] = 'x';
+$REX['ACKEY']['SAVE']   = 's';
+$REX['ACKEY']['APPLY']  = 'x';
 $REX['ACKEY']['DELETE'] = 'd';
-$REX['ACKEY']['ADD'] = 'a';
+$REX['ACKEY']['ADD']    = 'a';
 // Wenn 2 Add Aktionen auf einer Seite sind (z.b. Struktur)
-$REX['ACKEY']['ADD_2'] = 'y';
+$REX['ACKEY']['ADD_2']  = 'y';
 $REX['ACKEY']['LOGOUT'] = 'l';
 
 // ------ Accesskeys for Addons
