@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 07. Sep 2014 um 12:32
+-- Erstellungszeit: 07. Sep 2014 um 15:15
 -- Server Version: 10.0.13-MariaDB-log
 -- PHP-Version: 5.5.16-pl0-gentoo
 
@@ -58,7 +58,7 @@ INSERT INTO `rex_62_params` (`field_id`, `title`, `name`, `prior`, `attributes`,
 (6, 'translate:keywords', 'art_keywords', 4, '', 2, '', '', '', '', 'admin', 1189345068, 'admin', 1189345068),
 (7, 'translate:metadata_image', 'art_file', 5, '', 6, '', '', '', '', 'admin', 1189345109, 'admin', 1189345109),
 (8, 'translate:teaser', 'art_teaser', 6, '', 5, '', '', '', '', 'admin', 1189345182, 'admin', 1189345182),
-(9, 'translate:header_article_type', 'art_type_id', 7, 'size=1', 3, '', 'Standard|Zugriff für alle', '', '', 'admin', 1191963797, 'admin', 1191964038),
+(9, 'translate:header_article_type', 'art_type_id', 7, 'size=1', 3, '', 'Standard|Zugriff fuer alle', '', '', 'admin', 1191963797, 'admin', 1191964038),
 (10, 'Hauptkategorie', 'cat_type', 1, '', 5, '', '', '', '', 'admin', 1258130095, 'admin', 1259154208),
 (11, 'Anzeigen im Menu', 'cat_menu', 2, '', 3, '1', '1:Hauptmenu|2:Footermenu|3:Kontaktmenu', '', '', 'admin', 1259154178, 'admin', 1259154608);
 
@@ -74,25 +74,26 @@ CREATE TABLE IF NOT EXISTS `rex_62_type` (
   `dbtype` varchar(255) NOT NULL,
   `dblength` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=13 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=14 ;
 
 --
 -- Daten für Tabelle `rex_62_type`
 --
 
 INSERT INTO `rex_62_type` (`id`, `label`, `dbtype`, `dblength`) VALUES
-(1, 'text', 'varchar', 255),
+(1, 'text', 'text', 0),
 (2, 'textarea', 'text', 0),
 (3, 'select', 'varchar', 255),
 (4, 'radio', 'varchar', 255),
 (5, 'checkbox', 'varchar', 255),
-(10, 'date', 'varchar', 255),
-(11, 'datetime', 'varchar', 255),
-(12, 'legend', 'varchar', 255),
+(10, 'date', 'text', 0),
+(11, 'datetime', 'text', 0),
+(12, 'legend', 'text', 0),
 (6, 'REX_MEDIA_BUTTON', 'varchar', 255),
-(7, 'REX_MEDIALIST_BUTTON', 'varchar', 255),
+(7, 'REX_MEDIALIST_BUTTON', 'text', 0),
 (8, 'REX_LINK_BUTTON', 'varchar', 255),
-(9, 'REX_LINKLIST_BUTTON', 'varchar', 255);
+(9, 'REX_LINKLIST_BUTTON', 'text', 0),
+(13, 'time', 'text', 0);
 
 -- --------------------------------------------------------
 
@@ -199,14 +200,14 @@ CREATE TABLE IF NOT EXISTS `rex_article` (
   `createuser` varchar(255) NOT NULL,
   `updateuser` varchar(255) NOT NULL,
   `revision` int(11) NOT NULL,
-  `art_online_from` varchar(255) DEFAULT NULL,
-  `art_online_to` varchar(255) DEFAULT NULL,
+  `art_online_from` text,
+  `art_online_to` text,
   `art_description` text,
   `art_keywords` text,
-  `art_file` varchar(255) DEFAULT NULL,
-  `art_teaser` varchar(255) DEFAULT NULL,
-  `art_type_id` varchar(255) DEFAULT NULL,
-  `cat_type` varchar(255) DEFAULT NULL,
+  `art_file` varchar(255) DEFAULT '',
+  `art_teaser` varchar(255) DEFAULT '',
+  `art_type_id` varchar(255) DEFAULT '',
+  `cat_type` varchar(255) DEFAULT '',
   `cat_menu` varchar(255) DEFAULT '1',
   PRIMARY KEY (`pid`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=100 ;
@@ -533,7 +534,7 @@ CREATE TABLE IF NOT EXISTS `rex_file` (
   `updateuser` varchar(255) NOT NULL,
   `revision` int(11) NOT NULL,
   `med_description` text,
-  `med_copyright` varchar(255) DEFAULT NULL,
+  `med_copyright` text,
   PRIMARY KEY (`file_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=170 ;
 
@@ -748,7 +749,7 @@ CREATE TABLE IF NOT EXISTS `rex_module` (
 
 INSERT INTO `rex_module` (`id`, `name`, `category_id`, `ausgabe`, `eingabe`, `createuser`, `updateuser`, `createdate`, `updatedate`, `attributes`, `revision`) VALUES
 (1, '01 - Textblock [Editor]', 0, '<?php\r\nif (REX_IS_VALUE[1])\r\n{\r\n$wysiwigvalue =<<<EOD\r\nREX_HTML_VALUE[1]\r\nEOD;\r\n\r\n  if (trim($wysiwigvalue) <> '''')\r\n  {\r\n    echo ''<div class="item-text clearfix">'';\r\n    if ($REX[''GG'']) echo replaceMailto($wysiwigvalue);\r\n    else   echo $wysiwigvalue;\r\n    echo ''</div>'';\r\n  }\r\n}\r\n?>', '<strong>Textblock:</strong><br />\r\n<textarea name="VALUE[1]" class="tinyMCEEditor" style="width:720px; height:450px;">\r\nREX_VALUE[1]\r\n</textarea>', 'admin', 'admin', 1258982367, 1260275024, '', 0),
-(2, '02 - Konzertblock [Maske]', 0, '<?php\r\n	$val1 = (strlen(''REX_VALUE[1]'') > 0) ? ''<h3>REX_VALUE[1]</h3>''."\\n" : '''' ;\r\n	\r\n	$val2 = '''';\r\n	if(REX_IS_VALUE[2])\r\n	{\r\n	$val2 = htmlspecialchars_decode("REX_VALUE[2]");\r\n	$val2 = str_replace("<br />","",$val2);\r\n	$val2 = rex_a79_textile($val2);\r\n	$val2 = str_replace("###","&#x20;",$val2);\r\n	$val2 = strip_tags($val2,"<br>");\r\n	$val2 = ''<h1>''.$val2.''</h1>''."\\n";\r\n	}\r\n	$val3 = '''';\r\n	if(REX_IS_VALUE[3])\r\n	{\r\n	$val3 = htmlspecialchars_decode("REX_VALUE[3]");\r\n	$val3 = str_replace("<br />","",$val3);\r\n	$val3 = rex_a79_textile($val3);\r\n	$val3 = str_replace("###","&#x20;",$val3);\r\n	$val3 = strip_tags($val3,"<br>");\r\n	$val3 = ''<h2>''.$val3.''</h2>''."\\n";\r\n	}\r\n	$val4 = '''';\r\n	if(REX_IS_VALUE[4])\r\n	{\r\n	$val4 = htmlspecialchars_decode("REX_VALUE[4]");\r\n	$val4 = str_replace("<br />","",$val4);\r\n	$val4 = rex_a79_textile($val4);\r\n	$val4 = str_replace("###","&#x20;",$val4);\r\n	$val4 = strip_tags($val4,"<br>");\r\n	$val4 = ''<p><strong>''.$val4.''</strong></p>''."\\n";\r\n	}\r\n	$val7 = '''';\r\n	if(REX_IS_VALUE[7])\r\n	{\r\n	$val7 = htmlspecialchars_decode("REX_VALUE[7]");\r\n	$val7 = str_replace("<br />","",$val7);\r\n	$val7 = rex_a79_textile($val7);\r\n	$val7 = str_replace("###","&#x20;",$val7);\r\n	$val7 = strip_tags($val7,"<br>");\r\n	$val7 = ''<p><em>''.$val7.''</em></p>''."\\n";\r\n	}\r\n?>\r\n<div class="item-text">\r\n<?php if ("REX_FILE[1]" != "") { // mit Bild ?>\r\n	<div class="marginalie">\r\n		<img src="<?=$REX[''HTDOCS_PATH'']?>files/REX_FILE[1]" alt="REX_VALUE[2]" />\r\n	</div>\r\n	<?=$val1?>\r\n	<?=$val2?>\r\n	<?=$val3?>\r\n	<?=$val7?>\r\n	<?=$val4?>\r\n<?php } else { ?>\r\n	<div class="marginalie">\r\n		<?=$val1?>\r\n		<?=$val2?>\r\n		<?=$val3?>\r\n		<?=$val7?>\r\n		<?=$val4?>\r\n	</div>\r\n<?php } ?>\r\n<?php\r\nif (REX_IS_VALUE[6])\r\n{\r\n$wysiwigvalue =<<<EOD\r\nREX_HTML_VALUE[6]\r\nEOD;\r\n    if ($REX[''GG'']) { // nur im frontend span-mailtos ersetzen\r\n		echo replaceMailto($wysiwigvalue);\r\n	} else {\r\n		echo $wysiwigvalue;\r\n	}\r\n}\r\n?>\r\n</div>', '<strong>Datum</strong><br />\r\n<input type="text" size="120" name="VALUE[1]" value="REX_VALUE[1]" />\r\n<br /><br />\r\n<strong>Überschrift</strong><br />\r\n<textarea name="VALUE[2]" cols="80" rows="5" class="inp100">REX_HTML_VALUE[2]</textarea>\r\n<br /><br />\r\n<strong>Unterüberschrift</strong><br />\r\n<textarea name="VALUE[3]" cols="80" rows="5" class="inp100">REX_HTML_VALUE[3]</textarea>\r\n<br /><br />\r\n<strong>Mitwirkende</strong><br />\r\n<textarea name="VALUE[7]" cols="80" rows="5" class="inp100">REX_HTML_VALUE[7]</textarea>\r\n<br /><br />\r\n<strong>Veranstaltungsort</strong><br />\r\n<textarea name="VALUE[4]" cols="80" rows="5" class="inp100">REX_HTML_VALUE[4]</textarea>\r\n<br /><br />\r\n<strong>Teasertext (Startseite)</strong><br />\r\n<textarea name="VALUE[5]" class="tinyMCEEditor" style="width:720px; height:150px;">\r\nREX_VALUE[5]\r\n</textarea>\r\n<br /><br />\r\n<strong>Teaserbild (optional)</strong>:<br />\r\nREX_MEDIA_BUTTON[1]\r\n<?\r\nif ("REX_FILE[1]" != "") {\r\necho "<br /><strong>Vorschau</strong>:<br />";\r\necho "<img src=".$REX[''HTDOCS_PATH'']."/files/REX_FILE[1]><br />";\r\n}\r\n?>\r\n<br /><br />\r\n<strong>Detailtext (Nur auf der Detailseite sichtbar)</strong><br />\r\n<textarea name="VALUE[6]" class="tinyMCEEditor" style="width:720px; height:450px;">\r\nREX_VALUE[6]\r\n</textarea>', 'admin', 'admin', 1258986774, 1260443703, '', 0),
+(2, '02 - Konzertblock [Maske]', 0, '<?php\r\n	$val1 = (strlen(''REX_VALUE[1]'') > 0) ? ''<h3>REX_VALUE[1]</h3>''."\\n" : '''' ;\r\n	\r\n	$val2 = '''';\r\n	if(REX_IS_VALUE[2])\r\n	{\r\n	$val2 = htmlspecialchars_decode("REX_VALUE[2]");\r\n	$val2 = str_replace("<br />","",$val2);\r\n	$val2 = rex_a79_textile($val2);\r\n	$val2 = str_replace("###","&#x20;",$val2);\r\n	$val2 = strip_tags($val2,"<br>");\r\n	$val2 = ''<h1>''.$val2.''</h1>''."\\n";\r\n	}\r\n	$val3 = '''';\r\n	if(REX_IS_VALUE[3])\r\n	{\r\n	$val3 = htmlspecialchars_decode("REX_VALUE[3]");\r\n	$val3 = str_replace("<br />","",$val3);\r\n	$val3 = rex_a79_textile($val3);\r\n	$val3 = str_replace("###","&#x20;",$val3);\r\n	$val3 = strip_tags($val3,"<br>");\r\n	$val3 = ''<h2>''.$val3.''</h2>''."\\n";\r\n	}\r\n	$val4 = '''';\r\n	if(REX_IS_VALUE[4])\r\n	{\r\n	$val4 = htmlspecialchars_decode("REX_VALUE[4]");\r\n	$val4 = str_replace("<br />","",$val4);\r\n	$val4 = rex_a79_textile($val4);\r\n	$val4 = str_replace("###","&#x20;",$val4);\r\n	$val4 = strip_tags($val4,"<br>");\r\n	$val4 = ''<p><strong>''.$val4.''</strong></p>''."\\n";\r\n	}\r\n	$val7 = '''';\r\n	if(REX_IS_VALUE[7])\r\n	{\r\n	$val7 = htmlspecialchars_decode("REX_VALUE[7]");\r\n	$val7 = str_replace("<br />","",$val7);\r\n	$val7 = rex_a79_textile($val7);\r\n	$val7 = str_replace("###","&#x20;",$val7);\r\n	$val7 = strip_tags($val7,"<br>");\r\n	$val7 = ''<p><em>''.$val7.''</em></p>''."\\n";\r\n	}\r\n?>\r\n<div class="item-text">\r\n<?php if ("REX_FILE[1]" != "") { // mit Bild ?>\r\n	<div class="marginalie">\r\n		<img src="<?=$REX[''HTDOCS_PATH'']?>files/REX_FILE[1]" alt="REX_VALUE[2]" />\r\n	</div>\r\n	<?=$val1?>\r\n	<?=$val2?>\r\n	<?=$val3?>\r\n	<?=$val7?>\r\n	<?=$val4?>\r\n<?php } else { ?>\r\n	<div class="marginalie">\r\n		<?=$val1?>\r\n		<?=$val2?>\r\n		<?=$val3?>\r\n		<?=$val7?>\r\n		<?=$val4?>\r\n	</div>\r\n<?php } ?>\r\n<?php\r\nif (REX_IS_VALUE[6])\r\n{\r\n$wysiwigvalue =<<<EOD\r\nREX_HTML_VALUE[6]\r\nEOD;\r\n    if ($REX[''GG'']) { // nur im frontend span-mailtos ersetzen\r\n		echo replaceMailto($wysiwigvalue);\r\n	} else {\r\n		echo $wysiwigvalue;\r\n	}\r\n}\r\n?>\r\n</div>', '<strong>Datum</strong><br />\r\n<input type="text" size="80" name="VALUE[1]" value="REX_VALUE[1]" />\r\n<br /><br />\r\n<strong>Überschrift</strong><br />\r\n<textarea name="VALUE[2]" cols="80" rows="5" class="inp100">REX_HTML_VALUE[2]</textarea>\r\n<br /><br />\r\n<strong>Unterüberschrift</strong><br />\r\n<textarea name="VALUE[3]" cols="80" rows="5" class="inp100">REX_HTML_VALUE[3]</textarea>\r\n<br /><br />\r\n<strong>Mitwirkende</strong><br />\r\n<textarea name="VALUE[7]" cols="80" rows="5" class="inp100">REX_HTML_VALUE[7]</textarea>\r\n<br /><br />\r\n<strong>Veranstaltungsort</strong><br />\r\n<textarea name="VALUE[4]" cols="80" rows="5" class="inp100">REX_HTML_VALUE[4]</textarea>\r\n<br /><br />\r\n<strong>Teasertext (Startseite)</strong><br />\r\n<textarea name="VALUE[5]" class="tinyMCEEditor" style="width:720px; height:150px;">\r\nREX_VALUE[5]\r\n</textarea>\r\n<br /><br />\r\n<strong>Teaserbild (optional)</strong>:<br />\r\nREX_MEDIA_BUTTON[1]\r\n<?\r\nif ("REX_FILE[1]" != "") {\r\necho "<br /><strong>Vorschau</strong>:<br />";\r\necho "<img src=".$REX[''HTDOCS_PATH'']."/files/REX_FILE[1]><br />";\r\n}\r\n?>\r\n<br /><br />\r\n<strong>Detailtext (Nur auf der Detailseite sichtbar)</strong><br />\r\n<textarea name="VALUE[6]" class="tinyMCEEditor" style="width:720px; height:450px;">\r\nREX_VALUE[6]\r\n</textarea>', 'admin', 'cafev', 1258986774, 1410090385, '', 0),
 (3, '02 - Konzertliste', 0, '<?php\r\n/* Trennlinie falls zwei oder mehr Konzertlisten untereinander  */\r\nif (isset($itemCount) && $itemCount) {\r\n$out 	 	= ''<div class="item-line">&nbsp;</div>'';\r\n} else {\r\n$out 	 	= '''';\r\n}\r\n\r\n/**\r\n * Ausgabe Konzerteliste\r\n *\r\n */\r\n\r\n$whichId    = ("REX_VALUE[1]" != '''' && intval("REX_VALUE[1]")) ? "REX_VALUE[1]" : $this->getValue(''category_id'');\r\n$howMany    = ("REX_VALUE[2]" != '''' && intval("REX_VALUE[2]")) ? "REX_VALUE[2]" : false; // false -> alle anzeigen\r\n$cat 	    = OOCategory::getCategoryById($whichId);\r\n$article    = $cat->getArticles();\r\n\r\n$itemCount  = 0;\r\nif (is_array($article) && count($article)) \r\n{\r\n	foreach ($article as $key => $var) \r\n	{\r\n		if (!$var->isOnline()) continue;\r\n		$articleId   		= $var->getId();\r\n		$articleName 		= $var->getName();\r\n		$articleDescription = $var->getDescription();\r\n		if (!$var->isStartpage()) \r\n		{	\r\n			$slice = OOArticleSlice::getFirstSliceForArticle($articleId,false);\r\n			//var_dump($slice);\r\n			if ($slice) {\r\n				$date     = $slice->getValue(1);\r\n				$title    = nl2br($slice->getValue(2));\r\n				$subtitle = nl2br($slice->getValue(3));\r\n				$peoples  = nl2br($slice->getValue(7));\r\n				$location = nl2br($slice->getValue(4));\r\n				$teaser	  = $slice->getValue(5);\r\n				\r\n				$teaser = str_replace("###","&#x20;",$teaser);\r\n				$teaser = rex_article::replaceLinks($teaser); // rex-links zu htmllinks\r\n				if ($teaser && $REX[''GG'']) { // nur im frontend span-mailtos ersetzen\r\n					$teaser	= replaceMailto($teaser);\r\n				}\r\n				$image    = $slice->getMedia(1);\r\n\r\n				if ($itemCount) { // wenn itemCount > 0 mit Linie\r\n					$out .= ''<div class="item-text no-margin clearfix">''."\\n";	\r\n					$out .= ''<p class="ornament"> </p>''."\\n";\r\n				} else {\r\n					$out .= ''<div class="item-text clearfix">''."\\n";\r\n				}\r\n				\r\n				if ($image) {\r\n				$out .= ''<div class="marginalie">''."\\n";\r\n				$out .= ''<img src="''.$REX[''HTDOCS_PATH''].''files/''.$image.''" alt="REX_VALUE[2]" />'';\r\n				$out .= ''</div>''."\\n";\r\n				$out .= ($date) ? ''<h3>''.$date.''</h3>''."\\n" : '''';\r\n				$out .= ($title) ? ''<h1>''.$title.''</h1>''."\\n" : '''';\r\n				$out .= ($subtitle) ? ''<h2>''.$subtitle.''</h2>''."\\n" : '''';\r\n				$out .= ($peoples) ? ''<p><em>''.$peoples.''</em></p>''."\\n" : '''';\r\n				$out .= ($location) ? ''<p><strong>''.$location.''</strong></p>''."\\n" : '''';\r\n\r\n\r\n				$out .= ($teaser) ? $teaser."\\n" : '''';\r\n				$out .= ''<p><a href="''.rex_getUrl($articleId).''">Mehr Informationen »</a></p>'';\r\n				} else {\r\n				$out .= ''<div class="marginalie">''."\\n";\r\n				$out .= ($date) ? ''<h3>''.$date.''</h3>''."\\n" : '''';\r\n				$out .= ($title) ? ''<h1>''.$title.''</h1>''."\\n" : '''';\r\n				$out .= ($subtitle) ? ''<h2>''.$subtitle.''</h2>''."\\n" : '''';\r\n				$out .= ($peoples) ? ''<p><em>''.$peoples.''</em></p>''."\\n" : '''';\r\n				$out .= ($location) ? ''<p><strong>''.$location.''</strong></p>''."\\n" : '''';\r\n				$out .= ''</div>''."\\n";\r\n				$out .= ($teaser) ? $teaser."\\n" : '''';\r\n				$out .= ''<p><a href="''.rex_getUrl($articleId).''">Mehr Informationen »</a></p>'';\r\n				}\r\n				\r\n\r\n				$out .= ''</div>''."\\n";\r\n				$itemCount++;\r\n				if ($howMany && $itemCount >= $howMany ) break;\r\n			}\r\n			\r\n		}\r\n	}\r\n}\r\necho $out;\r\n?>', '<strong>Welche Id (leerlassen für diese Kategorie)</strong><br />\r\n<input type="text" size="50" name="VALUE[1]" value="REX_VALUE[1]" />\r\n<br /><br />\r\n\r\n<strong>Wie viele anzeigen (leerlassen für alle)</strong><br />\r\n<input type="text" size="50" name="VALUE[2]" value="REX_VALUE[2]" />', 'admin', 'admin', 1258987139, 1264607966, '', 0),
 (4, '04 - Artikelweiterleitung', 0, '<?php\r\n\r\nif($REX[''REDAXO'']!=1 && REX_ARTICLE_ID != REX_LINK_ID[1])\r\n{\r\n  if ( REX_LINK_ID[1] != 0) \r\n  {\r\n   rex_redirect(REX_LINK_ID[1], $REX[''CUR_CLANG'']);\r\n  }\r\n}else\r\n{\r\n  echo "Weiterleitung zu <a href=''index.php?page=content&article_id=REX_LINK_ID[1]&mode=edit''>Artikel           REX_LINK[1]</a>";\r\n}\r\n\r\n?>', 'Artikel auswählen, zu dem weitergeleitet werden soll:<br /><br />\r\nREX_LINK_BUTTON[1]', 'admin', 'admin', 1258991733, 1258991741, '', 0),
 (5, '02 - Konzertteaser Startseite', 0, '<?php\r\n/**\r\n * Darstellung des ersten Konzerts auf\r\n * http://camerata/index.php?article_id=16\r\n */\r\n \r\n$max	 = "REX_VALUE[1]";\r\n$cat 	 = OOCategory::getCategoryById(16);\r\n$article = $cat->getArticles();\r\n$out 	 = '''';\r\n\r\n// Startseite Article Anzahl abholen (Textblock ID=1)/ clang false\r\n$startSlices = OOArticleSlice::getSlicesForArticleOfType($REX[''START_ARTICLE_ID''],1);\r\n\r\nif (is_array($article) && count($article)) \r\n{\r\n	$itemCount = 0;\r\n	foreach ($article as $key => $var) \r\n	{\r\n		if (!$var->isOnline()) continue;\r\n		$articleId   		= $var->getId();\r\n		$articleName 		= $var->getName();\r\n		$articleDescription = $var->getDescription();\r\n		if (!$var->isStartpage()) \r\n		{	\r\n                        if (!$var->isOnline()) continue;\r\n			$slice = OOArticleSlice::getFirstSliceForArticle($articleId,false);\r\n			//var_dump($slice);\r\n			if ($slice) {\r\n				$itemCount++;\r\n				$date     = $slice->getValue(1);\r\n				$title    = nl2br($slice->getValue(2));\r\n				$subtitle = nl2br($slice->getValue(3));\r\n				$peoples  = nl2br($slice->getValue(7));\r\n				$location = nl2br($slice->getValue(4));\r\n				$teaser	  = $slice->getValue(5);\r\n\r\n				$teaser = str_replace("###","&#x20;",$teaser);\r\n				$teaser = rex_article::replaceLinks($teaser); // rex-links zu htmllinks\r\n				if ($teaser && $REX[''GG'']) { // nur im frontend span-mailtos ersetzen\r\n					$teaser	= replaceMailto($teaser);\r\n				}\r\n				//$text	  = $slice->getValue(6);\r\n				$out .= ''<div class="item-text item-teaser clearfix">''."\\n";\r\n				$out .= ''<div class="marginalie">''."\\n";\r\n				$out .= ($date) ? ''<h3>''.$date.''</h3>''."\\n" : '''';\r\n				$out .= ($title) ? ''<h1>''.$title.''</h1>''."\\n" : '''';\r\n				$out .= ($subtitle) ? ''<h2>''.$subtitle.''</h2>''."\\n" : '''';\r\n				$out .= ($peoples) ? ''<p><em>''.$peoples.''</em></p>''."\\n" : '''';\r\n				$out .= ($location) ? ''<p><strong>''.$location.''</strong></p>''."\\n" : '''';\r\n				$out .= ''</div>''."\\n";\r\n				$out .= ($teaser) ? $teaser."\\n" : '''';\r\n				$out .= ''<p><a href="''.rex_getUrl($articleId).''">Mehr Informationen »</a></p>'';\r\n				\r\n				// ornament ausgeben wenn letzter KonzertTeaser + folgender Textblock\r\n				if ($itemCount >= $max && count($startSlices)) {\r\n					$out .= ''<p class="ornament"> </p>''."\\n";\r\n				}\r\n				$out .= ''</div>''."\\n";\r\n				\r\n				if ($itemCount >= $max) break;\r\n			}\r\n			\r\n			//echo ''<a href="''.rex_getUrl($articleId).''" class="faq">''.$articleName.''</a><br />'';\r\n		}\r\n	}\r\n}\r\necho $out;\r\n?>', '<p>Konzerte werden in der Kategorie ''konzerte > aktuelle konzerte'' eingepflegt. <br />Auf dieser Seite kann man die Anzahl der anzuteasernden Konzerte einstellen: <br /><br /></p>\r\n<p>Anzahl der Konzertteaser auf der Startseite:<br />\r\n<select name="VALUE[1]" >\r\n<?php\r\nfor($i=1;$i<3;$i++) {\r\n       echo ''<option value="''.$i.''" '';\r\n       if ( "REX_VALUE[1]"=="$i" ) {\r\n		echo ''selected="selected" '';\r\n	}\r\n       echo ''>''.$i.''</option>'';\r\n}\r\n?></p>', 'admin', 'cafev', 1258993245, 1341116314, '', 0),
@@ -809,6 +810,31 @@ INSERT INTO `rex_template` (`id`, `label`, `name`, `content`, `active`, `createu
 -- --------------------------------------------------------
 
 --
+-- Tabellenstruktur für Tabelle `rex_tinymce_profiles`
+--
+
+CREATE TABLE IF NOT EXISTS `rex_tinymce_profiles` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(30) NOT NULL DEFAULT '',
+  `description` varchar(255) NOT NULL DEFAULT '',
+  `configuration` text NOT NULL,
+  `ptype` tinyint(4) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+
+--
+-- Daten für Tabelle `rex_tinymce_profiles`
+--
+
+INSERT INTO `rex_tinymce_profiles` (`id`, `name`, `description`, `configuration`, `ptype`) VALUES
+(1, 'css', 'CSS fuer den TinyMCE', '/* ---------------------- */\r\n/* TinyMCE specific rules */\r\n/* ---------------------- */\r\nbody.mceContentBody {\r\n	background: #fff;\r\n	font-family: Verdana, Arial, Helvetica, sans-serif;\r\n	font-size: 12px;\r\n}\r\n.mceContentBody a {\r\n   color: #009 !important; /* FF requires a important here */\r\n}\r\n\r\n\r\n/* -------------------------- */\r\n/* Ab hier die eigenen Styles */\r\n/* -------------------------- */\r\np {\r\n	font-family: Verdana, Arial, Helvetica, sans-serif;\r\n	font-size: 12px;\r\n}\r\n\r\n.Beispiel1 {\r\n	font-weight: bold;\r\n	color: #c00;\r\n	font-size: 14px;\r\n}\r\n\r\n.Beispiel2 {\r\n	font-weight: bold;\r\n	color: #090;\r\n}\r\n\r\n.Beispiel3 {\r\n	font-weight: bold;\r\n	color: #009;\r\n}', 1),
+(2, 'default', 'Standard TinyMCE-Konfiguration', '// Pfad zum TinyMCE-Script\r\n//\r\n// Bei der Verwendung des TinyMCE im Frontend, oder bei Installation in einem\r\n// Unterverzeichnis (z.B.: cms) muss hier evtl. der absolute Pfad angegeben werden\r\n// Im Frontend muss noch zusaetzlich jQuery eingebunden werden\r\n// z.B.: <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>\r\n//\r\nscript_url : ''%HTDOCS_PATH%files/addons/tinymce/tiny_mce/tiny_mce.js'',\r\n\r\n// Sprache\r\nlanguage: ''de'',\r\n\r\n// Theme-Optionen\r\ntheme : ''advanced'',\r\ntheme_advanced_toolbar_location : ''top'',\r\ntheme_advanced_toolbar_align : ''left'',\r\ntheme_advanced_statusbar_location : ''bottom'',\r\ntheme_advanced_resizing : true,\r\n\r\n// Plugins\r\n// inlinepopups hinzufuegen fuer Popups im Lightbox-Stil\r\n// contextmenu entfernen um das Kontext-Menue (Rechts-Klick) zu deaktivieren\r\nplugins : ''advhr,advimage,advlink,contextmenu,fullscreen,paste,preview,visualchars,redaxo,media,emotions'',\r\n\r\n// Buttons\r\ntheme_advanced_buttons1 : ''bold,italic,underline,strikethrough,sub,sup,|,forecolor,backcolor,styleselect,formatselect,|,charmap,cleanup,removeformat,|,preview,code,fullscreen'',\r\ntheme_advanced_buttons2 : ''cut,copy,paste,pastetext,pasteword,|,justifyleft,justifycenter,justifyright,justifyfull,|,bullist,numlist,|,link,unlink,redaxoMedia,redaxoEmail,anchor,|,advhr,image'',\r\ntheme_advanced_buttons3 : '''',\r\ntheme_advanced_buttons4 : '''',\r\n\r\n// Eigener CSS fuer den Tiny - hier bei Bedarf den eigenen Pfad angeben\r\ncontent_css : ''%FRONTEND_FILE%?tinymcecss=true'',\r\n\r\n//document_base_url : ''http://localhost/'',\r\n//document_base_url : ''%SERVER%'',\r\nrelative_urls : true,\r\nfile_browser_callback : ''TinyMCE_FileBrowser'',\r\n\r\n// Beispiele fuer Farben und Formatauswahl\r\n/*\r\ntheme_advanced_text_colors : ''000000,FFFFFF,CC0000,009900,000099'',\r\ntheme_advanced_default_foreground_color : ''#000000'',\r\ntheme_advanced_background_colors : ''000000,FFFFFF,CC0000,009900,000099'',\r\ntheme_advanced_default_background_color : ''#FFFFFF'',\r\ntheme_advanced_blockformats : ''Absatz=p,\\u00dcberschrift 1=h1,\\u00dcberschrift 2=h2,\\u00dcberschrift 3=h3'',\r\n*/\r\n\r\n// Groessen fuer Popup-Fenster\r\nplugin_preview_width : 800,\r\nplugin_preview_height : 600,\r\ntemplate_popup_width : 800,\r\ntemplate_popup_height : 600,\r\ntheme_advanced_source_editor_width : 800,\r\ntheme_advanced_source_editor_height : 600,\r\n\r\n// sonstige Optionen\r\nentity_encoding : ''raw'',\r\nmedia_use_script : true,\r\naccessibility_warnings : false,\r\nfix_list_elements : true,\r\ndialog_type : ''modal''\r\n', 0),
+(3, 'simple', 'Einfache TinyMCE-Konfiguration', '// Pfad zum TinyMCE-Script\r\n//\r\n// Bei der Verwendung des TinyMCE im Frontend, oder bei Installation in einem\r\n// Unterverzeichnis (z.B.: cms) muss hier evtl. der absolute Pfad angegeben werden\r\n// Im Frontend muss noch zusaetzlich jQuery eingebunden werden\r\n// z.B.: <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>\r\n//\r\nscript_url : ''%HTDOCS_PATH%files/addons/tinymce/tiny_mce/tiny_mce.js'',\r\n\r\n// Sprache\r\nlanguage: ''de'',\r\n\r\n// Theme-Optionen\r\ntheme : ''advanced'',\r\ntheme_advanced_toolbar_location : ''top'',\r\ntheme_advanced_toolbar_align : ''left'',\r\ntheme_advanced_statusbar_location : ''bottom'',\r\ntheme_advanced_resizing : true,\r\n\r\n// Plugins\r\n// inlinepopups hinzufuegen fuer Popups im Lightbox-Stil\r\n// contextmenu entfernen um das Kontext-Menue (Rechts-Klick) zu deaktivieren\r\nplugins : ''advhr,advimage,advlink,contextmenu,fullscreen,paste,preview,visualchars,redaxo,media,emotions'',\r\n\r\n// Buttons\r\ntheme_advanced_buttons1 : ''bold,italic,underline,strikethrough,sub,sup,|,justifyleft,justifycenter,justifyright,justifyfull,|,bullist,numlist,|,link,unlink,redaxoMedia,redaxoEmail,anchor,|,advhr,image,|,preview'',\r\ntheme_advanced_buttons2 : '''',\r\ntheme_advanced_buttons3 : '''',\r\ntheme_advanced_buttons4 : '''',\r\n\r\n// Eigener CSS fuer den Tiny - hier bei Bedarf den eigenen Pfad angeben\r\ncontent_css : ''%FRONTEND_FILE%?tinymcecss=true'',\r\n\r\n//document_base_url : ''http://localhost/'',\r\n//document_base_url : ''%SERVER%'',\r\nrelative_urls : true,\r\nfile_browser_callback : ''TinyMCE_FileBrowser'',\r\n\r\n// Beispiele fuer Farben und Formatauswahl\r\n/*\r\ntheme_advanced_text_colors : ''000000,FFFFFF,CC0000,009900,000099'',\r\ntheme_advanced_default_foreground_color : ''#000000'',\r\ntheme_advanced_background_colors : ''000000,FFFFFF,CC0000,009900,000099'',\r\ntheme_advanced_default_background_color : ''#FFFFFF'',\r\ntheme_advanced_blockformats : ''Absatz=p,\\u00dcberschrift 1=h1,\\u00dcberschrift 2=h2,\\u00dcberschrift 3=h3'',\r\n*/\r\n\r\n// Groessen fuer Popup-Fenster\r\nplugin_preview_width : 800,\r\nplugin_preview_height : 600,\r\ntemplate_popup_width : 800,\r\ntemplate_popup_height : 600,\r\ntheme_advanced_source_editor_width : 800,\r\ntheme_advanced_source_editor_height : 600,\r\n\r\n// sonstige Optionen\r\nentity_encoding : ''raw'',\r\nmedia_use_script : true,\r\naccessibility_warnings : false,\r\nfix_list_elements : true,\r\ndialog_type : ''modal''\r\n', 0),
+(4, 'table', 'Standard TinyMCE-Konfiguration mit Tabellen', '// Pfad zum TinyMCE-Script\r\n//\r\n// Bei der Verwendung des TinyMCE im Frontend, oder bei Installation in einem\r\n// Unterverzeichnis (z.B.: cms) muss hier evtl. der absolute Pfad angegeben werden\r\n// Im Frontend muss noch zusaetzlich jQuery eingebunden werden\r\n// z.B.: <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>\r\n//\r\nscript_url : ''%HTDOCS_PATH%files/addons/tinymce/tiny_mce/tiny_mce.js'',\r\n\r\n// Sprache\r\nlanguage: ''de'',\r\n\r\n// Theme-Optionen\r\ntheme : ''advanced'',\r\ntheme_advanced_toolbar_location : ''top'',\r\ntheme_advanced_toolbar_align : ''left'',\r\ntheme_advanced_statusbar_location : ''bottom'',\r\ntheme_advanced_resizing : true,\r\n\r\n// Plugins\r\n// inlinepopups hinzufuegen fuer Popups im Lightbox-Stil\r\n// contextmenu entfernen um das Kontext-Menue (Rechts-Klick) zu deaktivieren\r\nplugins : ''advhr,advimage,advlink,contextmenu,fullscreen,paste,preview,visualchars,redaxo,media,emotions,table'',\r\n\r\n// Buttons\r\ntheme_advanced_buttons1 : ''bold,italic,underline,strikethrough,sub,sup,|,forecolor,backcolor,styleselect,formatselect,|,charmap,cleanup,removeformat,|,preview,code,fullscreen'',\r\ntheme_advanced_buttons2 : ''cut,copy,paste,pastetext,pasteword,|,justifyleft,justifycenter,justifyright,justifyfull,|,bullist,numlist,|,link,unlink,redaxoMedia,redaxoEmail,anchor,|,advhr,image'',\r\ntheme_advanced_buttons3 : ''tablecontrols'',\r\ntheme_advanced_buttons4 : '''',\r\n\r\n// Eigener CSS fuer den Tiny - hier bei Bedarf den eigenen Pfad angeben\r\ncontent_css : ''%FRONTEND_FILE%?tinymcecss=true'',\r\n\r\n//document_base_url : ''http://localhost/'',\r\n//document_base_url : ''%SERVER%'',\r\nrelative_urls : true,\r\nfile_browser_callback : ''TinyMCE_FileBrowser'',\r\n\r\n// Beispiele fuer Farben und Formatauswahl\r\n/*\r\ntheme_advanced_text_colors : ''000000,FFFFFF,CC0000,009900,000099'',\r\ntheme_advanced_default_foreground_color : ''#000000'',\r\ntheme_advanced_background_colors : ''000000,FFFFFF,CC0000,009900,000099'',\r\ntheme_advanced_default_background_color : ''#FFFFFF'',\r\ntheme_advanced_blockformats : ''Absatz=p,\\u00dcberschrift 1=h1,\\u00dcberschrift 2=h2,\\u00dcberschrift 3=h3'',\r\n*/\r\n\r\n// Groessen fuer Popup-Fenster\r\nplugin_preview_width : 800,\r\nplugin_preview_height : 600,\r\ntemplate_popup_width : 800,\r\ntemplate_popup_height : 600,\r\ntheme_advanced_source_editor_width : 800,\r\ntheme_advanced_source_editor_height : 600,\r\n\r\n// sonstige Optionen\r\nentity_encoding : ''raw'',\r\nmedia_use_script : true,\r\naccessibility_warnings : false,\r\nfix_list_elements : true,\r\ndialog_type : ''modal''\r\n', 0);
+
+-- --------------------------------------------------------
+
+--
 -- Tabellenstruktur für Tabelle `rex_user`
 --
 
@@ -838,8 +864,8 @@ CREATE TABLE IF NOT EXISTS `rex_user` (
 
 INSERT INTO `rex_user` (`user_id`, `name`, `description`, `login`, `psw`, `status`, `rights`, `login_tries`, `createuser`, `updateuser`, `createdate`, `updatedate`, `lasttrydate`, `session_id`, `cookiekey`, `revision`) VALUES
 (1, 'Administrator', '', 'admin', '934c0deba77aeb88bd2510bc55207b338635fdd9', '1', '#admin[]#', 0, 'setup', 'cafev', 1259585724, 1382577312, 1409227070, '1pq5qg58b268133l4l8mhs91k1', NULL, 0),
-(2, 'CafevAdmin', '', 'cafev', '586ca826eb43bce4f669460e9dbd8028f24de0e1', '1', '#admin[]#image_resize[]#import_export[export]#import_export[import]#mediapool[]#phpmailer[]#textile[]#tiny_mce[]#accesskeys[]#advancedMode[]#article2startpage[]#be_search[mediapool]#be_search[structure]#copyArticle[]#copyContent[]#moveArticle[]#moveCategory[]#moveSlice[]#publishArticle[]#publishCategory[]#textile[help]#be_lang[default]#', 0, 'setup', 'cafev', 1259585724, 1395885108, 1410085903, 'dfjm2jeuth5afa4ugjhu844p32', NULL, 0),
-(4, 'Claus-Justus', 'Kassenwart & Blah', 'claus', '934c0deba77aeb88bd2510bc55207b338635fdd9', '1', '#csw[0]#media[0]#image_resize[]#import_export[export]#import_export[import]#mediapool[]#phpmailer[]#textile[]#tiny_mce[]#accesskeys[]#advancedMode[]#article2startpage[]#be_search[mediapool]#be_search[structure]#copyArticle[]#copyContent[]#moveArticle[]#moveCategory[]#moveSlice[]#publishArticle[]#publishCategory[]#textile[help]#clang[0]#be_lang[de_de_utf8]#module[1]#module[2]#module[3]#module[5]#module[7]#module[8]#module[4]#module[6]#module[9]#module[11]#module[10]#', 0, 'cafev', 'cafev', 1309799958, 1392154208, 1410004269, '', NULL, 0),
+(2, 'CafevAdmin', '', 'cafev', '586ca826eb43bce4f669460e9dbd8028f24de0e1', '1', '#admin[]#image_resize[]#import_export[export]#import_export[import]#mediapool[]#phpmailer[]#textile[]#tiny_mce[]#accesskeys[]#advancedMode[]#article2startpage[]#be_search[mediapool]#be_search[structure]#copyArticle[]#copyContent[]#moveArticle[]#moveCategory[]#moveSlice[]#publishArticle[]#publishCategory[]#textile[help]#be_lang[default]#', 0, 'setup', 'cafev', 1259585724, 1395885108, 1410095163, '', NULL, 0),
+(4, 'Claus-Justus', 'Kassenwart & Blah', 'claus', '5bf1fd927dfb8679496a2e6cf00cbe50c1c87145', '1', '#csw[0]#media[0]#image_resize[]#import_export[export]#import_export[import]#mediapool[]#phpmailer[]#textile[]#tiny_mce[]#accesskeys[]#advancedMode[]#article2startpage[]#be_search[mediapool]#be_search[structure]#copyArticle[]#copyContent[]#moveArticle[]#moveCategory[]#moveSlice[]#publishArticle[]#publishCategory[]#textile[help]#clang[0]#be_lang[de_de_utf8]#module[1]#module[2]#module[3]#module[5]#module[7]#module[8]#module[4]#module[6]#module[9]#module[11]#module[10]#', 0, 'cafev', 'claus', 1309799958, 1410095248, 1410095259, 'luou1a918uftj5kdve0674ege6', NULL, 0),
 (3, 'Katharina', '', 'Katharina', 'd5149839332ef9a4849069c0f1ac97aad35dc109', '1', '#csw[0]#media[0]#image_resize[]#import_export[export]#import_export[import]#mediapool[]#phpmailer[]#textile[]#tiny_mce[]#accesskeys[]#advancedMode[]#article2startpage[]#be_search[mediapool]#be_search[structure]#copyArticle[]#copyContent[]#moveArticle[]#moveCategory[]#moveSlice[]#publishArticle[]#publishCategory[]#textile[help]#clang[0]#module[1]#module[2]#module[3]#module[5]#module[7]#module[8]#module[4]#module[6]#module[9]#module[11]#module[10]#', 0, 'admin', 'cafev', 1264776343, 1352459009, 1406300266, '', NULL, 0),
 (5, 'Georg', '', 'georg', '36700c91ee5940ca2ba6dbd490006713f99ae952', '1', '#csw[0]#media[0]#image_resize[]#import_export[export]#import_export[import]#mediapool[]#phpmailer[]#textile[]#tiny_mce[]#accesskeys[]#advancedMode[]#article2startpage[]#be_search[mediapool]#be_search[structure]#copyArticle[]#copyContent[]#moveArticle[]#moveCategory[]#moveSlice[]#publishArticle[]#publishCategory[]#textile[help]#clang[0]#module[1]#module[2]#module[3]#module[5]#module[7]#module[8]#module[4]#module[6]#module[9]#module[11]#module[10]#', 0, 'cafev', 'cafev', 1339955037, 1341109652, 1367596607, 'stb0o81q3sec1adq4k4csvost7', NULL, 0),
 (6, 'Martina', '', 'martina', '36700c91ee5940ca2ba6dbd490006713f99ae952', '1', '#csw[0]#media[0]#image_resize[]#import_export[export]#import_export[import]#mediapool[]#phpmailer[]#textile[]#tiny_mce[]#accesskeys[]#advancedMode[]#article2startpage[]#be_search[mediapool]#be_search[structure]#copyArticle[]#copyContent[]#moveArticle[]#moveCategory[]#moveSlice[]#publishArticle[]#publishCategory[]#textile[help]#clang[0]#module[1]#module[2]#module[3]#module[5]#module[7]#module[8]#module[4]#module[6]#module[9]#module[11]#module[10]#', 0, 'cafev', 'cafev', 1339955065, 1341109705, 1341934873, 'er57u77o62l2qmu4149mmeoqi1', NULL, 0),
@@ -847,6 +873,81 @@ INSERT INTO `rex_user` (`user_id`, `name`, `description`, `login`, `psw`, `statu
 (14, 'Uschi Kemeny', '', 'uschi', 'd6aaa547f6f7760c651dbffa12a0449980cfe155', '1', '#csw[0]#media[0]#image_resize[]#import_export[export]#import_export[import]#mediapool[]#phpmailer[]#textile[]#tiny_mce[]#accesskeys[]#advancedMode[]#article2startpage[]#be_search[mediapool]#be_search[structure]#copyArticle[]#copyContent[]#moveArticle[]#moveCategory[]#moveSlice[]#publishArticle[]#publishCategory[]#clang[0]#module[1]#module[2]#module[3]#module[5]#module[7]#module[8]#module[4]#module[6]#module[9]#module[11]#module[10]#be_lang[default]#', 0, 'cafev', 'uschi', 1408555507, 1408720752, 1408720680, '', NULL, 0),
 (12, 'Michael Roßnagel', '', 'michael', 'd8e07f5ec9061e7b5cafcab723c1c2672b948c7a', '1', '#csw[0]#media[0]#image_resize[]#import_export[export]#import_export[import]#mediapool[]#phpmailer[]#textile[]#tiny_mce[]#accesskeys[]#advancedMode[]#article2startpage[]#be_search[mediapool]#be_search[structure]#copyArticle[]#copyContent[]#moveArticle[]#moveCategory[]#moveSlice[]#publishArticle[]#publishCategory[]#textile[help]#clang[0]#module[1]#module[2]#module[3]#module[5]#module[7]#module[8]#module[4]#module[6]#module[9]#module[11]#module[10]#', 0, 'cafev', '', 1408555434, 0, 0, NULL, NULL, 0),
 (11, 'Matthieu Dvorak', '', 'matthieu', '4ed3920cf9ea6740f5942a0534ec4395408e39cc', '1', '#csw[0]#media[0]#image_resize[]#import_export[export]#import_export[import]#mediapool[]#phpmailer[]#textile[]#tiny_mce[]#advancedMode[]#article2startpage[]#be_search[mediapool]#be_search[structure]#copyArticle[]#copyContent[]#moveArticle[]#moveCategory[]#moveSlice[]#publishArticle[]#publishCategory[]#textile[help]#clang[0]#module[1]#module[2]#module[3]#module[5]#module[7]#module[8]#module[4]#module[6]#module[9]#module[11]#module[10]#be_lang[default]#', 0, 'cafev', 'matthieu', 1394651431, 1395066501, 1409331737, '', NULL, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `rex_xform_email_template`
+--
+
+CREATE TABLE IF NOT EXISTS `rex_xform_email_template` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL DEFAULT '',
+  `mail_from` varchar(255) NOT NULL DEFAULT '',
+  `mail_from_name` varchar(255) NOT NULL DEFAULT '',
+  `subject` varchar(255) NOT NULL DEFAULT '',
+  `body` text NOT NULL,
+  `body_html` text NOT NULL,
+  `attachments` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `rex_xform_field`
+--
+
+CREATE TABLE IF NOT EXISTS `rex_xform_field` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `table_name` varchar(100) NOT NULL,
+  `prio` int(11) NOT NULL,
+  `type_id` varchar(100) NOT NULL,
+  `type_name` varchar(100) NOT NULL,
+  `list_hidden` tinyint(1) NOT NULL,
+  `search` tinyint(1) NOT NULL,
+  `name` text NOT NULL,
+  `label` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `rex_xform_relation`
+--
+
+CREATE TABLE IF NOT EXISTS `rex_xform_relation` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `source_table` varchar(100) NOT NULL,
+  `source_name` varchar(100) NOT NULL,
+  `source_id` int(11) NOT NULL,
+  `target_table` varchar(100) NOT NULL,
+  `target_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `rex_xform_table`
+--
+
+CREATE TABLE IF NOT EXISTS `rex_xform_table` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `status` tinyint(1) NOT NULL,
+  `table_name` varchar(100) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `description` text NOT NULL,
+  `list_amount` tinyint(3) unsigned NOT NULL DEFAULT '50',
+  `prio` int(11) NOT NULL,
+  `search` tinyint(1) NOT NULL,
+  `hidden` tinyint(1) NOT NULL,
+  `export` tinyint(1) NOT NULL,
+  `import` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `table_name` (`table_name`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
