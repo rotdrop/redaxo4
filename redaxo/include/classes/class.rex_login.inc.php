@@ -357,8 +357,6 @@ class rex_login
                 // auf error seite verweisen und message schreiben
 
                 $this->USER = new rex_login_sql($this->DB);
-                $USR_LOGIN = $this->usr_login;
-                $USR_PSW = $this->usr_psw;
 
                 $query = str_replace('USR_LOGIN', $this->usr_login, $this->login_query);
                 $query = str_replace('USR_PSW', $this->usr_psw, $query);
