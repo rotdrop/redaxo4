@@ -14,11 +14,6 @@ class auth_owncloud extends rex_backend_login
         global $REX;
 
         parent::rex_backend_login($tableName);
-
-        // In order to delegate the authentication to Owncloud, we
-        // remove the USR_PSW from the where clause
-        $this->rexLoginQuery = $this->login_query;
-        $this->setLoginquery(preg_replace('|AND\s+`?psw`?`?\s+=\s+"USR_PSW"\s+|', '', $this->login_query));
     }
 
     /** Remember the real password. In principle we could also disable
@@ -27,7 +22,7 @@ class auth_owncloud extends rex_backend_login
      */
     /*public*/ function setLogin($usr_login, $usr_psw)
     {
-        $this->clearTextPassWord = $usr_psw;
+        $this->clearTextPassword = $usr_psw;
         parent::setLogin($usr_login, $usr_psw);
     }
 
@@ -38,20 +33,27 @@ class auth_owncloud extends rex_backend_login
     {
         global $REX;
 
-        return parent::checkLogin();
-
-        if ($this->authOwncloud() && parent::checkLogin()) {
-            return true;
-        } else if ($REX['AUTH_ALLOWREX']) {
-            $this->login_status = 0;
-            $this->setLoginquery($rexLoginQuery);
+        if (($this->cache && $this->login_status != 0) || $this->logout || $this->usr_login == '') {
+            // directly to parent class
             return parent::checkLogin();
+        }
+
+        if ($this->doAuthOwncloud()) {
+            // In order to delegate the authentication to Owncloud, we
+            // remove the USR_PSW from the where clause
+            $this->rexLoginQuery = $this->login_query;
+            $this->setLoginquery(preg_replace('|AND\s+`?psw`?`?\s+=\s+"USR_PSW"\s+|', '', $this->login_query));
+            return parent::checkLogin();
+        } else if ($REX['AUTH_ALLOWREX']) {
+            return parent::checkLogin();
+        } else {
+            return false;
         }
     }
 
     /* Validate user via ownCloud
      */
-    private function authOwncloud()
+    private function doAuthOwncloud()
     {
         global $REX;
 
@@ -69,16 +71,42 @@ class auth_owncloud extends rex_backend_login
         // browser's cookie storage. Still base.php _WILL_ change a
         // lot of things. We also save and restore the session life-time
 
-        $savedSession = session_name();
+        $savedSession    = session_name();
+        $savedSessionId  = session_id();
         $savedUseCookies = ini_get('session.use_cookies');
-        $savedLifeTime = ini_get('gc_maxlifetime');
+        $savedLifeTime   = ini_get('gc_maxlifetime');
         $savedCookieParams = session_get_cookie_params();
         session_write_close();
 
         ini_set('session.use_cookies', 0);
+        define('REDAXO_INCLUDE', true);
+
+        session_id($savedSessionId."DUMMY");
         require_once($REX['OWNCLOUDPATH'].'/lib/base.php');
-        //       	session_destroy(); Don't
-        session_write_close();
+        restore_error_handler();
+
+        if (!session_id()) {
+            session_start();
+        }
+        $_SESSION = array();
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000, $params["path"],
+                      $params["domain"], $params["secure"], $params["httponly"]
+            );
+        }
+        session_destroy();
+
+        ini_set('session.use_cookies', $savedUseCookies);
+        ini_set('gc_maxlifeTime', $savedLifeTime);
+        session_set_cookie_params($savedCookieParams['lifetime'],
+                                  $savedCookieParams['path'],
+                                  $savedCookieParams['domain'],
+                                  $savedCookieParams['secure'],
+                                  $savedCookieParams['httponly']);
+        session_name($savedSession);
+        session_id($savedSessionId);
+        session_start();
 
         error_reporting($savedReporting);
 
@@ -87,7 +115,7 @@ class auth_owncloud extends rex_backend_login
             return false;
         }
 
-        return OC_USER::checkPassword($this->usr_login, $this->clearTextPassword);
+        return (OC_USER::checkPassword($this->usr_login, $this->clearTextPassword) !== false);
     }
 }
 
