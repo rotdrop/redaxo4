@@ -9,29 +9,22 @@
 class rex_xform_password extends rex_xform_abstract
 {
 
-  function enterObject()
-  {
-    if ($this->getValue() == '' && !$this->params['send']) {
-      $this->setValue($this->getElement(3));
+    function enterObject()
+    {
+        if ($this->getValue() == '' && !$this->params['send']) {
+            $this->setValue($this->getElement(3));
+        }
+
+        $this->params['form_output'][$this->getId()] = $this->parse(array('value.password.tpl.php', 'value.text.tpl.php'), array('type' => 'password', 'value' => ''));
+
+        $this->params['value_pool']['email'][$this->getName()] = stripslashes($this->getValue());
+        if ($this->getElement(4) != 'no_db') {
+            $this->params['value_pool']['sql'][$this->getName()] = $this->getValue();
+        }
     }
 
-    $wc = '';
-    if (isset($this->params['warning'][$this->getId()])) {
-      $wc = $this->params['warning'][$this->getId()];
+    function getDescription()
+    {
+        return 'password -> Beispiel: password|name|label|default_value|[no_db]';
     }
-
-    $this->params['form_output'][$this->getId()] = '
-        <p class="formpassword formlabel-' . $this->getName() . '" id="' . $this->getHTMLId() . '">
-          <label class="password ' . $wc . '" for="' . $this->getFieldId() . '" >' . $this->getLabel() . '</label>
-          <input type="password" class="password ' . $wc . '" name="' . $this->getFieldName() . '" id="' . $this->getFieldId() . '" value="" />
-        </p>';
-
-    $this->params['value_pool']['email'][$this->getName()] = stripslashes($this->getValue());
-    if ($this->getElement(4) != 'no_db') $this->params['value_pool']['sql'][$this->getName()] = $this->getValue();
-  }
-
-  function getDescription()
-  {
-    return 'password -> Beispiel: password|name|label|default_value|[no_db]';
-  }
 }

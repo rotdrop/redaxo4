@@ -1,4 +1,4 @@
-CREATE TABLE `%TABLE_PREFIX%62_params` (
+CREATE TABLE IF NOT EXISTS `%TABLE_PREFIX%62_params` (
   `field_id` int(10) unsigned NOT NULL auto_increment,
   `title` varchar(255) default NULL,
   `name` varchar(255) default NULL,
@@ -17,7 +17,7 @@ CREATE TABLE `%TABLE_PREFIX%62_params` (
   UNIQUE KEY `name` (`name`)
 );
 
-CREATE TABLE `%TABLE_PREFIX%62_type` (
+CREATE TABLE IF NOT EXISTS `%TABLE_PREFIX%62_type` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `label` varchar(255) default NULL,
   `dbtype` varchar(255) NOT NULL,
