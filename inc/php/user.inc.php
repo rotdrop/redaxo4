@@ -1,5 +1,5 @@
 <?php
-	session_start();
+	@session_start();
 	define('LOGON_USER','camerata');			// User name
 	define('LOGON_PASS','academica');			// User passwort
 	$REX['PROTECTED_IDS'] = array(11); 			// diese category und deren unterseiten ist geschützt
