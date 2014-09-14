@@ -25,7 +25,8 @@ if (!$REX['GG']) {
 // Setupservicestatus - if everything ok -> false; if problem set to true;
 $REX['SETUP'] = false;
 //$REX['SERVER'] = 'http://fritz.claus-justus-heine.info/cafevwww-new';
-$REX['SERVER'] = '//fritz.claus-justus-heine.info/cafevwww-new';
+//$REX['SERVER'] = '//fritz.claus-justus-heine.info:8888/cafevwww-new';
+$REX['SERVER'] = $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['SERVER_NAME'].':'.$_SERVER['SERVER_PORT'].'/cafevwww-new';
 $REX['SERVERNAME'] = 'camerata academica freiburg';
 $REX['VERSION'] = "4";
 $REX['SUBVERSION'] = "6";
