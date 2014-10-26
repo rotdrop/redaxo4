@@ -21,12 +21,39 @@ if (!$REX['GG']) {
 }
 
 // ----------------- SERVER VARS
+$protocol = 'http';
+$servername = $_SERVER['SERVER_NAME'];
+$serverport = '';
+$root = '/cafevwww-new';
+if (isset($_SERVER['REQUEST_SCHEME'])) {
+  $protocol = $_SERVER['REQUEST_SCHEME'];
+} else if (isset($_SERVER['HTTPS'])) {
+  $protocol = 'https';
+}
+if (isset($_SERVER['SERVER_PORT'])) {
+  $serverport = ':'.$_SERVER['SERVER_PORT'];
+}
+// special Host Europe SSL proxy hack.
+if (isset($_SERVER['HTTP_HOST']) &&
+    isset($_SERVER['HTTP_X_FORWARDED_SERVER'])) {
+    $protocol = 'https';
+    $servername = $_SERVER['HTTP_X_FORWARDED_SERVER'];
+    $root = '/'.$_SERVER['HTTP_HOST'];
+    $serverport = '';
+    $victims = array('REQUEST_URI','SCRIPT_NAME','PHP_SELF');
+    foreach ($victims as $key) {
+        if (isset($_SERVER[$key])) {
+            $_SERVER[$key] = '/'.$_SERVER['HTTP_HOST'].$_SERVER[$key];
+        }
+    }
+}
 
 // Setupservicestatus - if everything ok -> false; if problem set to true;
 $REX['SETUP'] = false;
 //$REX['SERVER'] = 'http://fritz.claus-justus-heine.info/cafevwww-new';
 //$REX['SERVER'] = '//fritz.claus-justus-heine.info:8888/cafevwww-new';
-$REX['SERVER'] = $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['SERVER_NAME'].':'.$_SERVER['SERVER_PORT'].'/cafevwww-new';
+//$REX['SERVER'] = $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['SERVER_NAME'].':'.$_SERVER['SERVER_PORT'].'/cafevwww-new';
+$REX['SERVER'] = $protocol.'://'.$servername.$serverport.$root;
 $REX['SERVERNAME'] = 'camerata academica freiburg';
 $REX['VERSION'] = "4";
 $REX['SUBVERSION'] = "6";
