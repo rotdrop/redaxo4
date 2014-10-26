@@ -70,7 +70,8 @@ class myUrlRewriter extends rexUrlRewriter
        rex_rewriter_generate_pathnames(array());
 
     // REXPATH wird auch im Backend benötigt, z.B. beim bearbeiten von Artikeln
-    require_once (FULLNAMES_PATHLIST);
+    $REXPATH = unserialize(file_get_contents(FULLNAMES_PATHLIST));
+    //require_once (FULLNAMES_PATHLIST);
     
     if(!$REX['REDAXO'])
     {
@@ -286,7 +287,8 @@ function rex_rewriter_generate_pathnames($params)
 
   if(file_exists(FULLNAMES_PATHLIST))
   {
-    require_once (FULLNAMES_PATHLIST);
+    $REXPATH = unserialize(file_get_contents(FULLNAMES_PATHLIST));
+    //require_once (FULLNAMES_PATHLIST);
   }
   
   if(!isset($REXPATH)) 
@@ -384,12 +386,13 @@ function rex_rewriter_generate_pathnames($params)
 	  $rewrites[] = $pathname;     
 
       $REXPATH[$db->getValue('id')][$db->getValue('clang')] = $pathname;
-      
+
       $db->next();
     }
   }
   
-  rex_put_file_contents(FULLNAMES_PATHLIST, "<?php\n\$REXPATH = ". var_export($REXPATH, true) .";\n");
+  //rex_put_file_contents(FULLNAMES_PATHLIST, "<?php\n\$REXPATH = ". var_export($REXPATH, true) .";\n");
+  file_put_contents(FULLNAMES_PATHLIST, serialize($REXPATH));
 }
 
 function rex_rewriter_appendToPath($path, $name)
