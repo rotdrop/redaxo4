@@ -107,6 +107,11 @@ function rex_version_header($params)
             rex_copyRevisionContent($params['article_id'], $params['clang'], 0, 1, 0, true);
             $return .= rex_info($I18N->msg('version_info_live_version_to_working'));
         break;
+        case 'status_article':
+            if ($REX['USER']->isAdmin() || $KATPERM && $REX['USER']->hasPerm('publishArticle[]')) {
+              list($success, $message) = rex_articleStatus($params['article_id'], $params['clang']);
+            }
+        break;
     }
 
     if ($REX['USER']->hasPerm('version[only_working_version]')) {
@@ -163,8 +168,21 @@ function rex_version_header($params)
             $return .= '<li><a href="' . $link . '&amp;rex_version_func=copy_live_to_work" onclick="return confirm(\'' . $I18N->msg('version_confirm_copy_live_to_workingversion') . '\');">' . $I18N->msg('version_copy_live_to_workingversion') . '</a></li>';
         }
     }
-    $return .= '</ul>';
+    $sql = rex_sql::factory();
+    $sql->setQuery('select * from ' . $REX['TABLE_PREFIX'] . 'article where id=' . $params['article_id'] . ' and clang=' . $params['clang']);
 
+    $artStatusTypes = rex_articleStatusTypes();
+    $article_status = $artStatusTypes[$sql->getValue('status')][0];
+    $article_class = $artStatusTypes[$sql->getValue('status')][1];
+
+    if ($REX['USER']->isAdmin() || $KATPERM && $REX['USER']->hasPerm('publishArticle[]')) {
+        $article_status = '<a href="index.php?page=content&amp;article_id=' . $params['article_id'] . '&amp;rex_version_func=status_article&amp;category_id=' . $params['category_id'] . '&amp;clang=' . $params['clang'] . '" class="rex-status-link ' . $article_class . '">' . $article_status . '</a>';
+    } else {
+        $article_status = '<span class="rex-strike ' . $article_class . '">' . $article_status . '</span>';
+    }
+    $return .= '<li>'.$article_status.'</li>';
+
+    $return .= '</ul>';
     $return .= '
 
                     <noscript>
