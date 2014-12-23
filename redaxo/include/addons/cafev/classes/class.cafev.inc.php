@@ -20,7 +20,7 @@ class cafev
   {
     $nl = "\n";
     $out = '';
-    $request = "https://redaxoconnector:four4lobed@fritz.claus-justus-heine.info:8888/owncloud7/ocs/v1.php";
+    $request = "https://USER:PASS@HOST:PORT/OWNCLOUDPATH/ocs/v1.php";
     $request .= "/apps/cafevdb/projects/events/byWebPageId";
     $request .= "/".$articleId;
     $request .= "/".urlencode(urlencode("Europe/Berlin")); // Needs to be doubly encoded. This is a Symphony bug
@@ -57,6 +57,9 @@ class cafev
             setlocale(LC_TIME, $times['locale']);
             if ($times['start']['allday']) {
               $out .= strftime('%a, %x', $times['start']['stamp']);
+              if ($times['start']['stamp'] != $times['end']['stamp']) {
+                $out .= strftime(' - %a, %x', $times['end']['stamp']);
+              }
             } else {
               $out .= strftime('%a, %x, %H:%M', $times['start']['stamp']);
               $out .= strftime(' - %H:%M', $times['end']['stamp']);
