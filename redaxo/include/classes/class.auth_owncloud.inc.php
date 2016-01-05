@@ -51,46 +51,62 @@ class auth_owncloud extends rex_backend_login
         }
     }
 
-    /* Validate user via ownCloud
+    /* Validate user via ownCloud. We use the provisioning API
+     * available since OC 8. The user counts as authenticated if the
+     * API call succeeds and contains all relevant fields.
      */
     private function doAuthOwncloud()
     {
         global $REX;
 
-        if (false && function_exists('curl_version')) {
+        $url = $REX['OWNCLOUDURL'].'/'.'ocs/v1.php/cloud/users/'.$this->usr_login;
+        $url .= "?format=json";
 
+        if (function_exists('curl_version')) {
+
+            error_log(__METHOD__.': use curl');
+
+            $c = curl_init();
+            curl_setopt($c, CURLOPT_VERBOSE, 1);
+            curl_setopt($c, CURLOPT_URL, $url);
+            curl_setopt($c, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+            curl_setopt($c, CURLOPT_USERPWD, $this->usr_login.':'.$this->clearTextPassword);
+            curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
+            $result = curl_exec($c);
+            curl_close($c);
         } else {
-            $url = $REX['OWNCLOUDURL'].'/'.'ocs/v1.php/cloud/users/'.$this->usr_login;
-            $url .= "?format=json";
+
+            error_log(__METHOD__.': do not use curl');
+
             $auth = 'Authorization: Basic '.base64_encode($this->usr_login.':'.$this->clearTextPassword);
             $context = stream_context_create(
                 array(
                     'http' => array(
                         'method' => 'GET',
                         'header' => $auth
+                        )
                     )
-                )
-            );
+                );
             $fp = fopen($url, 'rb', false, $context);
             if ($fp === false) {
                 return false;
             }
             $result = stream_get_contents($fp);
             fclose($fp);
-            $result = json_decode($result, true);
-            if (!is_array($result) ||
-                !isset($result['ocs']) ||
-                !isset($result['ocs']['data']) ||
-                !isset($result['ocs']['meta']) ||
-                !isset($result['ocs']['meta']['statuscode']) |
-                $result['ocs']['meta']['statuscode'] != 100) {
-              return false;
-            }
-            $data = $result['ocs']['data'];
-            if (!$data['enabled']) {
-              return false;
-            }
-            return true;
         }
+        $result = json_decode($result, true);
+        if (!is_array($result) ||
+            !isset($result['ocs']) ||
+            !isset($result['ocs']['data']) ||
+            !isset($result['ocs']['meta']) ||
+            !isset($result['ocs']['meta']['statuscode']) |
+            $result['ocs']['meta']['statuscode'] != 100) {
+            return false;
+        }
+        $data = $result['ocs']['data'];
+        if (!$data['enabled']) {
+            return false;
+        }
+        return true;
     }
 }
