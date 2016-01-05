@@ -64,6 +64,8 @@ $REX['DIRPERM'] = octdec(775); // oktaler wert
 $REX['INSTNAME'] = 'rex20140907124059';
 $REX['SESSION_DURATION'] = 7200;
 
+//require_once('SecureSession.php');
+
 // Is set first time SQL Object ist initialised
 $REX['MYSQL_VERSION'] = "";
 
@@ -121,7 +123,8 @@ $REX['FRONTEND_FILE']	= 'index.php';
 // SSO via Owncloud
 $REX['AUTHCLASS'] = 'auth_owncloud';
 $REX['AUTHCLASSINCLUDE'] = $REX['INCLUDE_PATH'] . '/classes/class.auth_owncloud.inc.php';
-$REX['OWNCLOUDPATH'] = realpath($REX['HTDOCS_PATH'] . '../owncloud7');
+$REX['OWNCLOUDPATH'] = realpath($REX['HTDOCS_PATH'] . '../owncloud8.2');
+$REX['OWNCLOUDURL'] = 'https://fritz.claus-justus-heine.info:8888/owncloud8.2';
 $REX['AUTH_ALLOWREX'] = true; // fall back to rex auth if auth-module fails
 
 // Passwortverschlüsselung, z.B: md5 / mcrypt ...
