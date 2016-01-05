@@ -57,65 +57,40 @@ class auth_owncloud extends rex_backend_login
     {
         global $REX;
 
-        // one could argue about error_reportint() .... ;) However, we
-        // simply save and restore the settings active in
-        // owncloud. Otherwise the owncloud.log will be bloated with
-        // all kind of DW warnings
-        register_shutdown_function(create_function('', 'error_reporting(0);'));
-        $savedReporting = error_reporting();
+        if (false && function_exists('curl_version')) {
 
-        // Yet another difficulty: just include base.php from Owncloud
-        // has all sorts of side effects; sets sessions cookies and so
-        // on. In the standard configuration we only have to disable
-        // the session cookies, otherwise it will destroy the
-        // browser's cookie storage. Still base.php _WILL_ change a
-        // lot of things. We also save and restore the session life-time
-
-        $savedSession    = session_name();
-        $savedSessionId  = session_id();
-        $savedUseCookies = ini_get('session.use_cookies');
-        $savedLifeTime   = ini_get('gc_maxlifetime');
-        $savedCookieParams = session_get_cookie_params();
-        session_write_close();
-
-        ini_set('session.use_cookies', 0);
-        define('REDAXO_INCLUDE', true);
-
-        session_id($savedSessionId."DUMMY");
-        require_once($REX['OWNCLOUDPATH'].'/lib/base.php');
-        restore_error_handler();
-
-        if (!session_id()) {
-            session_start();
-        }
-        $_SESSION = array();
-        if (ini_get("session.use_cookies")) {
-            $params = session_get_cookie_params();
-            setcookie(session_name(), '', time() - 42000, $params["path"],
-                      $params["domain"], $params["secure"], $params["httponly"]
+        } else {
+            $url = $REX['OWNCLOUDURL'].'/'.'ocs/v1.php/cloud/users/'.$this->usr_login;
+            $url .= "?format=json";
+            $auth = 'Authorization: Basic '.base64_encode($this->usr_login.':'.$this->clearTextPassword);
+            $context = stream_context_create(
+                array(
+                    'http' => array(
+                        'method' => 'GET',
+                        'header' => $auth
+                    )
+                )
             );
+            $fp = fopen($url, 'rb', false, $context);
+            if ($fp === false) {
+                return false;
+            }
+            $result = stream_get_contents($fp);
+            fclose($fp);
+            $result = json_decode($result, true);
+            if (!is_array($result) ||
+                !isset($result['ocs']) ||
+                !isset($result['ocs']['data']) ||
+                !isset($result['ocs']['meta']) ||
+                !isset($result['ocs']['meta']['statuscode']) |
+                $result['ocs']['meta']['statuscode'] != 100) {
+              return false;
+            }
+            $data = $result['ocs']['data'];
+            if (!$data['enabled']) {
+              return false;
+            }
+            return true;
         }
-        session_destroy();
-
-        ini_set('session.use_cookies', $savedUseCookies);
-        ini_set('gc_maxlifeTime', $savedLifeTime);
-        session_set_cookie_params($savedCookieParams['lifetime'],
-                                  $savedCookieParams['path'],
-                                  $savedCookieParams['domain'],
-                                  $savedCookieParams['secure'],
-                                  $savedCookieParams['httponly']);
-        session_name($savedSession);
-        session_id($savedSessionId);
-        session_start();
-
-        error_reporting($savedReporting);
-
-		// Check if ownCloud is installed or in maintenance (update) mode
-        if (!OC_Config::getValue('installed', false)) {
-            return false;
-        }
-
-        return (OC_USER::checkPassword($this->usr_login, $this->clearTextPassword) !== false);
     }
 }
-
