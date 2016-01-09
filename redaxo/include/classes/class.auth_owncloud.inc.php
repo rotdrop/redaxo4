@@ -64,19 +64,25 @@ class auth_owncloud extends rex_backend_login
 
         if (function_exists('curl_version')) {
 
-            error_log(__METHOD__.': use curl');
+            //error_log(__METHOD__.': use curl');
 
             $c = curl_init();
-            curl_setopt($c, CURLOPT_VERBOSE, 1);
+            curl_setopt($c, CURLOPT_VERBOSE, 0);
             curl_setopt($c, CURLOPT_URL, $url);
             curl_setopt($c, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
             curl_setopt($c, CURLOPT_USERPWD, $this->usr_login.':'.$this->clearTextPassword);
+            if (true) {
+                curl_setopt($c, CURLOPT_HEADERFUNCTION, function($curl, $headerline) {
+                        //error_log($headerline);
+                        return strlen($headerline);
+                    });
+            }
             curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
             $result = curl_exec($c);
             curl_close($c);
         } else {
 
-            error_log(__METHOD__.': do not use curl');
+            //error_log(__METHOD__.': do not use curl');
 
             $auth = 'Authorization: Basic '.base64_encode($this->usr_login.':'.$this->clearTextPassword);
             $context = stream_context_create(
@@ -103,9 +109,11 @@ class auth_owncloud extends rex_backend_login
             $result['ocs']['meta']['statuscode'] != 100) {
             return false;
         }
-        $data = $result['ocs']['data'];
-        if (!$data['enabled']) {
+        if (false) {
+          $data = $result['ocs']['data'];
+          if (!$data['enabled']) {
             return false;
+          }
         }
         return true;
     }
