@@ -163,6 +163,140 @@ class cafev
     return $out;
   }
 
+  /**Fetch just all concerts for the given article and parse it in to
+   * an array
+   *
+   * array('date', 'title', 'subtitle', 'location');
+   *
+   * for use with the concert templates.
+   */
+  public function fetchProjectConcerts($articleId)
+  {
+    global $I18N;
+
+    $data = array('date' => '',
+                  'title' => '',
+                  'subtitle' => '',
+                  'teaser' => '',
+                  'location' => array());
+
+    $concertData = $this->fetchProjectEvents($articleId, 'concerts');
+    if ($concertData === false) {
+      $data['date'] = $I18N->msg('cafev_project_events_error');
+      return $data;
+    }
+
+    // take just the first value, if we have more than one project
+    // then something is fishy anyway.
+    $events = reset($concertData);
+    $project = key($concertData);
+    // however, here it is clear that there is only a single instance by request
+    $calendar = $events[0]['name'];
+    $events = $events[0]['events'];
+    if (count($events) == 1) {
+      $event = $events[0];
+      // strip the project tag, it is redundant and only bloats the
+      // output
+      $title = $event['summary'];
+      $data['title'] = preg_replace('/(,\s*)?'.$project.'/', '', $title);
+      $data['subtitle'] = $event['description'];
+      $data['location'] = $event['location'];
+
+      $times = $event['times'];
+      setlocale(LC_TIME, $times['locale']);
+      if ($times['start']['allday']) {
+        $date = strftime('%A, %x', $times['start']['stamp']);
+        // Usually, we want to omit the end-time of a concert, but if
+        // it really spans more than one day ...
+        if ($times['start']['stamp'] != $times['end']['stamp']) {
+          $date .= strftime(' - %A, %x', $times['end']['stamp']);
+        }
+      } else {
+        $date = strftime('%A, %x, %H:%M', $times['start']['stamp']);
+        // Usually, we want to omit the end-time of a concert
+        // $date .= strftime(' - %H:%M', $times['end']['stamp']);
+      }
+      $data['date'] = $date;
+    } else {
+      // Somewhat tricky.
+      //
+      // * the individual event-dates will got to the location field
+      //
+      // * we use the first non-empty title and description
+      //
+      // * the date field will just carry the list of months
+      $briefDates = array();
+      $years = array();
+      $months = array();
+      foreach ($events as $event) {
+        // strip the project tag, it is redundant and only bloats the
+        // output
+        $title = $event['summary'];
+        $title = preg_replace('/(,\s*)?'.$project.'/', '', $title);
+        $subtitle = $event['description'];
+        $location = $event['location'];
+
+        if ($data['title'] === '') {
+          $data['title'] = $title;
+        }
+        if ($data['subtitle'] === '') {
+          $data['subtitle'] = $subtitle;
+        }
+
+        $times = $event['times'];
+        setlocale(LC_TIME, $times['locale']);
+        if ($times['start']['allday']) {
+          $date = strftime('%a, %x', $times['start']['stamp']);
+          // Usually, we want to omit the end-time of a concert, but if
+          // it really spans more than one day ...
+          if ($times['start']['stamp'] != $times['end']['stamp']) {
+            $date .= strftime(' - %a, %x', $times['end']['stamp']);
+          }
+        } else {
+          $date = strftime('%a, %x, %H:%M', $times['start']['stamp']);
+          // Usually, we want to omit the end-time of a concert
+          // $date .= strftime(' - %H:%M', $times['end']['stamp']);
+        }
+        // As a brief header we construct a list of month and year
+        // from the respective start date
+        $year = strftime('%Y', $times['start']['stamp']);
+        $month = strftime('%B', $times['start']['stamp']);
+        $shortMonth = strftime('%b', $times['start']['stamp']);
+
+        if (isset($briefDates[$year])) {
+          $briefDates[$year]['long'] .= ', '.$month;
+          $briefDates[$year]['short'] .= ', '.$shortMonth;
+        } else {
+          $briefDates[$year] = array(
+            'long' => $month,
+            'short' => $shortMonth
+            );
+        }
+
+        if ($location !== '') {
+          $date .= ' - '.$location;
+        }
+        $data['location'][] = $date;
+      }
+
+      $longDate = array();
+      $shortDate = array();
+      foreach ($briefDates as $year => $months) {
+        $longDate[] = $months['long'].' '.$year;
+        $shortDate[] = $months['short'].' '.$year;
+      }
+      $longDate = implode('; ', $longDate);
+      $shortDate = implode('; ', $shortDate);
+      if (strlen($longDate) > 40) {
+        $data['date'] = $shortDate;
+      } else {
+        $data['date'] = $longDate;
+      }
+    }
+
+    return $data;
+  }
+
   /**Quick and dirty event fetcher. Events are displayed in unordered
    * lists. The OwnCloud cafevdb app internally stores a table which
    * links Redaxo article ids to orchestra events.
@@ -172,12 +306,13 @@ class cafev
    * @return Array with all associated events or false
    *
    */
-  public function fetchProjectEvents($articleId)
+  public function fetchProjectEvents($articleId, $calendar = 'all')
   {
     $request  = $this->cafevURI();
     $request .= '/ocs/v1.php';
     $request .= "/apps/cafevdb/projects/events/byWebPageId";
     $request .= "/".$articleId;
+    $request .= "/".$calendar;
     $request .= "/".urlencode(urlencode("Europe/Berlin")); // Needs to be doubly encoded. This is a Symphony bug
     $request .= "/de_DE.UTF-8";
     $request .= "?format=json";
