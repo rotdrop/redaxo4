@@ -1,2 +1,15 @@
 RewriteEngine Off
 
+<IfModule mod_php5.c>
+#
+# Please can anyone tell me how to match / with those overly stupid Apache2 regex shit.
+#
+<If "%{REQUEST_URI} =~ /publicwww.*/">
+        php_value session.cookie_path "/owncloud8.2/publicwww/redaxo" 
+</If>
+<Else>
+        php_value session.cookie_path "/cafevwww-new/redaxo" 
+</Else>
+php_value session.cookie_path "/cafevwww-new/redaxo" 
+php_value session.name "redaxo_sessid"
+</IfModule>

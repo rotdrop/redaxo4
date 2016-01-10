@@ -1,6 +1,6 @@
 <?php
 
-$displayMethod = new ReflectionMethod('cafev', 'displayProjectEvents');
+$displayMethod = new ReflectionMethod('cafevdb', 'displayProjectEvents');
 $filename = $displayMethod->getFileName();
 $startLine = $displayMethod->getStartLine() - 1;
 $endLine = $displayMethod->getEndLine();
@@ -44,8 +44,8 @@ EOD;
     $out .= \'</div>\'.$nl;
   }
   if (REX_IS_VALUE[4]) {
-    $cafev = new cafev();
-    $out .= $cafev->displayProjectEvents(REX_ARTICLE_ID, !REX_IS_VALUE[1]);
+    $cafevdb = new cafevdb();
+    $out .= $cafevdb->displayProjectEvents(REX_ARTICLE_ID, !REX_IS_VALUE[1]);
   }
   $out .=<<< EOD
 REX_HTML_VALUE[2]
@@ -71,16 +71,16 @@ if ($REX[\'GG\']) {
 ?>
 
 <div class="rex-addon-output">
-  <h2 class="rex-hl2"><?php echo $I18N->msg('cafev_example_module_headline'); ?></h2>
-  <h3 class="rex-hl3"><?php echo $I18N->msg('cafev_example_input'); ?></h3>
+  <h2 class="rex-hl2"><?php echo $I18N->msg('cafevdb_example_module_headline'); ?></h2>
+  <h3 class="rex-hl3"><?php echo $I18N->msg('cafevdb_example_input'); ?></h3>
   <div class="rex-addon-content">
     <?php rex_highlight_string($rehearsalInput); ?>
   </div>
-  <h3 class="rex-hl3"><?php echo $I18N->msg('cafev_example_output'); ?></h3>
+  <h3 class="rex-hl3"><?php echo $I18N->msg('cafevdb_example_output'); ?></h3>
   <div class="rex-addon-content">
     <?php rex_highlight_string($rehearsalOutput); ?>
   </div>
-  <h2 class="rex-hl2"><?php echo $I18N->msg('cafev_display_code'); ?></h2>
+  <h2 class="rex-hl2"><?php echo $I18N->msg('cafevdb_display_code'); ?></h2>
   <div class="rex-addon-content">
     <?php rex_highlight_string($displaySource); ?>
   </div>

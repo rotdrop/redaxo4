@@ -21,8 +21,8 @@ $REX['ADDON']['status']['be_search'] = '1';
 $REX['ADDON']['install']['be_style'] = '1';
 $REX['ADDON']['status']['be_style'] = '1';
 
-$REX['ADDON']['install']['cafev'] = '1';
-$REX['ADDON']['status']['cafev'] = '1';
+$REX['ADDON']['install']['cafevdb'] = '1';
+$REX['ADDON']['status']['cafevdb'] = '1';
 
 $REX['ADDON']['install']['cronjob'] = '0';
 $REX['ADDON']['status']['cronjob'] = '0';
