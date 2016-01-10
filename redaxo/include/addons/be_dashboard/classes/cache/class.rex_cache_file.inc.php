@@ -246,14 +246,14 @@ class rex_file_cache extends rex_cache
      */
     /*protected*/ function write($path, $data, $timeout)
     {
-        $current_umask = umask();
-        umask(0000);
+        //$current_umask = umask();
+        //umask(0000);
 
         if (!is_dir(dirname($path))) {
             // STM: Keep PHP4 compat
             // mkdir(dirname($path), 0777, true);
             // create directory structure if needed
-            mkdir(dirname($path), 0777);
+            mkdir(dirname($path), 0770);
         }
 
         $tmpFile = tempnam(dirname($path), basename($path));
@@ -276,8 +276,8 @@ class rex_file_cache extends rex_cache
             }
         }
 
-        chmod($path, 0666);
-        umask($current_umask);
+        chmod($path, 0660);
+        //umask($current_umask);
 
         return true;
     }
