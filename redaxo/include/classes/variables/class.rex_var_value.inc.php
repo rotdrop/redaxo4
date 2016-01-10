@@ -136,7 +136,7 @@ class rex_var_value extends rex_var
             }
         }
 
-        return $content;
+        return trim($content);
     }
 
     /*private*/ function matchValue(& $sql, $content, $nl2br = false)
