@@ -123,7 +123,6 @@ $REX['FRONTEND_FILE']	= 'index.php';
 // SSO via Owncloud
 $REX['AUTHCLASS'] = 'auth_owncloud';
 $REX['AUTHCLASSINCLUDE'] = $REX['INCLUDE_PATH'] . '/classes/class.auth_owncloud.inc.php';
-$REX['OWNCLOUDPATH'] = realpath($REX['HTDOCS_PATH'] . '../owncloud8.2');
 $REX['OWNCLOUDURL'] = 'https://fritz.claus-justus-heine.info:8888/owncloud8.2';
 $REX['AUTH_ALLOWREX'] = true; // fall back to rex auth if auth-module fails
 
