@@ -55,16 +55,14 @@ $body_attr['onunload'] = array('closeAll();');
     <script src="media/jquery.min.js" type="text/javascript"></script>
     <script src="media/standard.js" type="text/javascript"></script>
     <script type="text/javascript">
-    <!--
-    var redaxo = true;
-    var rex_imageExtensions = <?php echo '["' . implode('","', $REX['MEDIAPOOL']['IMAGE_EXTENSIONS']) . '"]' ?>;
-    var rex_accesskeysEnabled = <?php echo isset($REX['USER']) && $REX['USER']->hasPerm('accesskeys[]') ? 'true' : 'false' ?>;
+     var redaxo = true;
+     var rex_imageExtensions = <?php echo '["' . implode('","', $REX['MEDIAPOOL']['IMAGE_EXTENSIONS']) . '"]' ?>;
+     var rex_accesskeysEnabled = <?php echo isset($REX['USER']) && $REX['USER']->hasPerm('accesskeys[]') ? 'true' : 'false' ?>;
 
-    // jQuery is now removed from the $ namespace
-    // to use the $ shorthand, use (function($){ ... })(jQuery);
-    // and for the onload handler: jQuery(function($){ ... });
-    jQuery.noConflict();
-    //-->
+     // jQuery is now removed from the $ namespace
+     // to use the $ shorthand, use (function($){ ... })(jQuery);
+     // and for the onload handler: jQuery(function($){ ... });
+     jQuery.noConflict();
     </script>
 <?php
 
