@@ -1,0 +1,16 @@
+cafev_title = Cafev
+cafev_configuration = Konfiguration
+cafev_example = Beispiel
+cafev_example_module_headline = Ein mögliches Modul-Beispiel
+cafev_config_settings = Einstellungen
+cafev_save = Speichern
+cafev_reset = Verwerfen
+cafev_reset_info = Änderungen verwerfen?
+cafev_config_saved_error = Fehler beim speichern der Konfiguration!
+cafev_config_saved_successful = Konfiguration erfolgreich gespeichert!
+cafev_url = URL zur OwnCloud Instanz
+cafev_user = OwnCloud Benutzer
+cafev_password = OwnCloud Passwort
+cafev_example_input = Eingabe Teil des Probenplan Moduls
+cafev_example_output = Ausgabe Teil des Probenplan Moduls
+cafev_display_code = Source-Code von cafev::displayProjectEvents()
