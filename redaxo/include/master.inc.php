@@ -30,8 +30,8 @@ $REX['VERSION'] = "4";
 $REX['SUBVERSION'] = "6";
 $REX['MINORVERSION'] = "dev";
 $REX['ERROR_EMAIL'] = "";
-$REX['FILEPERM'] = octdec(664); // oktaler wert
-$REX['DIRPERM'] = octdec(775); // oktaler wert
+$REX['FILEPERM'] = octdec(660); // oktaler wert
+$REX['DIRPERM'] = octdec(770); // oktaler wert
 $REX['INSTNAME'] = "rex20130403120000";
 $REX['SESSION_DURATION'] = 7200;
 
