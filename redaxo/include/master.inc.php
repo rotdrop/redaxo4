@@ -59,8 +59,8 @@ $REX['VERSION'] = "4";
 $REX['SUBVERSION'] = "6";
 $REX['MINORVERSION'] = "1";
 $REX['ERROR_EMAIL'] = 'cafevwww@claus-justus-heine.de';
-$REX['FILEPERM'] = octdec(664); // oktaler wert
-$REX['DIRPERM'] = octdec(775); // oktaler wert
+$REX['FILEPERM'] = octdec(660); // oktaler wert
+$REX['DIRPERM'] = octdec(770); // oktaler wert
 $REX['INSTNAME'] = 'rex20140907124059';
 $REX['SESSION_DURATION'] = 7200;
 
