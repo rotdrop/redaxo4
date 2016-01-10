@@ -1,0 +1,44 @@
+<label for="externalEventList"
+            title="Verwende die Termine und ggf. den Kurztitel aus dem OwnCloud-Kalender.">
+  <input id="externalEventList" type="checkbox" name="VALUE[8]" value="on"
+  <?php echo ("REX_VALUE[8]" == "on" ? 'checked="checked"' : ''); ?>
+            onchange="jQuery('#konzertdatum').prop('disabled', jQuery(this).prop('checked'));" />
+  Owncloud Event-Liste
+</label>
+<br /><br />
+<strong>Datum</strong><br />
+<input type="text" id="konzertdatum" size="80" name="VALUE[1]" value="REX_VALUE[1]"
+            <?php echo ("REX_VALUE[8]" == "on" ? 'disabled="disabled"' : ''); ?>
+            title="Freitext Datumszeile, wird ignoriert, falls die OwnCloud-Eventlist verwendet wird."/>
+<br /><br />
+<strong>Überschrift</strong><br />
+<textarea name="VALUE[2]" cols="80" rows="5" class="inp100"
+          title="Freitext-Überschrift, falls leer wird ggf. der Kurztitel der OwnCloud-Events verwendet.">REX_HTML_VALUE[2]</textarea>
+<br /><br />
+<strong>Unterüberschrift</strong><br />
+<textarea name="VALUE[3]" cols="80" rows="5" class="inp100">REX_HTML_VALUE[3]</textarea>
+<br /><br />
+<strong>Mitwirkende</strong><br />
+<textarea name="VALUE[7]" cols="80" rows="5" class="inp100">REX_HTML_VALUE[7]</textarea>
+<br /><br />
+<strong>Veranstaltungsort</strong><br />
+<textarea name="VALUE[4]" cols="80" rows="5" class="inp100">REX_HTML_VALUE[4]</textarea>
+<br /><br />
+<strong>Teasertext (Startseite)</strong><br />
+<textarea name="VALUE[5]" class="tinyMCEEditor" style="width:700px; height:200px;">
+REX_VALUE[5]
+</textarea>
+<br /><br />
+<strong>Teaserbild (optional)</strong>:<br />
+REX_MEDIA_BUTTON[1]
+<?php
+if ("REX_FILE[1]" != "") {
+echo "<br /><strong>Vorschau</strong>:<br />";
+echo "<img src=".$REX['HTDOCS_PATH']."/files/REX_FILE[1]><br />";
+}
+?>
+<br /><br />
+<strong>Detailtext (Nur auf der Detailseite sichtbar)</strong><br />
+<textarea name="VALUE[6]" class="tinyMCEEditor" style="width:700px; height:250px;">
+REX_VALUE[6]
+</textarea>
