@@ -9,28 +9,104 @@
 
 class cafev
 {
+  const NAME = 'cafev';
+  const MCRYPT_CIPHER = MCRYPT_RIJNDAEL_128;
+  const MCRYPT_MODE = MCRYPT_MODE_ECB;
 
-  /**Quick and dirty event fetcher. Events are displayed in unordered lists. 
+  public $url = '';
+  public $user = '';
+  public $password = '';
+
+  function cafev()
+  {
+    global $REX;
+
+    $settings = rex_path::addonData(self::NAME, 'settings.inc.php');
+    if (file_exists($settings)) {
+      include $settings;
+    }
+  }
+
+  private function encryptionKey()
+  {
+    global $REX;
+
+    $key = $REX['INSTNAME'];
+
+    $keySize  = mcrypt_module_get_algo_key_size(self::MCRYPT_CIPHER);
+    $keySizes = mcrypt_module_get_supported_key_sizes(self::MCRYPT_CIPHER);
+    if (count($keySizes) == 0) {
+      $keySizes = array($keySize);
+    }
+    sort($keySizes);
+    $maxSize = $keySizes[count($keySizes) - 1];
+    $klen = strlen($key);
+    if ($klen > $maxSize) {
+      $key = substr($key, 0, $maxSize);
+    } else {
+      foreach($keySizes as $size) {
+        if ($size >= $klen) {
+          $key = str_pad($key, $size, "\0");
+          break;
+        }
+      }
+    }
+
+    return $key;
+  }
+
+  public function encrypt($value)
+  {
+    $enckey = $this->encryptionKey();
+    $value = base64_encode(mcrypt_encrypt(self::MCRYPT_CIPHER,
+                                          $enckey,
+                                          trim($value),
+                                          self::MCRYPT_MODE));
+    return $value;
+  }
+
+  private function decrypt($value)
+  {
+    $enckey = $this->encryptionKey();
+    $value = trim(mcrypt_decrypt(self::MCRYPT_CIPHER,
+                                 $enckey,
+                                 base64_decode($value),
+                                 self::MCRYPT_MODE));
+
+    return $value;
+  }
+
+  private function cafevURI()
+  {
+    $uri = preg_replace('@(https?)://@', '${1}://'.$this->user.':'.$this->password.'@', $this->url);
+    return $uri;
+  }
+
+  /**Quick and dirty event fetcher. Events are displayed in unordered
+   * lists. The OwnCloud cafevdb app internally stores a table which
+   * links Redaxo article ids to orchestra events.
    *
-   * @param $articleId What do you think ...
+   * @param $articleId The article id.
    *
    * @param $doTitle Whether or not to display the short title of the project
+   *
+   * @return The html fragment wit the events associated to the given
+   * article id.
+   *
+   * @bug This class probably should only export the event-data and
+   * leave the display to a properly defined "module".
    */
-  static public function displayProjectEvents($articleId, $doTitle = false)
+  public function displayProjectEvents($articleId, $doTitle = false)
   {
+    global $I18N;
+
     $nl = "\n";
     $out = '';
-    $request = "https://USER:PASS@HOST:PORT/OWNCLOUDPATH/ocs/v1.php";
-    $request .= "/apps/cafevdb/projects/events/byWebPageId";
-    $request .= "/".$articleId;
-    $request .= "/".urlencode(urlencode("Europe/Berlin")); // Needs to be doubly encoded. This is a Symphony bug
-    $request .= "/de_DE.UTF-8";
-    $request .= "?format=json";    
-    $eventData = file_get_contents($request);
-    $eventData = json_decode($eventData, true);
-    // Array ( [ocs] => Array ( [meta] => Array ( [status] => ok [statuscode] => 100 [message] => ) [data] => Array ( [RedaxoEnhancement2014] => Array ( [0] => Array ( [name] => Konzerte [events] => Array ( [0] => Array ( [times] => Array ( [start] => Array ( [date] => 27.10.2014 [time] => 03:13 [allday] => ) [end] => Array ( [date] => 27.10.2014 [time] => 06:13 [allday] => ) ) [summary] => Abschlusskonzert [location] => Engelboldstraße 97\, stuttgart [description] => Tutti ) ) ) [1] => Array ( [name] => Proben [events] => Array ( ) ) [2] => Array ( [name] => Sonstiges [events] => Array ( ) ) ) ) ) ) 
-    if (is_array($eventData) && isset($eventData['ocs']) && $eventData['ocs']['meta']['statuscode'] == 100) {
-      $eventData = $eventData['ocs']['data'];
+
+    $eventData = $this->fetchProjectEvents($articleId);
+    if ($eventData === false) {
+      $out .= '<h3>'.$I18N->msg('cafev_project_events_error').'</h3>';
+    } else {
       $titleDone = false;
       foreach($eventData as $project => $events) {
         if ($doTitle) {
@@ -69,7 +145,7 @@ class cafev
               // strip the project tag, it is redundant and only
               // bloats the output
               $summary = $event['summary'];
-              $summary = preg_replace('/(,\s*)?'.$project.'/', '', $summary);              
+              $summary = preg_replace('/(,\s*)?'.$project.'/', '', $summary);
               $out .= ': '.$summary;
             }
             if ($event['description'] != '') {
@@ -85,6 +161,36 @@ class cafev
       }
     }
     return $out;
+  }
+
+  /**Quick and dirty event fetcher. Events are displayed in unordered
+   * lists. The OwnCloud cafevdb app internally stores a table which
+   * links Redaxo article ids to orchestra events.
+   *
+   * @param $articleId The article id.
+   *
+   * @return Array with all associated events or false
+   *
+   */
+  public function fetchProjectEvents($articleId)
+  {
+    $request  = $this->cafevURI();
+    $request .= '/ocs/v1.php';
+    $request .= "/apps/cafevdb/projects/events/byWebPageId";
+    $request .= "/".$articleId;
+    $request .= "/".urlencode(urlencode("Europe/Berlin")); // Needs to be doubly encoded. This is a Symphony bug
+    $request .= "/de_DE.UTF-8";
+    $request .= "?format=json";
+    $eventData = file_get_contents($request);
+    $eventData = json_decode($eventData, true);
+
+    // Array ( [ocs] => Array ( [meta] => Array ( [status] => ok [statuscode] => 100 [message] => ) [data] => Array ( [RedaxoEnhancement2014] => Array ( [0] => Array ( [name] => Konzerte [events] => Array ( [0] => Array ( [times] => Array ( [start] => Array ( [date] => 27.10.2014 [time] => 03:13 [allday] => ) [end] => Array ( [date] => 27.10.2014 [time] => 06:13 [allday] => ) ) [summary] => Abschlusskonzert [location] => Engelboldstraße 97\, stuttgart [description] => Tutti ) ) ) [1] => Array ( [name] => Proben [events] => Array ( ) ) [2] => Array ( [name] => Sonstiges [events] => Array ( ) ) ) ) ) )
+
+    if (is_array($eventData) && isset($eventData['ocs']) && $eventData['ocs']['meta']['statuscode'] == 100) {
+      return $eventData['ocs']['data'];
+    } else {
+      return false;
+    }
   }
 }
 
