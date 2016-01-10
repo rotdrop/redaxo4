@@ -1,0 +1,16 @@
+cafevdb_title = Camerata DB
+cafevdb_configuration = Konfiguration
+cafevdb_example = Beispiel
+cafevdb_example_module_headline = Ein mögliches Modul-Beispiel
+cafevdb_config_settings = Einstellungen
+cafevdb_save = Speichern
+cafevdb_reset = Verwerfen
+cafevdb_reset_info = Änderungen verwerfen?
+cafevdb_config_saved_error = Fehler beim speichern der Konfiguration!
+cafevdb_config_saved_successful = Konfiguration erfolgreich gespeichert!
+cafevdb_url = URL zur OwnCloud Instanz
+cafevdb_user = OwnCloud Benutzer
+cafevdb_password = OwnCloud Passwort
+cafevdb_example_input = Eingabe Teil des Probenplan Moduls
+cafevdb_example_output = Ausgabe Teil des Probenplan Moduls
+cafevdb_display_code = Source-Code von cafevdb::displayProjectEvents()
