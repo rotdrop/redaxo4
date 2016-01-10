@@ -48,7 +48,7 @@ if (is_array($article) && count($article)) {
           $out .= '</div>'."\n";
         }
         if ($auto) {
-          $out .= cafev::displayProjectEvents($articleId, $name == '');
+          $out .= cafevdb::displayProjectEvents($articleId, $name == '');
         }
         if ($teaser) {
           $out .= $teaser."\n";

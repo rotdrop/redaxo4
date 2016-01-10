@@ -16,11 +16,11 @@ $func = rex_request('func', 'string');
 require $REX['INCLUDE_PATH'] . '/layout/top.php';
 
 $subpages = array(
-  array('', $I18N->msg('cafev_configuration')),
-  array('example', $I18N->msg('cafev_example')),
+  array('', $I18N->msg('cafevdb_configuration')),
+  array('example', $I18N->msg('cafevdb_example')),
   );
 
-rex_title($I18N->msg('cafev_title'), $subpages);
+rex_title($I18N->msg('cafevdb_title'), $subpages);
 
 switch ($subpage) {
 case 'example':
