@@ -7,9 +7,9 @@
  * @version svn:$Id$
  */
 
-class cafev
+class cafevdb
 {
-  const NAME = 'cafev';
+  const NAME = 'cafevdb';
   const MCRYPT_CIPHER = MCRYPT_RIJNDAEL_128;
   const MCRYPT_MODE = MCRYPT_MODE_ECB;
 
@@ -17,7 +17,7 @@ class cafev
   public $user = '';
   public $password = '';
 
-  function cafev()
+  function cafevdb()
   {
     global $REX;
 
@@ -76,7 +76,7 @@ class cafev
     return $value;
   }
 
-  private function cafevURI()
+  private function cafevdbURI()
   {
     $uri = preg_replace('@(https?)://@', '${1}://'.$this->user.':'.$this->password.'@', $this->url);
     return $uri;
@@ -105,7 +105,7 @@ class cafev
 
     $eventData = $this->fetchProjectEvents($articleId);
     if ($eventData === false) {
-      $out .= '<h3>'.$I18N->msg('cafev_project_events_error').'</h3>';
+      $out .= '<h3>'.$I18N->msg('cafevdb_project_events_error').'</h3>';
     } else {
       $titleDone = false;
       foreach($eventData as $project => $events) {
@@ -182,7 +182,7 @@ class cafev
 
     $concertData = $this->fetchProjectEvents($articleId, 'concerts');
     if ($concertData === false) {
-      $data['date'] = $I18N->msg('cafev_project_events_error');
+      $data['date'] = $I18N->msg('cafevdb_project_events_error');
       return $data;
     }
 
@@ -308,7 +308,7 @@ class cafev
    */
   public function fetchProjectEvents($articleId, $calendar = 'all')
   {
-    $request  = $this->cafevURI();
+    $request  = $this->cafevdbURI();
     $request .= '/ocs/v1.php';
     $request .= "/apps/cafevdb/projects/events/byWebPageId";
     $request .= "/".$articleId;

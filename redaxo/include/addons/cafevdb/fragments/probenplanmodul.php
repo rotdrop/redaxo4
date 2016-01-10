@@ -13,8 +13,8 @@ EOD;
     $out .= '</div>'."\n";
   }
   if (REX_IS_VALUE[4]) {
-    $cafev = new cafev();
-    $out .= $cafev->displayProjectEvents(REX_ARTICLE_ID, !REX_IS_VALUE[1]);
+    $cafevdb = new cafevdb();
+    $out .= $cafevdb->displayProjectEvents(REX_ARTICLE_ID, !REX_IS_VALUE[1]);
   }
   $out .=<<< EOD
 REX_HTML_VALUE[2]

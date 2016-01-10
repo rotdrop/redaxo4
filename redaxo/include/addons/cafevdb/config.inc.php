@@ -2,7 +2,7 @@
 
 // some general support functions
 
-$mypage = "cafev";
+$mypage = "cafevdb";
 
 $REX['ADDON']['name'][$mypage] = 'Camerata DB';
 $REX['ADDON']['version'][$mypage] = "0.1";
@@ -14,4 +14,4 @@ if ($REX['REDAXO'] !== false) {
     $I18N->appendFile($REX['INCLUDE_PATH'].'/addons/'.$mypage.'/lang/');
 }
 
-require_once $REX['INCLUDE_PATH'].'/addons/'.$mypage.'/classes/class.cafev.inc.php';
+require_once $REX['INCLUDE_PATH'].'/addons/'.$mypage.'/classes/class.cafevdb.inc.php';
