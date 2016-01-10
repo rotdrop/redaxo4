@@ -5,8 +5,8 @@ $location = '';
 $date = '';
 
 if (REX_IS_VALUE[8]) {
-  $cafev = new cafev();
-  $concertData = $cafev->fetchProjectConcerts(REX_ARTICLE_ID);
+  $cafevdb = new cafevdb();
+  $concertData = $cafevdb->fetchProjectConcerts(REX_ARTICLE_ID);
   $title = $concertData['title'];
   $subtitle = $concertData['subtitle'];
   $location = implode('<br/>', $concertData['location']);
