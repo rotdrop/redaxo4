@@ -133,7 +133,8 @@ class cafevdb
             setlocale(LC_TIME, $times['locale']);
             if ($times['start']['allday']) {
               $out .= strftime('%a, %x', $times['start']['stamp']);
-              if ($times['start']['stamp'] != $times['end']['stamp']) {
+
+              if ($times['start']['date'] != $times['end']['date']) {
                 $out .= strftime(' - %a, %x', $times['end']['stamp']);
               }
             } else {

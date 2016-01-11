@@ -36,7 +36,7 @@ if (is_array($article) && count($article)) {
 
         $ocEventList = $slice->getValue(8) === 'on';
         if ($ocEventList) {
-          $cafevdb = new Cafev();
+          $cafevdb = new cafevdb();
           $concertData = $cafevdb->fetchProjectConcerts($articleId);
 
           if ($date === '') {

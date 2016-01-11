@@ -22,7 +22,7 @@ if (is_array($article) && count($article)) {
     $articleId              = $var->getId();
     $articleName            = $var->getName();
     $articleDescription = $var->getDescription();
-    if (!$var->isStartpage()) {     
+    if (!$var->isStartpage()) {
       $slice = OOArticleSlice::getFirstSliceForArticle($articleId,false);
       if ($slice) {
         $name   = $slice->getValue(1);
@@ -30,13 +30,13 @@ if (is_array($article) && count($article)) {
         $image  = $slice->getMedia(1);
         $full   = $slice->getValue(3);
         $auto   = $slice->getValue(4);
-                                
+
         // rex-links zu htmllinks
         $teaser = str_replace("###","&#x20;",$teaser);
-        $teaser = rex_article::replaceLinks($teaser);                     
+        $teaser = rex_article::replaceLinks($teaser);
 
         if ($itemCount) { // wenn itemCount > 0 mit Linie
-          $out .= '<div class="item-text no-margin clearfix">'."\n";      
+          $out .= '<div class="item-text no-margin clearfix">'."\n";
           $out .= '<p class="ornament"> </p>'."\n";
         } else {
           $out .= '<div class="item-text clearfix">'."\n";
@@ -48,7 +48,8 @@ if (is_array($article) && count($article)) {
           $out .= '</div>'."\n";
         }
         if ($auto) {
-          $out .= cafevdb::displayProjectEvents($articleId, $name == '');
+          $cafevdb = new cafevdb();
+          $out .= $cafevdb->displayProjectEvents($articleId, $name == '');
         }
         if ($teaser) {
           $out .= $teaser."\n";
