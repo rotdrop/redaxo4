@@ -208,7 +208,7 @@ class cafevdb
         $date = strftime('%A, %x', $times['start']['stamp']);
         // Usually, we want to omit the end-time of a concert, but if
         // it really spans more than one day ...
-        if ($times['start']['stamp'] != $times['end']['stamp']) {
+        if ($times['start']['date'] != $times['end']['date']) {
           $date .= strftime(' - %A, %x', $times['end']['stamp']);
         }
       } else {
@@ -249,7 +249,7 @@ class cafevdb
           $date = strftime('%a, %x', $times['start']['stamp']);
           // Usually, we want to omit the end-time of a concert, but if
           // it really spans more than one day ...
-          if ($times['start']['stamp'] != $times['end']['stamp']) {
+          if ($times['start']['date'] != $times['end']['date']) {
             $date .= strftime(' - %a, %x', $times['end']['stamp']);
           }
         } else {
@@ -264,12 +264,12 @@ class cafevdb
         $shortMonth = strftime('%b', $times['start']['stamp']);
 
         if (isset($briefDates[$year])) {
-          $briefDates[$year]['long'] .= ', '.$month;
-          $briefDates[$year]['short'] .= ', '.$shortMonth;
+          $briefDates[$year]['long'][] = $month;
+          $briefDates[$year]['short'][] = $shortMonth;
         } else {
           $briefDates[$year] = array(
-            'long' => $month,
-            'short' => $shortMonth
+            'long' => array($month),
+            'short' => array($shortMonth)
             );
         }
 
@@ -282,8 +282,8 @@ class cafevdb
       $longDate = array();
       $shortDate = array();
       foreach ($briefDates as $year => $months) {
-        $longDate[] = $months['long'].' '.$year;
-        $shortDate[] = $months['short'].' '.$year;
+        $longDate[] = implode(', ', array_unique($months['long'])).' '.$year;
+        $shortDate[] = implode(', ', array_unique($months['short'])).' '.$year;
       }
       $longDate = implode('; ', $longDate);
       $shortDate = implode('; ', $shortDate);
