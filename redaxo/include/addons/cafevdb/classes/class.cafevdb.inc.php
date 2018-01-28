@@ -201,7 +201,7 @@ class cafevdb
       $title = $event['summary'];
       $data['title'] = preg_replace('/(,\s*)?'.$project.'/', '', $title);
       $data['subtitle'] = $event['description'];
-      $data['location'] = $event['location'];
+      $data['location'][] = $event['location'];
 
       $times = $event['times'];
       setlocale(LC_TIME, $times['locale']);
