@@ -69,11 +69,12 @@ class auth_owncloud extends rex_backend_login
             $c = curl_init();
             curl_setopt($c, CURLOPT_VERBOSE, 0);
             curl_setopt($c, CURLOPT_URL, $url);
-            curl_setopt($c, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+            curl_setopt($c, CURLOPT_HTTPHEADER, [ 'OCS-APIRequest: true' ]);
+            curl_setopt($c, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
             curl_setopt($c, CURLOPT_USERPWD, $this->usr_login.':'.$this->clearTextPassword);
             if (true) {
                 curl_setopt($c, CURLOPT_HEADERFUNCTION, function($curl, $headerline) {
-                        //error_log($headerline);
+                        error_log($headerline);
                         return strlen($headerline);
                     });
             }
