@@ -1,4 +1,5 @@
 /files/*
+/upload/*
 !/files/addons
 /redaxo/include/data/*
 /redaxo/include/generated/*
