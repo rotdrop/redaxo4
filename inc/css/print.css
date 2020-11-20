@@ -1,0 +1,313 @@
+/**
+ * Globals
+ */
+HTML {
+	height:100%;
+}
+BODY {
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:0.835em;
+	color:#382a28;
+	background:#f4f5f1;
+	margin:0;
+	padding:0;
+	min-width:860px;
+	height:100%;
+}
+IMG {
+	border:0;
+}
+A {
+	text-decoration:none;
+	outline:0;
+}
+UL,OL,H1,H2,H3,H4,H5,H6,P,BLOCKQUOTE,PRE,TABLE,TD,TR,TH,FORM,LEGEND,FIELDSET {
+	margin:0;
+	padding:0;
+}
+UL,OL {
+	list-style-type:none;
+}
+H1 {
+	font-size:1.3em;
+}
+H2 {
+	font-size:1em;
+	font-weight:normal;
+}
+H3 {
+	font-size:0.75em;
+	font-weight:normal;
+	text-transform:uppercase;
+	letter-spacing:1px;
+}
+P {
+	font-size:0.9em;
+}
+.clearfix:after,
+.marginalItem:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+.clear {
+	clear:both;
+}
+/**
+ * Header
+ */
+DIV#header {
+	position:relative;
+	width:100%;
+	height:320px;
+	background:url(../img/camerata-group.jpg) no-repeat top right;
+}
+/* Header Area Home */
+BODY.home DIV#header {
+	height:375px; /* 1024v */
+	height:488px;
+	background-image:url(../img/camerata-group-home.jpg);
+}
+A#camerata-logo {
+	position:absolute;
+	top:0;
+	left:50px;
+	width:380px;
+	height:111px;
+}
+/* Navi Main Items */
+DIV#header UL.navi-1 {
+	position:absolute;
+	top:111px;
+	left:50px;
+	width:130px;
+}
+DIV#header UL.navi-1 A {
+	display:block;
+	width:130px;
+	height:24px;
+	font-size:1.2em;
+	color:#181818;
+}
+DIV#header UL.navi-1 LI.selected A,
+DIV#header UL.navi-1 A.selected,
+DIV#header UL.navi-1 A:hover,
+DIV#header UL.navi-1 LI.active A {
+	color:#740502;
+}
+/**
+ * Content
+ */
+DIV#content {
+	position:relative;
+	width:100%;
+	min-height:70%;
+	background:#fff;
+	line-height:1.4em;
+	padding-bottom:30px;
+}
+DIV#content UL.navi-1 {
+	position:absolute;
+	top:26px;
+	right:30px;
+	text-align:right;
+}
+DIV#content UL.navi-1 A {
+	color:#c5adad;
+	font-size:0.9em;
+	line-height:1.4em;
+}
+DIV#content UL.navi-1 A:hover {
+	color:#fff;
+}
+/**
+ * Teaser Home
+ */
+BODY.home DIV#content {
+	min-height:190px;
+	padding:0 0 0.5em 0;
+	background:#450e06 url(../img/footer-bg.jpg) repeat 0 0;
+	color:#c5adad;
+}
+BODY.home DIV#content A {
+	color:#d9c6c6;
+}
+BODY.home DIV#content A:hover {
+	color:#fff;
+}
+BODY.home DIV#content H1,
+BODY.home DIV#content H2 {
+	color:#fff;
+}
+/**
+ * Navi Content
+ */
+DIV.navi {
+	position:relative;
+	height:34px;
+	background:url(../img/footer-bg.jpg) no-repeat 0 0;
+}
+DIV#content DIV.navi UL {
+	position:absolute;
+	top:0;
+	left:50px;
+	height:34px;
+	font-size:1.2em;
+}
+DIV#content DIV.navi LI {
+	float:left;
+}
+DIV#content DIV.navi A {
+	line-height:34px;
+	color:#c5adad;
+	padding:0 1em 0 0;
+}
+DIV#content DIV.navi A.selected {
+	color:#fff;
+}
+/**
+ * Navi Footer 
+ */
+DIV#footer {
+	position:relative;
+	height:52px;
+	background:#450e06 url(../img/footer-bg.jpg) no-repeat 0 0;
+}
+DIV#footer UL#menu-2 {
+	left:355px;
+}
+DIV#footer UL#menu-3 {
+	left:50px;
+}
+DIV#footer UL.navi-1 {
+	position:absolute;
+	
+	top:16px;
+}
+DIV#footer UL.navi-1 LI {
+	float:left;
+	background:url(../img/footer-navi-bullet.gif) no-repeat center left;
+	padding:0 0 0 2px;
+}
+DIV#footer UL.navi-1 LI.first {
+	background:none;
+	padding:0;
+}
+DIV#footer UL.navi-1 A {
+	color:#c5adad;
+	font-size:0.9em;
+	padding:0 13px 0 15px;
+}
+DIV#footer UL.navi-1 A:hover,
+DIV#footer UL.navi-1 A.selected {
+	color:#fff;
+}
+/**
+ * Content Unterseiten
+ */
+DIV.item-text {
+	position:relative;
+	left:50px;
+	width:800px;
+	padding:2em 0 0 0;
+}
+DIV.item-text a {
+	color:#820300;
+}
+DIV.item-text a:hover {
+	text-decoration:underline;
+}
+DIV.item-text P,
+DIV.item-text H1,
+DIV.item-text H2,
+DIV.item-text H4,
+DIV.item-text H5,
+DIV.item-text H6,
+DIV.item-text UL,
+DIV.item-text OL {
+	margin:0 0 1em 320px;
+}
+DIV.item-text H2 {
+	font-style:italic;
+}
+DIV.item-text H1,
+DIV.item-text H2,
+DIV.item-text H3 {
+	margin:0 0 0.3em 320px;
+}
+DIV.item-text .marginalie,
+DIV.item-text .zitat {
+	margin:0;
+	float:left;
+	width:280px;
+}
+DIV.item-text .zitat {
+	font-style:italic;
+}
+DIV.item-text .zitatSymbolStart {
+	color:#a7aaa0;
+	float:left;
+	font-size:3em;
+	margin:-0.4em 0.05em 0 0;
+}
+DIV.item-text .zitatSymbolEnde {
+	position:absolute;
+	color:#a7aaa0;
+	float:none;
+	font-size:3em;
+	margin:0.27em 0.05em 0 0;
+}
+DIV.item-text .autor {
+	font-size:0.9em;
+	font-style:normal;
+	color:#777971;
+}
+DIV.item-text IMG {
+	margin:4px 0 4px 0;
+}
+DIV.item-line {
+	position:relative;
+	left:50px;
+	width:800px;
+	margin:0 0 0.3em 0;
+	padding:0;
+	border-bottom:2px solid #dbddd7;
+} 
+/**
+ * Content Unterseiten Konzertliste
+ */
+DIV.marginalie P,
+DIV.marginalie H1,
+DIV.marginalie H2,
+DIV.marginalie H3,
+DIV.marginalie H4,
+DIV.marginalie H5,
+DIV.marginalie H6
+{
+	margin:0;
+	line-height:1.3em;
+}
+DIV.marginalie H3 {
+	margin:0 0 0.3em 0;
+}
+DIV.marginalie P {
+	margin:0.5em 0 0 0;
+}
+/**
+ * Content Login-Form
+ */
+FORM.form-login LABEL {
+	margin:0 0 1em 320px;
+	width:150px;
+	float:left;
+}
+FORM.form-login INPUT.login {
+	width:250px;
+	margin-bottom:0.5em;
+}
+FORM.form-login BUTTON {
+	width:255px;
+	margin-bottom:0.5em;
+}
