@@ -35,6 +35,18 @@
  * $nav->showBreadcrumb('', true);
  */
 
+/* Es folgt der Original-Kommentar von Entity38. Man beachte den leicht
+ * genervten Tonfall ;)
+ */
+/* IMPORTANT
+ * Erweitert für Camerata acrustica freiburg
+ * Haupt/Internavigation aus cat_type
+ * Jedes Naviitem bekommt einen Counter (item-x)
+ * rex-current = selected
+ * rex-active  = active
+ * rex-normal  = normal
+ */
+
 class rex_navigation
 {
     var $depth; // Wieviele Ebene tief, ab der Startebene
@@ -72,7 +84,7 @@ class rex_navigation
      * @param $open True, wenn nur Elemente der aktiven Kategorie angezeigt werden sollen, sonst FALSE
      * @param $ignore_offlines FALSE, wenn offline Elemente angezeigt werden, sonst TRUE
      */
-    /*public*/ function get($category_id = 0, $max_depth = 3, $open = false, $ignore_offlines = false)
+    /*public*/ function get($category_id = 0, $max_depth = 3, $open = false, $ignore_offlines = false, $menuType = 1)
     {
         if (!$this->_setActivePath()) {
             return false;
@@ -80,6 +92,7 @@ class rex_navigation
 
         $this->max_depth = $max_depth;
         $this->open = $open;
+        $this->menuType = $menuType; // $menuType;
 
         if ($ignore_offlines) {
             $this->addFilter('status', 1, '==');
@@ -91,9 +104,9 @@ class rex_navigation
     /**
      * @see get()
      */
-    /*public*/ function show($category_id = 0, $depth = 3, $open = false, $ignore_offlines = false)
+    /*public*/ function show($category_id = 0, $depth = 3, $open = false, $ignore_offlines = false, int $menuType)
     {
-        echo $this->get($category_id, $depth, $open, $ignore_offlines);
+        echo $this->get($category_id, $depth, $open, $ignore_offlines, $menuType);
     }
 
     /**
@@ -313,7 +326,7 @@ class rex_navigation
     }
 
 
-    /*protected*/ function _getNavigation($category_id, $depth = 1)
+    /*protected*/ function _getNavigation($category_id, $depth = 1, $menuType = 1)
     {
 
         if ($category_id < 1) {
@@ -324,8 +337,17 @@ class rex_navigation
 
         }
 
+        $itemCount = 1;
         $lis = array();
         foreach ($nav_obj as $nav) {
+
+            // <CAFEV>
+            if ($this->menuType == 4 && $nav->getValue('cat_menu') != 1) {
+                // "Zwitter" Menütype 4 zeigt kontakt und footermenupunkte an.
+            } elseif ($this->menuType != $nav->getValue('cat_menu')) {
+                continue; // Menupunkt switch
+            }
+            // </CAFEV>
 
             $li = array();
             $a = array();
@@ -336,6 +358,16 @@ class rex_navigation
             if ($this->_checkFilter($nav, $depth) && $this->_checkCallbacks($nav, $depth, $li, $a)) {
 
                 $li['class'][] = 'rex-article-' . $nav->getId();
+
+                // <CAFEV>
+                $a["class"][] = 'item-'.$itemCount;
+                $a["class"][] = 'cafev';
+                $li["class"][] = 'cafev';
+                if ($itemCount == 1) {
+                    $li["class"][] = 'first'; // erstes item bekommt last class
+                }
+                ++$itemCount;
+                // </CAFEV>
 
                 // classes abhaengig vom pfad
                 if ($nav->getId() == $this->current_category_id) {
@@ -377,7 +409,7 @@ class rex_navigation
                         in_array($nav->getId(), $this->path))
                      && ($this->max_depth >= $depth || $this->max_depth < 0)
                 ) {
-                    $l .= $this->_getNavigation($nav->getId(), $depth);
+                    $l .= $this->_getNavigation($nav->getId(), $depth, $menuType);
                 }
                 $depth--;
 
@@ -390,8 +422,8 @@ class rex_navigation
         }
 
         if (count($lis) > 0) {
-            return '<ul class="rex-navi' . $depth . ' rex-navi-depth-' . $depth . ' rex-navi-has-' . count($lis) . '-elements">' . implode('', $lis) . '</ul>';
-
+            $naviId = 'id="menu-'.$this->menuType.'" ';
+            return '<ul '.$naviId.'class="rex-navi' . $depth . ' cafev rex-navi-depth-' . $depth . ' rex-navi-has-' . count($lis) . '-elements">' . implode('', $lis) . '</ul>';
         }
 
         return '';
