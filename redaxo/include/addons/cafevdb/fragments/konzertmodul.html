@@ -1,19 +1,19 @@
 <label for="externalEventList"
-            title="Verwende die Termine und ggf. den Kurztitel aus dem OwnCloud-Kalender.">
+            title="Verwende die Termine und ggf. den Kurztitel aus dem Cloud-Kalender.">
   <input id="externalEventList" type="checkbox" name="VALUE[8]" value="on"
   <?php echo ("REX_VALUE[8]" == "on" ? 'checked="checked"' : ''); ?>
             onchange="jQuery('#konzertdatum').prop('disabled', jQuery(this).prop('checked'));" />
-  Owncloud Event-Liste
+  Cloud Event-Liste
 </label>
 <br /><br />
 <strong>Datum</strong><br />
 <input type="text" id="konzertdatum" size="80" name="VALUE[1]" value="REX_VALUE[1]"
             <?php echo ("REX_VALUE[8]" == "on" ? 'disabled="disabled"' : ''); ?>
-            title="Freitext Datumszeile, wird ignoriert, falls die OwnCloud-Eventlist verwendet wird."/>
+            title="Freitext Datumszeile, wird ignoriert, falls die Cloud-Eventliste verwendet wird."/>
 <br /><br />
 <strong>Überschrift</strong><br />
 <textarea name="VALUE[2]" cols="80" rows="5" class="inp100"
-          title="Freitext-Überschrift, falls leer wird ggf. der Kurztitel der OwnCloud-Events verwendet.">REX_HTML_VALUE[2]</textarea>
+          title="Freitext-Überschrift, falls leer wird ggf. der Kurztitel der Cloud-Events verwendet.">REX_HTML_VALUE[2]</textarea>
 <br /><br />
 <strong>Unterüberschrift</strong><br />
 <textarea name="VALUE[3]" cols="80" rows="5" class="inp100">REX_HTML_VALUE[3]</textarea>

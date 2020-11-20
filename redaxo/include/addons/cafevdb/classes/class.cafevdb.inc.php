@@ -33,47 +33,29 @@ class cafevdb
 
     $key = $REX['INSTNAME'];
 
-    $keySize  = mcrypt_module_get_algo_key_size(self::MCRYPT_CIPHER);
-    $keySizes = mcrypt_module_get_supported_key_sizes(self::MCRYPT_CIPHER);
-    if (count($keySizes) == 0) {
-      $keySizes = array($keySize);
-    }
-    sort($keySizes);
-    $maxSize = $keySizes[count($keySizes) - 1];
-    $klen = strlen($key);
-    if ($klen > $maxSize) {
-      $key = substr($key, 0, $maxSize);
-    } else {
-      foreach($keySizes as $size) {
-        if ($size >= $klen) {
-          $key = str_pad($key, $size, "\0");
-          break;
-        }
-      }
-    }
-
     return $key;
   }
 
-  public function encrypt($value)
+  public function encrypt($value, $iv = null)
   {
     $enckey = $this->encryptionKey();
-    $value = base64_encode(mcrypt_encrypt(self::MCRYPT_CIPHER,
-                                          $enckey,
-                                          trim($value),
-                                          self::MCRYPT_MODE));
-    return $value;
+
+    $iv_size = openssl_cipher_iv_length('AES-128-CBC');
+    if (!$iv) {
+      $iv = openssl_random_pseudo_bytes($iv_size);
+    }
+    $encryptedMessage = openssl_encrypt(trim($value), 'AES-128-CBC', $enckey, OPENSSL_RAW_DATA, $iv);
+    return base64_encode($iv . $encryptedMessage);
   }
 
   private function decrypt($value)
   {
     $enckey = $this->encryptionKey();
-    $value = trim(mcrypt_decrypt(self::MCRYPT_CIPHER,
-                                 $enckey,
-                                 base64_decode($value),
-                                 self::MCRYPT_MODE));
-
-    return $value;
+    $raw = base64_decode($value);
+    $iv_size = openssl_cipher_iv_length('AES-128-CBC');
+    $iv = substr($raw, 0, $iv_size);
+    $data = substr($raw, $iv_size);
+    return openssl_decrypt($data, 'AES-128-CBC', $enckey, OPENSSL_RAW_DATA, $iv);
   }
 
   private function cafevdbURI()
@@ -83,7 +65,7 @@ class cafevdb
   }
 
   /**Quick and dirty event fetcher. Events are displayed in unordered
-   * lists. The OwnCloud cafevdb app internally stores a table which
+   * lists. The cafevdb cloud-app internally stores a table which
    * links Redaxo article ids to orchestra events.
    *
    * @param $articleId The article id.
@@ -299,7 +281,7 @@ class cafevdb
   }
 
   /**Quick and dirty event fetcher. Events are displayed in unordered
-   * lists. The OwnCloud cafevdb app internally stores a table which
+   * lists. The cafevdb cloud-app internally stores a table which
    * links Redaxo article ids to orchestra events.
    *
    * @param $articleId The article id.

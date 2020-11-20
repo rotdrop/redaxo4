@@ -17,7 +17,7 @@ $rehearsalInput = '<strong>Projekt Name</strong><br />
 <label for="externalEventList">
 <input id="externalEventList" type="checkbox" name="VALUE[4]" value="on"
             <?php echo ("REX_VALUE[4]" == "on" ? \'checked="checked"\' : \'\'); ?> />
-Owncloud Event-Liste</label>
+Cloud Event-Liste</label>
 <textarea name="VALUE[2]" class="tinyMCEEditor" style="width:700px; height:150px;">
 REX_VALUE[2]
 </textarea>
