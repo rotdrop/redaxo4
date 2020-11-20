@@ -10,8 +10,6 @@
 class cafevdb
 {
   const NAME = 'cafevdb';
-  const MCRYPT_CIPHER = MCRYPT_RIJNDAEL_128;
-  const MCRYPT_MODE = MCRYPT_MODE_ECB;
 
   public $url = '';
   public $user = '';
