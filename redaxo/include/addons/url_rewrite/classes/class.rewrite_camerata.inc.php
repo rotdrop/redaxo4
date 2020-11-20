@@ -26,7 +26,7 @@ define('FULLNAMES_PATHLIST', $REX['INCLUDE_PATH'].'/generated/files/pathlist.php
  *   2) .htaccess file in das redaxo/ verzeichnis:
  *     RewriteEngine Off
  *
- *   3) im Template folgende Zeile AM ANFANG des <head> ergänzen:
+ *   3) im Template folgende Zeile AM ANFANG des <head> ergÃ¤nzen:
  *   <base href="http://www.meine_domain.de/pfad/zum/frontend" />
  *
  *   4) Specials->Regenerate All starten
@@ -39,7 +39,7 @@ define('FULLNAMES_PATHLIST', $REX['INCLUDE_PATH'].'/generated/files/pathlist.php
  * @author office[at]vscope[dot]at Wolfgang Huttegger
  * @author <a href="http://www.vscope.at/">vscope new media</a>
  *
- * @author rn[at]gn2-netwerk[dot]de Rüdiger Nitzsche
+ * @author rn[at]gn2-netwerk[dot]de RÃ¼diger Nitzsche
  * @author <a href="http://www.gn2-netwerk.de/">GN2 Netwerk</a>
  */
 
@@ -58,7 +58,7 @@ class myUrlRewriter extends rexUrlRewriter
     parent::rexUrlRewriter();
   }
 
-  // Parameter aus der URL für das Script verarbeiten
+  // Parameter aus der URL fÃ¼r das Script verarbeiten
   function prepare()
   {
     global $REX, $REXPATH;
@@ -69,7 +69,7 @@ class myUrlRewriter extends rexUrlRewriter
     if(!file_exists(FULLNAMES_PATHLIST))
        rex_rewriter_generate_pathnames(array());
 
-    // REXPATH wird auch im Backend benötigt, z.B. beim bearbeiten von Artikeln
+    // REXPATH wird auch im Backend benÃ¶tigt, z.B. beim bearbeiten von Artikeln
     require_once (FULLNAMES_PATHLIST);
     
     if(!$REX['REDAXO'])
@@ -86,11 +86,11 @@ class myUrlRewriter extends rexUrlRewriter
       if ($path{0}=='/')
         $path = substr($path, 1);
         
-      // Parameter zählen nicht zum Pfad -> abschneiden
+      // Parameter zÃ¤hlen nicht zum Pfad -> abschneiden
       if(($pos = strpos($path, '?')) !== false)
         $path = substr($path, 0, $pos);
   
-      // Anker zählen nicht zum Pfad -> abschneiden
+      // Anker zÃ¤hlen nicht zum Pfad -> abschneiden
       if(($pos = strpos($path, '#')) !== false)
         $path = substr($path, 0, $pos);
   
@@ -271,7 +271,7 @@ if ($REX['REDAXO'])
 
 /**
  * rex_rewriter_generate_pathnames
- * generiert die Pathlist, abhŠngig von Aktion
+ * generiert die Pathlist, abhÂŠngig von Aktion
  * @author markus.staab[at]redaxo[dot]de Markus Staab
  * @package redaxo4.2
  */
@@ -298,7 +298,7 @@ function rex_rewriter_generate_pathnames($params)
   $where = '';
   switch($params['extension_point'])
   {
-    // ------- sprachabhängig, einen artikel aktualisieren
+    // ------- sprachabhÃ¤ngig, einen artikel aktualisieren
     case 'CAT_DELETED':
     case 'ART_DELETED':
       unset($REXPATH[$params['id']]);
@@ -339,7 +339,7 @@ function rex_rewriter_generate_pathnames($params)
         $pathname = $REX['CLANG'][$clang].'/';
       }
 
-      // pfad über kategorien bauen
+      // pfad Ã¼ber kategorien bauen
       $path = trim($db->getValue('path'), '|');
       if($path != '')
       {
@@ -362,7 +362,7 @@ function rex_rewriter_generate_pathnames($params)
         unset($ooc); // speicher freigeben
         $pathname = rex_rewriter_appendToPath($pathname, $catname);
       } else {
-          // eigentlicher artikel anhängen
+          // eigentlicher artikel anhÃ¤ngen
           $name = $ooa->getName();
           unset($ooa); // speicher freigeben
           $pathname = rex_rewriter_appendToPath($pathname, $name);
@@ -371,7 +371,7 @@ function rex_rewriter_generate_pathnames($params)
       $pathname = substr($pathname,0,strlen($pathname)-1);
 
 	  // camerata hookup
-	  // falls es rewrite schon gibt - underscore(s) dranhängen
+	  // falls es rewrite schon gibt - underscore(s) dranhÃ¤ngen
 	  while(in_array($pathname,$rewrites)) {
 	  	$pathname .= '_';
 	  }
