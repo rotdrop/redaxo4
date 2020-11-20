@@ -1,3 +1,4 @@
 /files/*
+!/files/addons
 /redaxo/include/data/*
 /redaxo/include/generated/*
