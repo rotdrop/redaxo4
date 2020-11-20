@@ -37,15 +37,15 @@ if (isset($_SERVER['SERVER_PORT'])) {
 
 // Setupservicestatus - if everything ok -> false; if problem set to true;
 $REX['SETUP'] = false;
-$REX['SERVER'] = $protocol.'://'.$servername.$serverport.$root;
-$REX['SERVERNAME'] = "camerata academica freiburg e.V.";
+$REX['SERVER'] = 'https://localhost:443/cafevwww';
+$REX['SERVERNAME'] = 'camerata academica freiburg e.V.';
 $REX['VERSION'] = "4";
 $REX['SUBVERSION'] = "7";
 $REX['MINORVERSION'] = "dev";
-$REX['ERROR_EMAIL'] = "admin+cafevewww@claus-justus-heine.de";
+$REX['ERROR_EMAIL'] = 'admin+cafevewww@claus-justus-heine.de';
 $REX['FILEPERM'] = octdec(660); // oktaler wert
 $REX['DIRPERM'] = octdec(770); // oktaler wert
-$REX['INSTNAME'] = "rex20140907124059";
+$REX['INSTNAME'] = 'rex20201120175137';
 $REX['SESSION_DURATION'] = 7200;
 
 // Is set first time SQL Object ist initialised
@@ -64,7 +64,7 @@ $REX['START_CLANG_ID'] = 0;
 $REX['DEFAULT_TEMPLATE_ID'] = 1;
 
 // default language
-$REX['LANG'] = "de_de";
+$REX['LANG'] = 'de_de';
 
 // activate frontend mod_rewrite support for url-rewriting
 // Boolean: true/false
@@ -109,7 +109,7 @@ $REX['OWNCLOUDURL'] = 'https://localhost/nextcloud-git';
 $REX['AUTH_ALLOWREX'] = true; // fall back to rex auth if auth-module fails
 
 // Passwortverschlüsselung, z.B: md5 / mcrypt ...
-$REX['PSWFUNC'] = "sha1";
+$REX['PSWFUNC'] = 'sha1';
 
 // bei fehllogin 5 sekunden kein relogin moeglich
 $REX['RELOGINDELAY'] = 5;
@@ -142,9 +142,9 @@ $REX['MEDIAPOOL']['IMAGE_TYPES']        = array('image/gif', 'image/jpg', 'image
 $REX['MEDIAPOOL']['ALLOWED_DOCTYPES']   = array('bmp', 'css', 'doc', 'docx', 'eps', 'gif', 'gz', 'jpg', 'mov', 'mp3', 'ogg', 'pdf', 'png', 'ppt', 'pptx', 'pps', 'ppsx', 'rar', 'rtf', 'swf', 'tar', 'tif', 'txt', 'wma', 'xls', 'xlsx', 'zip');
 
 // ----------------- DB1
-$REX['DB']['1']['HOST'] = "localhost";
-$REX['DB']['1']['LOGIN'] = "cafevdb";
-$REX['DB']['1']['PSW'] = "";
+$REX['DB']['1']['HOST'] = 'localhost';
+$REX['DB']['1']['LOGIN'] = 'cafevdb';
+$REX['DB']['1']['PSW'] = '';
 $REX['DB']['1']['NAME'] = 'cafevdb_redaxo';
 $REX['DB']['1']['PERSISTENT'] = false;
 

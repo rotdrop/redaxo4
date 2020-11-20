@@ -24,14 +24,14 @@ $REX['ADDON']['status']['be_style'] = '1';
 $REX['ADDON']['install']['cafevdb'] = '1';
 $REX['ADDON']['status']['cafevdb'] = '1';
 
+$REX['ADDON']['install']['community'] = '0';
+$REX['ADDON']['status']['community'] = '0';
+
 $REX['ADDON']['install']['cronjob'] = '0';
 $REX['ADDON']['status']['cronjob'] = '0';
 
 $REX['ADDON']['install']['image_manager'] = '1';
 $REX['ADDON']['status']['image_manager'] = '1';
-
-$REX['ADDON']['install']['image_resize'] = '1';
-$REX['ADDON']['status']['image_resize'] = '1';
 
 $REX['ADDON']['install']['import_export'] = '1';
 $REX['ADDON']['status']['import_export'] = '1';
