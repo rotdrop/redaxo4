@@ -32,11 +32,24 @@
  * $nav->showBreadcrumb('', true);
  */
 
+/* Es folgt der Original-Kommentar von Entity38. Man beachte den leicht
+ * genervten Tonfall ;)
+ */
+/* IMPORTANT
+ * Erweitert für Camerata acrustica freiburg 
+ * Haupt/Internavigation aus cat_type
+ * Jedes Naviitem bekommt einen Counter (item-x)
+ * rex-current = selected
+ * rex-active  = active
+ * rex-normal  = normal
+ */
+
 class rex_navigation
 {
   var $depth; // Wieviele Ebene tief, ab der Startebene
   var $open; // alles aufgeklappt, z.b. Sitemap
   var $ignore_offlines;
+	var $menuType; // Hauptnavigationspunkte (true) oder Subnavigation (false) zeigen?
   var $path = array();
   var $classes = array();
 
@@ -69,21 +82,22 @@ class rex_navigation
    * @param $open True, wenn nur Elemente der aktiven Kategorie angezeigt werden sollen, sonst FALSE
    * @param $ignore_offlines FALSE, wenn offline Elemente angezeigt werden, sonst TRUE
    */
-  /*public*/ function get($category_id = 0,$depth = 3,$open = FALSE, $ignore_offlines = FALSE)
+	/*public*/ function get($category_id = 0,$depth = 3,$open = FALSE, $ignore_offlines = FALSE, $menuType = 1)
   {
     if(!$this->_setActivePath()) return FALSE;
 
     $this->depth = $depth;
     $this->open = $open;
     $this->ignore_offlines = $ignore_offlines;
+    $this->menuType = $menuType; // $menuType;
 
-    return $this->_getNavigation($category_id,$this->ignore_offlines);
+		return $this->_getNavigation($category_id,$this->ignore_offlines,$this->menuType);
   }
 
   /**
    * @see get()
    */
-  /*public*/ function show($category_id = 0,$depth = 3,$open = FALSE, $ignore_offlines = FALSE)
+	/*public*/ function show($category_id = 0,$depth = 3,$open = FALSE, $ignore_offlines = FALSE, $menuType = 1 )
   {
     echo $this->get($category_id, $depth, $open, $ignore_offlines);
   }
@@ -180,7 +194,7 @@ class rex_navigation
     return FALSE;
   }
 
-  /*protected*/ function _getNavigation($category_id,$ignore_offlines = TRUE)
+	/*protected*/ function _getNavigation($category_id,$ignore_offlines = TRUE, $menuType = 1)
   {
     static $depth = 0;
 
@@ -190,29 +204,42 @@ class rex_navigation
       $nav_obj = OOCategory::getChildrenById($category_id, $ignore_offlines);
 
     $return = "";
+		$itemCount = 1;
 
-    if(count($nav_obj)>0)
-      $return .= '<ul class="rex-navi'. ($depth+1) .'">';
-
+		if(count($nav_obj)>0) {
+		  $naviId = 'id="menu-'.$this->menuType.'" ';
+		  $return .= '<ul class="navi-'. ($depth+1) .'" '.$naviId.'>'."\n";
+		}
     foreach($nav_obj as $nav)
     {
+		
+            if ($this->menuType == 4 && $nav->getValue('cat_menu') != 1) {
+                // "Zwitter" Menütype 4 zeigt kontakt und footermenupunkte an.
+            } elseif ($this->menuType != $nav->getValue('cat_menu')) {
+                continue; // Menupunkt switch
+            }
+            
+            //$return .= '<!-- '.$this->idCollection.' -->';
       $liClass = '';
-      $linkClass = '';
+		  //if ($this->idCollection && count($this->idCollection) && in_array($nav->getId(),$this->idCollection)) $liClass .= implode('-',$this->idCollection);
+		  $linkClass = 'item-'.$itemCount.' ';
 
       // classes abhaengig vom pfad
       if($nav->getId() == $this->current_category_id)
       {
-        $liClass .= ' rex-current';
-        $linkClass .= ' rex-current';
+			  $liClass .= ' selected';
+			  $linkClass .= ' selected';
+
       }
       elseif (in_array($nav->getId(),$this->path))
       {
-        $liClass .= ' rex-active';
-        $linkClass .= ' rex-active';
+			  $liClass .= ' active';
+			  $linkClass .= ' active';
+
       }
       else
       {
-        $liClass .= ' rex-normal';
+        	  $liClass .= ' normal';
       }
 
       // classes abhaengig vom level
@@ -222,11 +249,13 @@ class rex_navigation
       if(isset($this->linkclasses[$depth]))
         $linkClass .= ' '. $this->linkclasses[$depth];
 
-
-
+      $liClass   = $liClass   == '' ? '' : ltrim($liClass);
+      $liClass  .= ($itemCount == 1) ? ' first' : ''; // erstes item bekommt last class
       $linkClass = $linkClass == '' ? '' : ' class="'. ltrim($linkClass) .'"';
+      $itemCount++;
 
-      $return .= '<li class="rex-article-'. $nav->getId() . $liClass .'">';
+      //      $return .= '<li class="rex-article-'. $nav->getId() . $liClass .'">';
+            $return .= '<li class="'. $liClass .'">';
       $return .= '<a'. $linkClass .' href="'.$nav->getUrl().'">'.htmlspecialchars($nav->getName()).'</a>';
 
       $depth++;
@@ -236,6 +265,7 @@ class rex_navigation
          && ($this->depth > $depth || $this->depth < 0))
       {
         $return .= $this->_getNavigation($nav->getId(),$ignore_offlines);
+				$return .= $this->_getNavigation($nav->getId(),$ignore_offlines,$menuType);
       }
       $depth--;
 
