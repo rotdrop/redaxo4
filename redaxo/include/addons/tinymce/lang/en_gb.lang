@@ -9,7 +9,7 @@ tinymce_title = TinyMCE WYSIWYG Editor <span style="font-size:10px;">(Version 2.
 tinymce_version = 2.5
 tinymce_tiny_versinfo = TinyMCE jQuery package 3.5.10, <a href="http://www.tinymce.com/" onclick="window.open(this.href); return false;">http://www.tinymce.com/</a>
 
-# Men¸eintr‰ge
+# Men√ºeintr√§ge
 tinymce_menu_info = Explanation
 tinymce_menu_settings = Settings
 tinymce_menu_profiles = Editor-Profiles
@@ -58,7 +58,7 @@ tinymce_profiles_noconfig = No TinyMCE configuration specified!
 tinymce_css_saved = CSS has been updated!
 tinymce_css_not_saved = CSS could not be saved!
 
-# Erkl‰rung / Hilfe / Module
+# Erkl√§rung / Hilfe / Module
 tinymce_shorthelp = The AddOn includes the WYSIWYG editor TinyMCE into the backend and if necessary also in the frontend.
 tinymce_longhelp = <br />Depending on the <a href="index.php?page=tinymce&amp;subpage=settings">configuration</a> of the TinyMCE addons the TinyMCE WYSIWYG editor for text areas is automatically included in the backend and frontend.<br /><br />Textareas bearing the class <em>tinyMCEEditor</em> are automatically converted from a normal text area to a WYSIWYG editor.<br />e.g.: &lt;textarea <strong>class="tinyMCEEditor"</strong>&gt;&lt;/textarea&gt;<br /><br />In the backend various <a href="index.php?page=tinymce&amp;subpage=profiles">editor profiles</a> with different configuration settings can be created. These editor profiles can be used by appending the profile name to the class.<br />e.g.: &lt;textarea <strong>class="tinyMCEEditor-simple"</strong>&gt;&lt;/textarea&gt;
 tinymce_nodel_notice = <strong>NOTE:</strong><br />The entry with <strong>ID=2</strong> and name <strong>default</strong> may not be deleted!
