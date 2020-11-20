@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /generator/
+Disallow: /cgi-bin/
+Disallow: /redaxo/
+Disallow: /inc/
+Disallow: /musiker-projekte/
+Disallow: /announcements/
+Allow: /
