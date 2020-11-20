@@ -1,5 +1,3 @@
-/.settings
-/.buildpath
-/.project
 /files/*
+/redaxo/include/data/*
 /redaxo/include/generated/*

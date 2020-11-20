@@ -7,6 +7,153 @@ angehandelt.
 Änderungen im Detail:
 ---------------------------------------------------------------------------------
 
+Version 4.6.1 (2014-XX-XX)
+
+  Neu
+  * EP: ART_CONTENT ergänzt
+
+  Bugfixes
+  * rex_navigation::getBreadcrumb gab den aktuellen Artikel nicht aus
+  * image_manager: png Transparenzen gingen verloren
+  * image_manager: wenn Cache nicht verfügbar, dann wird Bild nun neu berechnet
+  * image_manager: wenn finfo Klasse nicht vorhanden, wird skript nicht abgebrochen.
+  * setup/import_export: Übernahme der Demo in den data Ordner ging nicht
+  * Installer: Zip entpacken/packen funktionierte in manchen Umgebungen nicht
+
+  optisch
+  * Checkboxen sind nun bündig zu anderen Feldern
+  * Textkorrekturen an diversen Stellen
+
+Version 4.6.0 (2014-04-30)
+
+  Neu
+  * Utility-Klassen aus REDAXO 5 portiert: rex_dir, rex_file, rex_finder, rex_pager, rex_path, rex_socket, rex_string, rex_timer, rex_validator
+  * rex_get/post(): Genauere Angabe der erwarteten Arraystruktur möglich, mit Defaultwerten für einzelne Keys etc.
+  * rex_form: Validierung der Felder möglich, ohne die Klasse abzuleiten
+  * Installer (Download, Update und Upload von Addons)
+  * Data-Ordner für Addon-Konfigurationsdateien etc., damit die Einstellungen beim Update erhalten bleiben
+  * Benutzer können dupliziert werden
+  * Customizer Plugin
+    - Codemirror update auf 3.21.0
+    - Neue Codemirror plugins hinzugefügt: Fullscreen (oeffnen mit F11) und YAML syntax highlighting
+  * Updated jQuery to 1.11.0, also included jQuery Migrate Plugin 1.2.1
+  * TinyMCE-Addon entfernt, kann über Installer nachinstalliert werden
+  * url_rewrite-Addon entfernt, kann über Installer nachinstalliert werden
+  * PHPMailer: Konfiguration für Port und SMTP-Verschlüsselung
+  * Im-/Export:
+    - Exports können vom Server heruntergeladen werden
+    - Beim Export können die Tabellen ausgewählt werden
+  * rex_navigation: Zusätzlicher Filteroperator "regex"
+  * Image Manager
+    - pdf2img entfernt, als effect angelegt. Diverse Formate (.pdf,.eps,.psd) sind nun möglich
+    - Bildtyperkennung nun über finfo. Bilder müssen nicht unbedingt die richtige Extension haben
+    - Bei Fehlern werden nun immer Errorbilder ausgegeben kein Text.
+
+  Bugfixes
+  * MetaInfo: Defaultwerte für Felder mit Mehrfachwerten (Checkbox, Multiple-Select) werden beim hinzufügen nicht vorbelegt.
+  * Wenn zlib.output_compression aktiviert ist, wurde teilweise ein falscher Content-Length Header gesendet
+  * Artikel verschieben: Online-Status bleibt erhalten und Kategoriename wird richtig gesetzt
+
+  Info für zukünfige Versionen
+
+  * class.compat.inc wird entfernt werden
+  * rex_resize Unterstützung wird aus dem Code entfernt werden
+
+
+Version 4.5.1 (2013-11-21)
+
+  Wichtig: Eine Sicherheitslücke zum TinyMCE geschlossen.
+           Diverse unterschiedliche Sichheitsaspekte optimiert und gelöst (bei eingeloggten Usern)
+
+  Bugfixes
+  * Strict Messages beseitigt
+  * Blöcke konnten nicht gelöscht werden, wenn deren Modul nicht dem Template zugewiesen ist
+  * Pfade für Medien und Medienmanager im und fürs Backend angepasst
+  * REX_FORM_CONTROL_FIElDS. Alias EP hinzugefügt: REX_FORM_CONTROL_FIELDS
+  * Fehlende Übersetzungsfunktion für Modulbezeichnungen bei Templates und Content eingebaut
+  * Typenfilter bei REX_MEDIA(LIST)_BUTTON funktionierte nicht bei Dateien wie z.B. "a.b.gif"
+  * be_search: keine Kategorie wurde nicht bei der Suche beachtet. Lokale Suche über Kategorien
+    und Unterkategorien funktionierten nicht
+  * image_manager: lazy loading entfernt, da kein vorteilhafter effekt
+  * rex_replace_dynamic_contents: Es wird nur true zurückgegeben, wenn auch wirklich ersetzt wurde
+  * REX_ARTICLE[prefix="<h1>"] prefix wurde vorher als htmlspecialchars ausgegeben.
+  * REX_MEDIALIST_BUTTON. Bei Klick auf Medienliste anzeigen, wurde die Detailansicht angezeigt.
+  * rex_var::toArray() funktioniert mit REX_VALUE[] und REX_HTML_VALUE[]
+  * Metainfos: Neue Felder fehlten teilweise im Artikelcache
+  * Image Manager kann nun passende Caches löschen kann, da EP "MEDIA_DELETED" existiert
+  * array cast mit Zahl 0 geht nun
+  * "+" in Dateinamen wird nun in "_" umgewandelt. -> keine Probleme mehr bei URL aufrufen
+  * Beim Import von SQLDumps werden nun ältere Versionen angepasst. z.B. TYPE=MyIsam -> Engine=MyIsam
+  * Imagemanger. Blureffekt war sehr schwach und daher nicht wirklich gut nutzbar.
+  * Englische Texte wurden komplett geprüft und überarbeitet (Danke Seven alias SigmaAlphaPi)
+  * TinyMCE wurde aktualisiert, Eine Sicherheitslücke geschlossen, englische Texte ergänzt
+  * Export. Multiple Extensions im Dateinamen sind nicht mehr möglich.
+  * Import. Dieses Recht kann nciht mehr an User vergeben werden. Nur noch eine Adminfunktion
+  * Diverse CSRF Möglichkeiten sind erschwert worden: Profile, Userverwaltung,
+  * Diverse XSS Möglickeiten sind entfernt worden: be_search, Structure/Mode, Tinymce Config
+  * Medienpool: Dateinamen werden besser überprüft, Multiples Extensionproblem ist beseitigt
+  * Unnötige Sprachfiles wurden entfernt. Es gibt nun ausschliesslich deutsch und englisch
+  * PageTitle wurde umgebaut um besser in Tabs erkennen zu können wo man sich befindet
+
+  Neu
+  * Imagemanager: Effekt rounded_corners aufgenommen
+  * Imagemanager: Blureffekt verstärkt und umgebaut.
+  * Imagemanager: PDF2IMG Plugin erstellt. Sofern es der Server unterstützt, kann der Image-Manager auch PDFs verwenden
+  * EP "MEDIA_DELETED" ergänzt
+  * Textile Update -> 2.5.4
+  * Print Stylesheet
+  * Sessiondauer wurde erhöht, Ajaxaufrufe über einen bestimmten Zeitraum verlängern die REDAXO Nutzung ohne erneutes einloggen
+
+
+Version 4.5.0 (2013-04-03)
+
+  Neu
+  * Mindestvoraussetzungen: PHP 5.3, MySQL 5
+  * auch mit PHP 5.4 getestet
+  * Nur noch UTF-8
+  * Update jQuery -> 1.8.3
+  * Update XForm -> 4.5
+  * Update textile -> 2.5.1
+  * Update tinymce -> Version 2.3, Update TinyMCE Version 3.5.8
+  * Favicon im Backend
+  * Standard-Session-Dauer im Backend auf zwei Stunden erhöht
+  * Standard für Passworthashing auf sha1 geändert
+  * Bei Addoninstallation wird der Ordnername gecheckt
+  * Drei Laufzeitlevels für EPs: EARLY, NORMAL, LATE
+  * Medienpool: Bei automatischer Umbenennung wird diese als Info angezeigt
+  * REX_VARs: Arrays sind nutzbar ohne Actions, z. B. bei multiselects
+  * rex_form: Beliebige Defaultwerte sind möglich, auch NULL
+  * rex_list: Spaltensortierung beliebig einstellbar
+  * rex_select: Optgroups möglich
+  * phpmailer: Globale BCC-Adresse einstellbar
+  * textile: Neue Parameter $restricted und $doctype
+  * rex_navigation: Erweitert um Callbacks und Filter
+  * Imagemanager: neue EPs: IMAGE_MANAGER_FILTERSET, IMAGE_MANAGER_INIT
+  * Imagemanager: wird nun nicht direkt, sondern nach EP ADDONS_INCLUDED aktiviert
+  * Mediapool: upload unzulässiger Dateitypen wird unterbunden
+  * Mediapool: neuer EP: PAGE_MEDIAPOOL_OUTPUT
+  * Page Content: neuer EP: PAGE_CONTENT_OUTPUT
+  * Page Specials: neuer EP: PAGE_SPECIALS_OUTPUT
+  * be_style: customizer plugin ergänzt. farblabel, frontpage link, codemirror, liquid design
+  * settings: files und generated ordner in master definierbar
+  * default addons: xform und community eingebaut
+  * Metannavigation: neuer EP: META_NAVI
+  * diverse kleiner optische Korrekturen
+  * diverse kleinere Ergänzungen (z.B. Sortierung Import, Sortierung Mediasync ..)
+  * PHPMailer: Standard-Mailer-Typ auf "mail" geändert
+
+  Bugfixes:
+  * Cronjobs werden nicht mehr nach jedem Bearbeiten erneut ausgeführt
+  * Cronjobs: teilweise war die config.inc.php nach der Ausführung plötzlich leer
+  * Medienpool: Umlaute wurden nicht richtig ersetzt
+  * Medienpool: Beim Syncen kam es zu Fehlern, wenn die Datei mit ihrem umgeschriebenen Namen bereits existierte
+  * Image Manager: Probleme mit Transparenz bei PNGs beseitigt
+  * Updateskript 4.x -> 4.5: Falscher Index entfernt, fehlende Einträge ergänzt
+  * Beim Anlegen neuer Artikel wurde das Template des Startartikels teilweise nicht vererbt
+  * Beim Löschen von Ordnern wurde abgebrochen sobald ein Dateiname zu false evaluiert (z. B. "0")
+  * CSS Korrekturen bei rex_content_block()
+
+
 Version 4.4.1 (2012-08-03)
 
   Bugfixes
@@ -17,6 +164,7 @@ Version 4.4.1 (2012-08-03)
   * utf8 Demo: charset Angaben korrigiert auf utf8
   * XSS behoben - wenn eingeloggt und Admin: http://www.redaxo.org/de/download/sicherheitshinweise/
   * Mediasync: sofern kein Mimetype erkannt wird, wird nun application/octet-stream gesetzt
+
 
 Version 4.4.0 (2012-06-27)
 

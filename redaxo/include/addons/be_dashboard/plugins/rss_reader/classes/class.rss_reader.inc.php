@@ -10,7 +10,7 @@
  * @version svn:$Id$
  */
 
-require_once dirname(__FILE__) .'/../libs/simplepie.inc.php';
+require_once dirname(__FILE__) . '/../vendor/simplepie.inc.php';
 
 /**
  * There are two ways that you can create a new rssReader object. The first
@@ -25,21 +25,24 @@ require_once dirname(__FILE__) .'/../libs/simplepie.inc.php';
  * object's methods and properties will be available to you. This format is
  * what is used throughout this documentation.
  *
- * @param string $feed_url This is the URL you want to parse.
+ * @param string $feed_url       This is the URL you want to parse.
  * @param string $cache_location This is where you want the cache to be stored.
- * @param int $cache_duration This is the number of seconds that you want to store the cache file for.
+ * @param int    $cache_duration This is the number of seconds that you want to store the cache file for.
  */
 class rex_rssReader extends SimplePie
 {
-  function rex_rssReader($feed_url = null, $cache_location = null, $cache_duration = null)
-  {
-    global $REX;
-
-    if($cache_location == null)
+    function rex_rssReader($feed_url = null, $cache_location = null, $cache_duration = null)
     {
-      $cache_location = $REX['INCLUDE_PATH'] .'/generated/files/';
-    }
+        global $REX;
 
-    parent::SimplePie($feed_url, $cache_location, $cache_duration);
-  }
+        if ($cache_location == null) {
+            $cache_location = $REX['GENERATED_PATH'] . '/files/';
+        }
+
+        parent::__construct();
+        $this->set_feed_url($feed_url);
+        $this->set_cache_location($cache_location);
+        $this->set_cache_duration($cache_duration);
+        $this->init();
+    }
 }

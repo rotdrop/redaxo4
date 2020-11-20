@@ -8,21 +8,30 @@
  * @version svn:$Id$
  */
 
-function rex_a79_textile($code)
+function rex_a79_textile($code, $restricted = false, $doctype = 'xhtml')
 {
-  $textile = rex_a79_textile_instance();
-  return $textile->TextileThis($code);
+    $textile = rex_a79_textile_instance($doctype);
+    return $restricted == false
+             ? $textile->TextileThis($code)
+             : $textile->TextileRestricted($code);
 }
 
-function rex_a79_textile_instance()
+function rex_a79_textile_instance($doctype = 'xhtml')
 {
-  static $instance = null;
+    static $instance = array();
 
-  if($instance === null)
-  {
-    $instance = new Textile();
-    $instance->unrestricted_url_schemes[] = 'redaxo';
-  }
+    if (!isset($instance[$doctype])) {
+        $instance[$doctype] = new rex_textile_parser($doctype);
+    }
 
-  return $instance;
+    return $instance[$doctype];
+}
+
+class rex_textile_parser extends Textile
+{
+    public function __construct($doctype = 'xhtml')
+    {
+        parent::__construct($doctype);
+        $this->unrestricted_url_schemes[] = 'redaxo';
+    }
 }

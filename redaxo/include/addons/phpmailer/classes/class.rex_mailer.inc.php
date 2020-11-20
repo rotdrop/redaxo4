@@ -12,35 +12,48 @@
 
 class rex_mailer extends PHPMailer
 {
-  function rex_mailer()
-  {
-    global $REX;
+    public $AdminBcc = '';
 
-// --- DYN
-$this->From             = 'from@example.com';
-$this->FromName         = 'Mailer';
-$this->ConfirmReadingTo = '';
-$this->Mailer           = 'sendmail';
-$this->Host             = 'localhost';
-$this->CharSet          = 'utf-8';
-$this->WordWrap         = 120;
-$this->Encoding         = '8bit';
-$this->Priority         = 3;
-$this->SMTPAuth         = false;
-$this->Username         = '';
-$this->Password         = '';
-// --- /DYN
+    function rex_mailer()
+    {
+        global $REX;
 
-    $this->PluginDir = $REX['INCLUDE_PATH'] . '/addons/phpmailer/classes/';
-  }
+        $this->From             = 'from@example.com';
+        $this->FromName         = 'Mailer';
+        $this->ConfirmReadingTo = '';
+        $this->AdminBcc         = '';
+        $this->Mailer           = 'mail';
+        $this->Host             = 'localhost';
+        $this->Port             = 25;
+        $this->CharSet          = 'utf-8';
+        $this->WordWrap         = 120;
+        $this->Encoding         = '8bit';
+        $this->Priority         = 3;
+        $this->SMTPSecure       = '';
+        $this->SMTPAuth         = false;
+        $this->Username         = '';
+        $this->Password         = '';
 
-  function SetLanguage($lang_type, $lang_path = null)
-  {
-    global $REX;
+        $settings = rex_path::addonData('phpmailer', 'settings.inc.php');
+        if (file_exists($settings)) {
+            include $settings;
+        }
 
-    if ($lang_path == null)
-      $lang_path = $REX['INCLUDE_PATH'] . '/addons/phpmailer/classes/language/';
+        $this->PluginDir = $REX['INCLUDE_PATH'] . '/addons/phpmailer/classes/';
 
-    parent :: SetLanguage($lang_type, $lang_path);
-  }
+        if ($this->AdminBcc !== '') {
+            parent::AddBCC($this->AdminBcc);
+        }
+    }
+
+    function SetLanguage($lang_type = 'de', $lang_path = null)
+    {
+        global $REX;
+
+        if ($lang_path == null) {
+            $lang_path = $REX['INCLUDE_PATH'] . '/addons/phpmailer/classes/language/';
+        }
+
+        return parent :: SetLanguage($lang_type, $lang_path);
+    }
 }

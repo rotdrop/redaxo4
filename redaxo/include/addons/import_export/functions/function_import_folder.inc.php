@@ -1,9 +1,8 @@
 <?php
 // Import Folder Functions
-function getImportDir() {
-    global $REX;
-
-    return $REX['INCLUDE_PATH'].'/addons/import_export/backup';
+function getImportDir()
+{
+    return rex_path::addonData('import_export', 'backups');
 }
 
 // PATCH http://www.redaxo.org/de/forum/bugs-f31/sortierung-nach-datum-broken-t16162.html
@@ -20,10 +19,10 @@ function compareFiles($file_a, $file_b)
 {
     $dir = getImportDir();
 
-    $time_a = filemtime( $dir .'/'. $file_a);
-    $time_b = filemtime( $dir .'/'. $file_b);
+    $time_a = filemtime( $dir . '/' . $file_a);
+    $time_b = filemtime( $dir . '/' . $file_b);
 
-    if( $time_a == $time_b) {
+    if ( $time_a == $time_b) {
         return 0;
     }
 
