@@ -22,17 +22,30 @@ if (!$REX['GG']) {
 
 // ----------------- SERVER VARS
 
+$protocol = 'http';
+$servername = $_SERVER['SERVER_NAME'];
+$serverport = '';
+$root = '/cafevwww';
+if (isset($_SERVER['REQUEST_SCHEME'])) {
+  $protocol = $_SERVER['REQUEST_SCHEME'];
+} else if (isset($_SERVER['HTTPS'])) {
+  $protocol = 'https';
+}
+if (isset($_SERVER['SERVER_PORT'])) {
+  $serverport = ':'.$_SERVER['SERVER_PORT'];
+}
+
 // Setupservicestatus - if everything ok -> false; if problem set to true;
-$REX['SETUP'] = true;
-$REX['SERVER'] = "www.redaxo.org";
-$REX['SERVERNAME'] = "REDAXO";
+$REX['SETUP'] = false;
+$REX['SERVER'] = $protocol.'://'.$servername.$serverport.$root;
+$REX['SERVERNAME'] = "camerata academica freiburg e.V.";
 $REX['VERSION'] = "4";
 $REX['SUBVERSION'] = "7";
 $REX['MINORVERSION'] = "dev";
-$REX['ERROR_EMAIL'] = "";
+$REX['ERROR_EMAIL'] = "admin+cafevewww@claus-justus-heine.de";
 $REX['FILEPERM'] = octdec(660); // oktaler wert
 $REX['DIRPERM'] = octdec(770); // oktaler wert
-$REX['INSTNAME'] = "rex20130403120000";
+$REX['INSTNAME'] = "rex20140907124059";
 $REX['SESSION_DURATION'] = 7200;
 
 // Is set first time SQL Object ist initialised
@@ -48,14 +61,14 @@ $REX['NOTFOUND_ARTICLE_ID'] = 1;
 $REX['START_CLANG_ID'] = 0;
 
 // default template id, if > 0 used as default, else template_id determined by inheritance
-$REX['DEFAULT_TEMPLATE_ID'] = 0;
+$REX['DEFAULT_TEMPLATE_ID'] = 1;
 
 // default language
 $REX['LANG'] = "de_de";
 
 // activate frontend mod_rewrite support for url-rewriting
 // Boolean: true/false
-$REX['MOD_REWRITE'] = false;
+$REX['MOD_REWRITE'] = true;
 
 // activate gzip output support
 // reduces amount of data need to be send to the client, but increases cpu load of the server
@@ -92,7 +105,7 @@ $REX['FRONTEND_FILE']	= 'index.php';
 // SSO via Owncloud
 $REX['AUTHCLASS'] = 'auth_owncloud';
 $REX['AUTHCLASSINCLUDE'] = $REX['INCLUDE_PATH'] . '/classes/class.auth_owncloud.inc.php';
-$REX['OWNCLOUDPATH'] = realpath($REX['HTDOCS_PATH'] . '../owncloud7');
+$REX['OWNCLOUDURL'] = 'https://localhost/nextcloud-git';
 $REX['AUTH_ALLOWREX'] = true; // fall back to rex auth if auth-module fails
 
 // Passwortverschlüsselung, z.B: md5 / mcrypt ...
@@ -130,9 +143,9 @@ $REX['MEDIAPOOL']['ALLOWED_DOCTYPES']   = array('bmp', 'css', 'doc', 'docx', 'ep
 
 // ----------------- DB1
 $REX['DB']['1']['HOST'] = "localhost";
-$REX['DB']['1']['LOGIN'] = "root";
+$REX['DB']['1']['LOGIN'] = "cafevdb";
 $REX['DB']['1']['PSW'] = "";
-$REX['DB']['1']['NAME'] = 'redaxo_4_7';
+$REX['DB']['1']['NAME'] = 'cafevdb_redaxo';
 $REX['DB']['1']['PERSISTENT'] = false;
 
 // ----------------- DB2 - if necessary
