@@ -44,7 +44,7 @@ class auth_owncloud extends rex_backend_login
             $this->rexLoginQuery = $this->login_query;
             $this->setLoginquery(preg_replace('|AND\s+`?psw`?`?\s+=\s+"USR_PSW"\s+|', '', $this->login_query));
             return parent::checkLogin();
-        } else if ($REX['AUTH_ALLOWREX']) {
+        } else if ($REX['AUTH_NEXTCLOUD_ALLOWREX']) {
             return parent::checkLogin();
         } else {
             return false;
@@ -59,7 +59,7 @@ class auth_owncloud extends rex_backend_login
     {
         global $REX;
 
-        $url = $REX['OWNCLOUDURL'].'/'.'ocs/v1.php/cloud/users/'.$this->usr_login;
+        $url = $REX['AUTH_NEXTCLOUD_URL'].'/'.'ocs/v1.php/cloud/users/'.$this->usr_login;
         $url .= "?format=json";
 
         if (function_exists('curl_version')) {
@@ -72,7 +72,12 @@ class auth_owncloud extends rex_backend_login
             curl_setopt($c, CURLOPT_HTTPHEADER, [ 'OCS-APIRequest: true' ]);
             curl_setopt($c, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
             curl_setopt($c, CURLOPT_USERPWD, $this->usr_login.':'.$this->clearTextPassword);
-            if (true) {
+            curl_setopt($c, CURLOPT_HTTPHEADER, [ "OCS-APIRequest:true" ]);
+            if ($REX['AUTH_NEXTCLOUD_VERIFY_SSL'] === false) {
+              curl_setopt($c, CURLOPT_SSL_VERIFYPEER, false);
+              curl_setopt($c, CURLOPT_SSL_VERIFYHOST, false);
+            }
+            if (false) {
                 curl_setopt($c, CURLOPT_HEADERFUNCTION, function($curl, $headerline) {
                         error_log($headerline);
                         return strlen($headerline);

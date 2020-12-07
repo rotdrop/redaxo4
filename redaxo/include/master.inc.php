@@ -105,8 +105,9 @@ $REX['FRONTEND_FILE']	= 'index.php';
 // SSO via Owncloud
 $REX['AUTHCLASS'] = 'auth_owncloud';
 $REX['AUTHCLASSINCLUDE'] = $REX['INCLUDE_PATH'] . '/classes/class.auth_owncloud.inc.php';
-$REX['OWNCLOUDURL'] = 'https://localhost/nextcloud-git';
-$REX['AUTH_ALLOWREX'] = true; // fall back to rex auth if auth-module fails
+$REX['AUTH_NEXTCLOUD_URL'] = 'https://localhost/nextcloud-git';
+$REX['AUTH_NEXTCLOUD_VERIFY_SSL'] = false;
+$REX['AUTH_NEXTCLOUD_ALLOWREX'] = true; // fall back to rex auth if auth-module fails
 
 // Passwortverschlüsselung, z.B: md5 / mcrypt ...
 $REX['PSWFUNC'] = 'sha1';
