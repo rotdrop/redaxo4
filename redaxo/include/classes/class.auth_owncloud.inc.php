@@ -72,7 +72,6 @@ class auth_owncloud extends rex_backend_login
             curl_setopt($c, CURLOPT_HTTPHEADER, [ 'OCS-APIRequest: true' ]);
             curl_setopt($c, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
             curl_setopt($c, CURLOPT_USERPWD, $this->usr_login.':'.$this->clearTextPassword);
-            curl_setopt($c, CURLOPT_HTTPHEADER, [ "OCS-APIRequest:true" ]);
             if ($REX['AUTH_NEXTCLOUD_VERIFY_SSL'] === false) {
               curl_setopt($c, CURLOPT_SSL_VERIFYPEER, false);
               curl_setopt($c, CURLOPT_SSL_VERIFYHOST, false);
