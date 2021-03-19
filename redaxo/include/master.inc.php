@@ -37,7 +37,9 @@ if (isset($_SERVER['SERVER_PORT'])) {
 
 // Setupservicestatus - if everything ok -> false; if problem set to true;
 $REX['SETUP'] = false;
-$REX['SERVER'] = 'https://localhost:443/cafevwww';
+$REX['DOMAIN'] = 'https://localhost:443';
+$REX['WEBPATH'] = '/cafevwww';
+$REX['SERVER'] = $REX['DOMAIN'].$REX['WEBPATH'];
 $REX['SERVERNAME'] = 'camerata academica freiburg e.V.';
 $REX['VERSION'] = "4";
 $REX['SUBVERSION'] = "7";
@@ -45,8 +47,10 @@ $REX['MINORVERSION'] = "dev";
 $REX['ERROR_EMAIL'] = 'admin+cafevewww@claus-justus-heine.de';
 $REX['FILEPERM'] = octdec(660); // oktaler wert
 $REX['DIRPERM'] = octdec(770); // oktaler wert
-$REX['INSTNAME'] = 'rex20201120175137';
+$REX['INSTNAME'] = 'rex20201120211117';
 $REX['SESSION_DURATION'] = 7200;
+$REX['SESSION_NAME'] = strtoupper($REX['INSTNAME']);
+$REX['COOKIE_PATH'] = $REX['WEBPATH'];
 
 // Is set first time SQL Object ist initialised
 $REX['MYSQL_VERSION'] = "";
@@ -105,7 +109,7 @@ $REX['FRONTEND_FILE']	= 'index.php';
 // SSO via Owncloud
 $REX['AUTHCLASS'] = 'auth_owncloud';
 $REX['AUTHCLASSINCLUDE'] = $REX['INCLUDE_PATH'] . '/classes/class.auth_owncloud.inc.php';
-$REX['AUTH_NEXTCLOUD_URL'] = 'https://localhost/nextcloud-git';
+$REX['AUTH_NEXTCLOUD_URL'] = 'https://localhost/nextcloud';
 $REX['AUTH_NEXTCLOUD_VERIFY_SSL'] = false;
 $REX['AUTH_NEXTCLOUD_ALLOWREX'] = true; // fall back to rex auth if auth-module fails
 
@@ -145,7 +149,7 @@ $REX['MEDIAPOOL']['ALLOWED_DOCTYPES']   = array('bmp', 'css', 'doc', 'docx', 'ep
 // ----------------- DB1
 $REX['DB']['1']['HOST'] = 'localhost';
 $REX['DB']['1']['LOGIN'] = 'cafevdb';
-$REX['DB']['1']['PSW'] = '';
+$REX['DB']['1']['PSW'] = 'XXXXXXXX';
 $REX['DB']['1']['NAME'] = 'cafevdb_redaxo';
 $REX['DB']['1']['PERSISTENT'] = false;
 

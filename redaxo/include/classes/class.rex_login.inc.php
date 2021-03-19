@@ -17,7 +17,7 @@ class rex_login_sql extends rex_sql
         $this->rex_login_sql($DBID);
     }
 
-    // this is the deprecated old style constructor kept for compat reasons. 
+    // this is the deprecated old style constructor kept for compat reasons.
     // important: if you change the signatur of this method, change also the signature of __construct()
     function rex_login_sql($DBID = 1)
     {
@@ -209,7 +209,7 @@ class rex_login
         $this->rex_login();
     }
 
-    // this is the deprecated old style constructor kept for compat reasons. 
+    // this is the deprecated old style constructor kept for compat reasons.
     // important: if you change the signatur of this method, change also the signature of __construct()
     /*public*/ function rex_login()
     {
@@ -228,7 +228,16 @@ class rex_login
      */
     public static function startSession()
     {
+        global $REX;
+
         if (session_id() == '') {
+            trigger_error(print_r($REX, true));
+            session_name($REX['SESSION_NAME']);
+            session_set_cookie_params([
+                'secure' => true,
+                'httponly' => true,
+                'path' => $REX['COOKIE_PATH'],
+            ]);
             if (!@session_start()) {
                 $error = error_get_last();
                 if ($error) {
@@ -513,7 +522,7 @@ class rex_backend_login extends rex_login
         $this->rex_backend_login($tableName);
     }
 
-    // this is the deprecated old style constructor kept for compat reasons. 
+    // this is the deprecated old style constructor kept for compat reasons.
     // important: if you change the signatur of this method, change also the signature of __construct()
     /*public*/ function rex_backend_login($tableName)
     {
