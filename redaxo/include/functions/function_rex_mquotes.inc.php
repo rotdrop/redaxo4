@@ -6,7 +6,7 @@
  * @version svn:$Id$
  */
 
-if (!get_magic_quotes_gpc()) {
+if (function_exists('get_magic_quotes_gpc') && !get_magic_quotes_gpc()) {
     function addSlashesOnArray(&$theArray)
     {
         if (is_array($theArray)) {
