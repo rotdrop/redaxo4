@@ -93,7 +93,7 @@ class rex_list
         $this->rex_list($query, $rowsPerPage, $listName, $debug);
     }
 
-    // this is the deprecated old style constructor kept for compat reasons. 
+    // this is the deprecated old style constructor kept for compat reasons.
     // important: if you change the signatur of this method, change also the signature of __construct()
     function rex_list($query, $rowsPerPage = 30, $listName = null, $debug = false)
     {
@@ -997,6 +997,7 @@ class rex_list
         // Nur escapen, wenn formatter aufgerufen wird, der kein html zurückgeben können soll
         if ($escape &&
              !$this->isCustomFormat($format) &&
+             isset($format[0]) &&
              $format[0] != 'rexmedia' &&
              $format[0] != 'rexurl' &&
              $format[0] != 'email' &&
