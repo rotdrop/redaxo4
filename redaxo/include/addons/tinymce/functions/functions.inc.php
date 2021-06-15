@@ -182,7 +182,7 @@ if (!function_exists('tinymce_is_writable'))
 {
 function tinymce_is_writable($path)
 {
-  if ($path{strlen($path)-1}=='/') // recursively return a temporary file path
+  if ($path[strlen($path)-1]=='/') // recursively return a temporary file path
     return tinymce_is_writable($path.uniqid(mt_rand()).'.tmp');
   else if (is_dir($path))
     return tinymce_is_writable($path.'/'.uniqid(mt_rand()).'.tmp');
