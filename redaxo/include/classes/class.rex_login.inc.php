@@ -231,7 +231,6 @@ class rex_login
         global $REX;
 
         if (session_id() == '') {
-            trigger_error(print_r($REX, true));
             session_name($REX['SESSION_NAME']);
             session_set_cookie_params([
                 'secure' => true,
@@ -245,7 +244,6 @@ class rex_login
                 } else {
                     $message = 'Unable to start session!';
                 }
-                trigger_error($message, E_USER_ERROR);
             }
         }
     }
