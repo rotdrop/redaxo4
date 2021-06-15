@@ -53,12 +53,12 @@ class rex_sql
         $this->DBID = $DBID;
 
         if ($REX['DB'][$DBID]['PERSISTENT']) {
-            $this->identifier = @mysql_pconnect($REX['DB'][$DBID]['HOST'], $REX['DB'][$DBID]['LOGIN'], $REX['DB'][$DBID]['PSW']);
+            $this->identifier = mysql_pconnect($REX['DB'][$DBID]['HOST'], $REX['DB'][$DBID]['LOGIN'], $REX['DB'][$DBID]['PSW']);
         } else {
-            $this->identifier = @mysql_connect($REX['DB'][$DBID]['HOST'], $REX['DB'][$DBID]['LOGIN'], $REX['DB'][$DBID]['PSW']);
+            $this->identifier = mysql_connect($REX['DB'][$DBID]['HOST'], $REX['DB'][$DBID]['LOGIN'], $REX['DB'][$DBID]['PSW']);
         }
 
-        if (!@mysql_select_db($REX['DB'][$DBID]['NAME'], $this->identifier)) {
+        if ($this->identifier === false || !@mysql_select_db($REX['DB'][$DBID]['NAME'], $this->identifier)) {
             echo "<font style='color:red; font-family:verdana,arial; font-size:11px;'>Class SQL 1.1 | Database down. | Please contact <a href=mailto:" . $REX['ERROR_EMAIL'] . '>' . $REX['ERROR_EMAIL'] . "</a>\n | Thank you!\n</font>";
             exit;
         }
