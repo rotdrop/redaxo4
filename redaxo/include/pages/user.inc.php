@@ -985,13 +985,10 @@ if (isset($SHOW) and $SHOW) {
 
     $list->setColumnLabel('name', $I18N->msg('name'));
     $list->setColumnParams('name', array('user_id' => '###user_id###'));
-    $list->setColumnFormat('name', 'custom',
-        create_function(
-            '$params',
-            '$list = $params["list"];
-             return $list->getColumnLink("name", htmlspecialchars($list->getValue("name") != "" ? $list->getValue("name") : $list->getValue("login")));'
-        )
-    );
+    $list->setColumnFormat('name', 'custom', function($params) {
+      $list = $params["list"];
+      return $list->getColumnLink("name", htmlspecialchars($list->getValue("name") != "" ? $list->getValue("name") : $list->getValue("login")));
+    });
 
     $list->setColumnLabel('lasttrydate', $I18N->msg('last_login'));
     $list->setColumnFormat('lasttrydate', 'strftime', 'datetime');
@@ -1000,18 +997,14 @@ if (isset($SHOW) and $SHOW) {
     $list->setColumnLabel('funcs', $I18N->msg('user_functions'));
     $list->setColumnParams('funcs', array('FUNC_DELETE' => '1', 'user_id' => '###user_id###'));
     $list->setColumnLayout('funcs', array('<th colspan="2">###VALUE###</th>', '<td>###VALUE###</td>'));
-    $list->setColumnFormat('funcs', 'custom',
-        create_function(
-            '$params',
-            'global $REX;
-             $list = $params["list"];
-             if($list->getValue("user_id") == $REX["USER"]->getValue("user_id"))
-             {
-                 return \'<span class="rex-strike">' . $I18N->msg('user_delete') . '</span>\';
-             }
-             return $list->getColumnLink("funcs","' . $I18N->msg('user_delete') . '");'
-        )
-    );
+    $list->setColumnFormat('funcs', 'custom', function($params) use ($REX, $I18N) {
+      $list = $params["list"];
+      if($list->getValue("user_id") == $REX["USER"]->getValue("user_id"))
+      {
+        return '<span class="rex-strike">' . $I18N->msg('user_delete') . '</span>';
+      }
+      return $list->getColumnLink("funcs","' . $I18N->msg('user_delete') . '");
+    });
     $list->addLinkAttribute('funcs', 'onclick', 'return confirm(\'' . $I18N->msg('delete') . ' ?\')');
 
 

@@ -72,52 +72,40 @@ if ($func == '') {
     $list->setColumnParams('name', array('func' => 'edit', 'oid' => '###id###'));
 
     $list->setColumnLabel('interval', $I18N->msg('cronjob_interval'));
-    $list->setColumnFormat('interval', 'custom',
-        create_function(
-            '$params',
-            'global $I18N;
-             $list = $params["list"];
-             $value = explode("|",$list->getValue("interval"));
-             $str = $value[1]." ";
-             $array = array("h"=>"hour", "d"=>"day", "w"=>"week", "m"=>"month", "y"=>"year");
-             $str .= $I18N->msg("cronjob_interval_".$array[$value[2]]);
-             return $str;'
-        )
-    );
+    $list->setColumnFormat('interval', 'custom', function($params) use ($I18N) {
+      $list = $params["list"];
+      $value = explode("|",$list->getValue("interval"));
+      $str = $value[1]." ";
+      $array = array("h"=>"hour", "d"=>"day", "w"=>"week", "m"=>"month", "y"=>"year");
+      $str .= $I18N->msg("cronjob_interval_".$array[$value[2]]);
+      return $str;
+    });
 
     $list->setColumnLabel('environment', $I18N->msg('cronjob_environment'));
-    $list->setColumnFormat('environment', 'custom',
-        create_function(
-            '$params',
-            'global $I18N;
-             $list = $params["list"];
-             $value = $list->getValue("environment");
-             $env = array();
-             if (strpos($value, "|0|") !== false)
-                 $env[] = $I18N->msg("cronjob_environment_frontend");
-             if (strpos($value, "|1|") !== false)
-                 $env[] = $I18N->msg("cronjob_environment_backend");
-             return implode(", ", $env);'
-        )
-    );
+    $list->setColumnFormat('environment', 'custom', function($params) use ($I18N) {
+      $list = $params["list"];
+      $value = $list->getValue("environment");
+      $env = array();
+      if (strpos($value, "|0|") !== false)
+        $env[] = $I18N->msg("cronjob_environment_frontend");
+      if (strpos($value, "|1|") !== false)
+        $env[] = $I18N->msg("cronjob_environment_backend");
+      return implode(", ", $env);
+    });
 
     $list->setColumnLabel('status', $I18N->msg('cronjob_status_function'));
     $list->setColumnParams('status', array('func' => 'setstatus', 'oldstatus' => '###status###', 'oid' => '###id###'));
     $list->setColumnLayout('status', array('<th colspan="3">###VALUE###</th>', '<td style="text-align:center;">###VALUE###</td>'));
-    $list->setColumnFormat('status', 'custom',
-        create_function(
-            '$params',
-            'global $I18N;
-             $list = $params["list"];
-             if (!class_exists($list->getValue("type")))
-                 $str = $I18N->msg("cronjob_status_invalid");
-             elseif ($list->getValue("status") == 1)
-                 $str = $list->getColumnLink("status","<span class=\"rex-online\">".$I18N->msg("cronjob_status_activated")."</span>");
-             else
-                 $str = $list->getColumnLink("status","<span class=\"rex-offline\">".$I18N->msg("cronjob_status_deactivated")."</span>");
-             return $str;'
-        )
-    );
+    $list->setColumnFormat('status', 'custom', function($params) use ($I18N) {
+      $list = $params["list"];
+      if (!class_exists($list->getValue("type")))
+        $str = $I18N->msg("cronjob_status_invalid");
+      elseif ($list->getValue("status") == 1)
+        $str = $list->getColumnLink("status","<span class=\"rex-online\">".$I18N->msg("cronjob_status_activated")."</span>");
+      else
+        $str = $list->getColumnLink("status","<span class=\"rex-offline\">".$I18N->msg("cronjob_status_deactivated")."</span>");
+      return $str;
+    });
 
     $list->addColumn('delete', $I18N->msg('cronjob_delete'), -1, array('', '<td style="text-align:center;">###VALUE###</td>'));
     $list->setColumnParams('delete', array('func' => 'delete', 'oid' => '###id###'));
@@ -125,16 +113,12 @@ if ($func == '') {
 
     $list->addColumn('execute', $I18N->msg('cronjob_execute'), -1, array('', '<td style="text-align:center;">###VALUE###</td>'));
     $list->setColumnParams('execute', array('func' => 'execute', 'oid' => '###id###'));
-    $list->setColumnFormat('execute', 'custom',
-        create_function(
-            '$params',
-            'global $I18N;
-             $list = $params["list"];
-             if (strpos($list->getValue("environment"),"|1|") !== false && class_exists($list->getValue("type")))
-                 return $list->getColumnLink("execute",$I18N->msg("cronjob_execute"));
-             return "<span class=\"rex-strike\">".$I18N->msg("cronjob_execute")."</span>";'
-        )
-    );
+    $list->setColumnFormat('execute', 'custom', function($params) use ($I18N) {
+      $list = $params["list"];
+      if (strpos($list->getValue("environment"),"|1|") !== false && class_exists($list->getValue("type")))
+        return $list->getColumnLink("execute",$I18N->msg("cronjob_execute"));
+      return "<span class=\"rex-strike\">".$I18N->msg("cronjob_execute")."</span>";
+    });
 
     $list->show();
 
