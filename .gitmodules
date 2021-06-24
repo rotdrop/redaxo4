@@ -1,9 +1,11 @@
 [submodule "redaxo/include/addons/xform"]
 	path = redaxo/include/addons/xform
-	url = https://github.com/yakamara/redaxo4_xform.git
+	url = git@github.com:rotdrop/redaxo_xform.git
+	branch = cafev/production
 [submodule "redaxo/include/addons/textile/vendor"]
 	path = redaxo/include/addons/textile/vendor
 	url = https://github.com/textile/php-textile.git
 [submodule "redaxo/include/addons/community"]
 	path = redaxo/include/addons/community
-	url = https://github.com/yakamara/redaxo4_community.git
+	url = git@github.com:rotdrop/redaxo_ycom.git
+	branch = cafev/production/redaxo4
