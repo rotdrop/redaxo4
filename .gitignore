@@ -2,4 +2,6 @@
 /upload/*
 !/files/addons
 /redaxo/include/data/*
+!/redaxo/include/data/.keep
 /redaxo/include/generated/*
+!/redaxo/include/generated/.keep
