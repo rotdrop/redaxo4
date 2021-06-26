@@ -70,8 +70,7 @@ class myUrlRewriter extends rexUrlRewriter
        rex_rewriter_generate_pathnames(array());
 
     // REXPATH wird auch im Backend benötigt, z.B. beim bearbeiten von Artikeln
-    $REXPATH = unserialize(file_get_contents(FULLNAMES_PATHLIST));
-    //require_once (FULLNAMES_PATHLIST);
+    require_once (FULLNAMES_PATHLIST);
 
     if(!$REX['REDAXO'])
     {
@@ -127,7 +126,7 @@ class myUrlRewriter extends rexUrlRewriter
         }
       }
 
-			// aktuellen pfad mit pfadarray vergleichen
+      // aktuellen pfad mit pfadarray vergleichen
 
       foreach ($REXPATH as $key => $var)
       {
@@ -153,7 +152,7 @@ class myUrlRewriter extends rexUrlRewriter
         }
       }
 
- 			// Check levenshtein
+      // Check levenshtein
       if ($this->use_levenshtein && $article_id == -1)
       {
         foreach ($REXPATH as $key => $var)
@@ -172,27 +171,27 @@ class myUrlRewriter extends rexUrlRewriter
 
       }elseif($article_id == -1)
       {
-				// ----- EXTENSION POINT
-				$article_info = rex_register_extension_point('URL_REWRITE_ARTICLE_ID_NOT_FOUND', '' );
-				if (isset($article_info['article_id']) && $article_info['article_id'] > -1)
-				{
-					$article_id = $article_info['article_id'];
+        // ----- EXTENSION POINT
+        $article_info = rex_register_extension_point('URL_REWRITE_ARTICLE_ID_NOT_FOUND', '' );
+        if (isset($article_info['article_id']) && $article_info['article_id'] > -1)
+        {
+          $article_id = $article_info['article_id'];
 
-					if (isset($article_info['clang']) && $article_info['clang'] > -1)
-					{
-						$clang = $article_info['clang'];
-					}
-				}
+          if (isset($article_info['clang']) && $article_info['clang'] > -1)
+          {
+            $clang = $article_info['clang'];
+          }
+        }
 
-				// Nochmals abfragen wegen EP
-				if($article_id == -1)
-	      {
-					// Damit auch die "index.php?article_id=xxx" Aufrufe funktionieren
-					if(rex_request('article_id', 'int', 0) > 0)
-						$article_id = $REX['ARTICLE_ID'];
-					else
-						$article_id = $REX['NOTFOUND_ARTICLE_ID'];
-				}
+        // Nochmals abfragen wegen EP
+        if($article_id == -1)
+        {
+          // Damit auch die "index.php?article_id=xxx" Aufrufe funktionieren
+          if(rex_request('article_id', 'int', 0) > 0)
+            $article_id = $REX['ARTICLE_ID'];
+          else
+            $article_id = $REX['NOTFOUND_ARTICLE_ID'];
+        }
       }
 
       $this->setArticleId($article_id,$clang);
@@ -203,10 +202,9 @@ class myUrlRewriter extends rexUrlRewriter
   /*private*/ function setArticleId($art_id, $clang_id = -1)
   {
     global $REX;
-    if ($REX['ARTICLE_ID'] <= 0 || $art_id != $REX['NOTFOUND_ARTICLE_ID'])
     $REX['ARTICLE_ID'] = $art_id;
     if($clang_id > -1)
-    	$REX['CUR_CLANG'] = $clang_id;
+      $REX['CUR_CLANG'] = $clang_id;
   }
 
   // Url neu schreiben
@@ -214,7 +212,7 @@ class myUrlRewriter extends rexUrlRewriter
   {
     // Url wurde von einer anderen Extension bereits gesetzt
     if($params['subject'] != '')
-  		return $params['subject'];
+      return $params['subject'];
 
     global $REX, $REXPATH;
 
@@ -223,11 +221,6 @@ class myUrlRewriter extends rexUrlRewriter
     $clang      = $params['clang'];
     $divider    = $params['divider'];
     $urlparams  = $params['params'];
-
-    if (!isset($REXPATH[$id])) {
-        // cj wonders what this bloody shit is about
-        return '';
-    }
 
     // params umformatieren neue Syntax suchmaschienen freundlich
     if($this->use_params_rewrite)
@@ -284,7 +277,7 @@ if ($REX['REDAXO'])
 
 /**
  * rex_rewriter_generate_pathnames
- * generiert die Pathlist, abhngig von Aktion
+ * generiert die Pathlist, abhŠngig von Aktion
  * @author markus.staab[at]redaxo[dot]de Markus Staab
  * @package redaxo4.2
  */
@@ -293,14 +286,9 @@ function rex_rewriter_generate_pathnames($params)
 {
   global $REX, $REXPATH;
 
-  // camerata hookup
-  // kunde will keine slashes in der pathlist
-  $rewrites = array();
-
   if(file_exists(FULLNAMES_PATHLIST))
   {
-    $REXPATH = unserialize(file_get_contents(FULLNAMES_PATHLIST));
-    //require_once (FULLNAMES_PATHLIST);
+    require_once (FULLNAMES_PATHLIST);
   }
 
   if(!isset($REXPATH))
@@ -335,7 +323,7 @@ function rex_rewriter_generate_pathnames($params)
     default:
       $REXPATH = array();
       $where = '1=1';
-			break;
+      break;
   }
 
   if($where != '')
@@ -375,36 +363,21 @@ function rex_rewriter_generate_pathnames($params)
         $catname = $ooc->getName();
         unset($ooc); // speicher freigeben
         $pathname = rex_rewriter_appendToPath($pathname, $catname);
-      } else {
-          // eigentlicher artikel anhängen
-          $name = $ooa->getName();
-          unset($ooa); // speicher freigeben
-          $pathname = rex_rewriter_appendToPath($pathname, $name);
       }
 
-      $pathname = substr($pathname,0,strlen($pathname)-1);
+      // eigentlicher artikel anhängen
+      $name = $ooa->getName();
+      unset($ooa); // speicher freigeben
+      $pathname = rex_rewriter_appendToPath($pathname, $name);
 
-	  // camerata hookup
-	  // falls es rewrite schon gibt - underscore(s) dranhängen
-	  while(in_array($pathname,$rewrites)) {
-	  	$pathname .= '_';
-	  }
-	  // kunde will keine plus in der url
-	  $pathname = str_replace('+','_',$pathname);
-
-	  // kunde will jetzt auch keine '_-_' in der url
-	  $pathname = str_replace('_-_','_',$pathname);
-
-	  $rewrites[] = $pathname;
-
+      $pathname = substr($pathname,0,strlen($pathname)-1).'.html';
       $REXPATH[$db->getValue('id')][$db->getValue('clang')] = $pathname;
 
       $db->next();
     }
   }
 
-  //rex_put_file_contents(FULLNAMES_PATHLIST, "<?php\n\$REXPATH = ". var_export($REXPATH, true) .";\n");
-  file_put_contents(FULLNAMES_PATHLIST, serialize($REXPATH));
+  rex_put_file_contents(FULLNAMES_PATHLIST, "<?php\n\$REXPATH = ". var_export($REXPATH, true) .";\n");
 }
 
 function rex_rewriter_appendToPath($path, $name)
