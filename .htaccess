@@ -1,9 +1,13 @@
-Options -Indexes
-<IfModule mod_rewrite.c>
 RewriteEngine On
 
-### In case ModRewrite doesnt work - remove following comment and try again
-RewriteBase /cafevwww/
+#RewriteBase /
+
+#RewriteCond %{HTTPS} !=on
+#RewriteRule ^/?redaxo/(.*) https://%{SERVER_NAME}/redaxo/$1 [R,L]
+
+### In case ModRewrite doesnt work remove following comment and try again
+#RewriteRule ^([0-9]*)-([0-9]*)- index.php?article_id=$1&clang=$2&%{QUERY_STRING}
+#RewriteRule ^([0-9]*)- index.php?article_id=$1&%{QUERY_STRING}
 
 ### class.rewrite_fullnames.inc.php
 #RewriteBase /
@@ -21,15 +25,33 @@ RewriteBase /cafevwww/
 
 #RewriteCond %{HTTP_HOST} ^camerata [NC]
 #RewriteRule ^(.*)$ http://camerata/$1 [L,R=301]
+
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-l
-RewriteCond %{REQUEST_URI} !^redaxo/.*
-RewriteCond %{REQUEST_URI} !^files/.*
-RewriteCond %{REQUEST_URI} !^inc/.*
+RewriteCond %{REQUEST_URI} !^/?redaxo/.*
+RewriteCond %{REQUEST_URI} !^/?files/.*
+RewriteCond %{REQUEST_URI} !^/?inc/*
+RewriteCond %{REQUEST_URI} !^/?publicwww/.*
 RewriteRule ^(.*)$ index.php?%{QUERY_STRING} [L]
 
-### In case you want to secure all files via your own addon remove comment
-# RewriteRule ^files/(.*) /index.php?rex_media=$1&%{QUERY_STRING} [NC]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-l
+RewriteCond %{REQUEST_URI} !^/?publicwww/redaxo/.*
+RewriteCond %{REQUEST_URI} !^/?publicwww/files/.*
+RewriteCond %{REQUEST_URI} !^/?publicwww/inc/.*
+RewriteRule ^(.*)$ /publicwww/index.php?%{QUERY_STRING} [L]
 
+<IfModule mod_php.c>
+#
+# Please can anyone tell me how to match / with those overly stupid Apache2 regex shit.
+#
+<If "%{REQUEST_URI} =~ /publicwww.*/">
+	php_value session.cookie_path "/publicwww/" 
+</If>
+<Else>
+	php_value session.cookie_path "/" 
+</Else>
+php_value session.name "redaxo_sessid"
 </IfModule>
