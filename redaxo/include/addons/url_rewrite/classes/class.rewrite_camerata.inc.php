@@ -91,7 +91,7 @@ class myUrlRewriter extends rexUrlRewriter
       $path = substr($_SERVER['REQUEST_URI'], $length);
 
       // Serverdifferenzen angleichen
-      if ($path{0}=='/')
+      if (isset($path[0]) && $path[0]=='/')
         $path = substr($path, 1);
 
       // Parameter zählen nicht zum Pfad -> abschneiden
