@@ -1,0 +1,22 @@
+# Should no longer be necessary.
+RewriteEngine Off
+
+RewriteCond %{HTTPS} !=on
+RewriteRule ^/?(.*) https://%{SERVER_NAME}/redaxo/$1 [R,L]
+
+# Cope with TinyMCE relative links.
+RewriteRule ^/?files/(.*) /var/www/cafevwww/files/$1 [L]
+
+<IfModule mod_php.c>
+#
+# Please can anyone tell me how to match / with those overly stupid Apache2 regex shit.
+#
+<If "%{REQUEST_URI} =~ /publicwww.*/">
+	php_value session.cookie_path "/publicwww/" 
+</If>
+<Else>
+	php_value session.cookie_path "/" 
+</Else>
+php_value session.name "redaxo_sessid"
+</IfModule>
+
